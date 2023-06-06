@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Mahalaxmi Landing Page</title>
+    <!--   meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS v5.2.0-beta1 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+      integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+      integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n"
+      crossorigin="anonymous"
+    />
+  
+    <link rel="stylesheet" href="./assets/css/style_1.css" />
+    <link rel="stylesheet" href="./assets/CSS/common.css" />
+    <link rel="stylesheet" href="./assets/css/fonts.css" />
+
+
+    <script
+      src="https://code.jquery.com/jquery-2.2.0.min.js"
+      type="text/javascript"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"
+    />
+    <script src="./assets/js/common.js"></script>
+  </head>
+  <style>
+    /* Hide the default checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    /* Create a visual representation of the switch */
+    .switch .slider {
+      width: 40px;
+      height: 20px;
+      background-color: #0cfe59;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    /* Add the slider's appearance when it's in the "on" state */
+    .switch .slider:before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: white;
+      top: 1px;
+      left: 1px;
+      transition: 0.2s;
+    }
+    
+    /* Move the slider to the right when the switch is in the "on" state */
+    .switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+      /* Style the text next to the switch */
+  .switch .status {
+    margin-left: 10px;
+    font-size: 14px;
+  }
+  </style>
+
+  <body>
+
+       <!-- ######## Start Navbar ######## -->
+       <div id="nav" class="loadAjax" data-url="./partials/nav.html"></div>
+       <!-- ######## End Navbar ######## -->
+
+    
+    
+    <!-- General Details Form section starts -->
+    <div class="row justify-content-evenly  mt-5 mb-5" id="generald">
+            <div class="col-md-11 col-lg-9 col-xxl-8">
+              <div class="row" id="box-shadow">
+                <div class="row">
+                  <div class="button">
+                    <button class="back-button ps-3">
+                      Back
+                      <img src="./assets/images/back.svg" alt="" />
+                    </button>
+                  </div>
+                </div>
+                
+                
+                 <!-- personal details  -->
+                <div class="row ps-5">
+                  <form class="row gx-4 gy-4">
+                    
+    
+                    
+    
+                    <div class="col-12 mt-4">                     <!--PERSONAL DETAILS TITLE-->
+                      <h5 id="personal-details">Personal Information</h5>
+                    </div>
+                  
+    
+                    <div class="col-md-3">                       <!--Date of Birth B.S. Date Picker-->
+                      <label for="dob" class = "form-label yolo">
+                      Date of Birth (B.S.)
+                    </label>
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                        required
+                      />
+                    </div>
+                    <div class="col-md-3">                       <!--Date of Birth A.D. Date Picker-->
+                      <label for="DOB" class = "form-label yolo">
+                        Date of Birth (A.D)
+                      </label>
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                        required
+                      />
+                    </div>
+                    <div class="col-md-3">
+                      <label for="inputGender" class="form-label yolo">Gender</label>
+                      <select id="inputGender" class="form-select">
+                        <option selected>Select Gender</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="inputMartial" class="form-label yolo">Martail Status</label>
+                      <select id="inputMartial" class="form-select">
+                        <option selected>Martail Status</option>
+                      </select>
+      </div>
+      <div class="col-md-3 ">                    
+        <label
+          for="validationnationality"
+          class="form-label yolo"
+          id="Online"
+        >
+          Nationality
+        </label>
+        <input
+          type="nationality"
+          class="form-control"
+          id="validationAccount required"
+          placeholder="Nationality"
+          required
+        />
+        <div class="invalid-feedback">
+          You cannot have this field empty!!
+        </div>
+      </div>
+    
+      <div class="col-md-3">
+        <label for="inputEdu" class="form-label yolo">Education</label>
+        <select id="inputEdu" class="form-select">
+          <option selected>Education</option>
+        </select>
+</div>
+
+  <div class="row m-3" id="box-shadow">
+      <!--Citizenship Form-->
+      <div class="col-12 " id="citizenship">
+        <div class="row gy-4">
+          <div class="col-12 mt-4">                     
+            <h5 id="citizenship-details">Citizenship</h5>
+          </div>
+          <div class="col-md-4">
+            <label for="inputCitizenshipNumber" class="form-label yolo">
+              Citizenship Number
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="inputCitizenshipNumber"
+              placeholder="01-0024984"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label yolo">Date of Issue (B.S.)</label>
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 ">
+            <label class="form-label yolo">Date of Issue (A.D.)</label>
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4">
+            <label for="inputPlaceOfIssue" class="form-label yolo">
+              Place of Issue
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="inputPlaceofIssue"
+              placeholder="01-0024984"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label yolo">Issuing Authority</label>
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          
+       
+      </div>
+
+      <!-- passport form -->
+      <div class=" col-12 " id="passport">
+        <div class="row">
+          <div class="col-12 mt-4">                     
+            <h5 id="passport-details">Passport</h5>
+          </div>
+          <div class="col-md-4">
+            <label for="inputPassportNumber" class="form-label yolo required"
+              >Passport No</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="inputPassportNumber"
+              placeholder="01-0024984"
+            />
+          </div>
+          <div class="col-md-4">
+            <label for="inputPlaceOfIssue" class="form-label yolo required"
+              >Select Place of Issue</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="inputPlaceofIssue"
+              placeholder="01-0024984"
+            />
+          </div>
+          <div class="col-md-4">
+            <label for="inputPIssueAuthority" class="form-label yolo required"
+              >Issuing Authority</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="inputIssue"
+              placeholder="01-0024984"
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for = "inputDateIssuue" class="form-label yolo required"
+              >Date of Issue (A.D.)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for="inputDate" class="form-label yolo required"
+              >Date of Issue (B.S.)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for="InputeExpiry" class="form-label yolo required"
+              >ID Expiry Date (A.D.)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for="InputIDExpiry" class="form-label yolo required"
+              >ID Expiry Date (B.S.)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for ="inputPassport" class="form-label yolo required"
+              >Passport Issue For Foreigner</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for="inputPassportIssue" class="form-label yolo required"
+              >Passport Issue Date(B.S.)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for="inputPassportExpiry" class="form-label yolo required"
+              >Passport Expiry (for foreigners)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+          <div class="col-md-4 mt-4">
+            <label for="inputPassportExDate" class="form-label yolo required"
+              >Passport Expiry Date (B.S.)</label
+            >
+            <input
+              type="date"
+              name="DOB"
+              class="form-control text"
+              placeholder=""
+            />
+          </div>
+        </div>
+       
+      </div>
+  </div>
+</div>
+
+                   
+                    <div class="col-12 mt-5 mb-5" id="btn"> <!--Next Button-->
+                      <button type="button" class="btn btn-outline-dark text-danger ps-4 pe-4 " id="genr_next">Next</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              </div>
+    </div>
+
+    <!-- Address details  -->
+    <div class="row justify-content-evenly d-none mt-5 mb-5" id="addr_details">
+      <div class="col-md-11 col-lg-9 col-xxl-8 justify-content-evenly" id="form-section">
+          <div class="row justify-content-evenly" id="form">
+            <div class="col-12">      <!--Back-->
+              <div class="button">
+                <a href="KYCform.html">
+                  <button class="back-button ps-3">
+                    Back
+                    <img src="./assets/images/back.svg" alt="" />
+                  </button>
+                </a>
+              </div>
+            </div>
+            <form class="row justify-content-evenly gy-3 gx-5">
+              <div class="col-12 mt-4">
+                              <h5 id="personal-details">Permanent Address</h5>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputProvince" class="form-label yolo">Province</label>
+                              <select id="inputProvince" class="form-select">
+                                <option selected>Select Province</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputDistrict" class="form-label yolo">District</label>
+                              <select id="inputDistrict" class="form-select">
+                                <option selected>Name of the District</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputMunicipality" class="form-label yolo">Municipality</label>
+                              <select id="inputMunicipality" class="form-select">
+                                <option selected>Name of the Municipality/VDC</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputWardNumber" class="form-label yolo">Ward Number</label>
+                              <select id="inputWard Number" class="form-select">
+                                <option selected>01-0024984</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputStreet" class="form-label yolo">Street</label>
+                              <select id="inputStreet" class="form-select">
+                                <option selected>Mandala Street</option>
+                              </select>
+              </div>
+                          <div class="col-md-6">
+                              <label for="inputHouseNumber" class="form-label yolo">House Number</label>
+                              <select id="inputHouseNumber" class="form-select">
+                                <option selected>01-0024984</option>
+                              </select>
+              </div>
+              <div class="col-12 mt-5">
+                              <h5 id="personal-details">Current Address</h5>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputProvince" class="form-label yolo">Province</label>
+                              <select id="inputProvince" class="form-select">
+                                <option selected>Select Province</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputDistrict" class="form-label yolo">District</label>
+                              <select id="inputDistrict" class="form-select">
+                                <option selected>Name of the District</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputMunicipality" class="form-label yolo">Municipality</label>
+                              <select id="inputMunicipality" class="form-select">
+                                <option selected>Name of the Municipality/VDC</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputWardNumber" class="form-label yolo">Ward Number</label>
+                              <select id="inputWard Number" class="form-select">
+                                <option selected>01-0024984</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputStreet" class="form-label yolo">Street</label>
+                              <select id="inputStreet" class="form-select">
+                                <option selected>Mandala Street</option>
+                              </select>
+              </div>
+              <div class="col-md-6">
+                              <label for="inputHouseNumber" class="form-label yolo">House Number</label>
+                              <select id="inputHouseNumber" class="form-select">
+                                <option selected>01-0024984</option>
+                              </select>
+              </div>
+             
+            </form>
+            <div class="col-12 mt-5 mb-5 d-flex justify-content-between">
+              <button type="button" class="btn pcolor text-white ps-3 pe-3" id="addr_prev">Previous</button> 
+              <button type="button" class="btn btn-outline-dark text-danger ps-4 pe-4 " id="addr_next">Next</button>
+  </div> 
+          </div>
+         
+      </div>
+    </div> 
+
+     
+      <!-- family-details -->
+      <div class="row justify-content-evenly d-none mt-5 mb-5" id="family">
+        <div class="col-md-11 col-lg-9 col-xxl-8">
+          <div class="row" id="box-shadow">
+            <div class="row">
+              <div class="button">
+                <button class="back-button ps-3">
+                  Back
+                  <img src="./assets/images/back.svg" alt="" />
+                </button>
+              </div>
+            </div>
+            <div class="col-12 mt-5">                    <!--Family Details Section-->
+              <h5 id="family-details">Family Details</h5>           <!--TITLE-->
+              <div class="question-container" >
+                <table class="table" id="targetTable">
+                  <thead>
+                    <tr>
+                      <th scope="col">Relation</th>
+                      <th scope="col">Full Name</th>
+                      <th scope="col">Citizenship No.</th>
+                      <th scope="col">Date of Issue</th>
+                      <th scope="col">Place of Issue</th>
+                      <th scope="col">Status</th>
+                      <th scope="col"><button class="btn btn-primary" id="addRowButton">Add Row</button></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <select class="form-select" name="relation" disabled>
+                          <option value="Father" selected >GrandFather</option>
+                          
+                        </select>
+                      </td>
+                      <td><input type="text" class="form-control" name="fullName"></td>
+                      <td><input type="text" class="form-control" name="citizenshipNo"></td>
+                      <td><input type="date" class="form-control" name="dateOfIssue"></td>
+                      <td>
+                        <select class="form-select" name="placeOfIssue">
+                          <option value="Morang">Morang</option>
+                          <option value="Kathmandu">Kathmandu</option>
+                          <option value="Pokhara">Pokhara</option>
+                        </select>
+                      </td>
+                      <td>
+                        
+<div class="switch">
+  <input type="checkbox" id="mySwitch1">
+  <label for="mySwitch1" class="slider"></label>
+  
+</div>
+                      </td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <select class="form-select" name="relation" disabled>
+                          <option value="Father" selected >Father</option>
+                          
+                        </select>
+                      </td>
+                      <td><input type="text" class="form-control" name="fullName"></td>
+                      <td><input type="text" class="form-control" name="citizenshipNo"></td>
+                      <td><input type="date" class="form-control" name="dateOfIssue"></td>
+                      <td>
+                        <select class="form-select" name="placeOfIssue">
+                          <option value="Morang">Morang</option>
+                          <option value="Kathmandu">Kathmandu</option>
+                          <option value="Pokhara">Pokhara</option>
+                        </select>
+                      </td>
+                      <td>
+                        
+<div class="switch">
+  <input type="checkbox" id="mySwitch2">
+  <label for="mySwitch2" class="slider"></label>
+</div>
+                      </td>
+                     
+                    </tr>
+                    <tr>
+                      <td>
+                        <select class="form-select" name="relation" disabled>
+                          <option value="Father" selected >Mother</option>
+                          
+                        </select>
+                      </td>
+                      <td><input type="text" class="form-control" name="fullName"></td>
+                      <td><input type="text" class="form-control" name="citizenshipNo"></td>
+                      <td><input type="date" class="form-control" name="dateOfIssue"></td>
+                      <td>
+                        <select class="form-select" name="placeOfIssue">
+                          <option value="Morang">Morang</option>
+                          <option value="Kathmandu">Kathmandu</option>
+                          <option value="Pokhara">Pokhara</option>
+                        </select>
+                      </td>
+                      <td>
+                        
+<div class="switch">
+  <input type="checkbox" id="mySwitch3">
+  <label for="mySwitch3" class="slider"></label>
+</div>
+                      </td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-12 mt-5 mb-5 d-flex justify-content-between">
+              <button type="button" class="btn pcolor text-white ps-3 pe-3" id="family_prev">Previous</button> 
+              <button type="button" class="btn btn-outline-dark text-danger ps-4 pe-4 " id="family_next">Next</button>
+            </div> 
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- occupation -->
+      <div class="row justify-content-evenly d-none mt-5 mb-5" id="occupation">
+      <div class="col-md-11 col-lg-9 col-xxl-8">
+    <div class="row" id="box-shadow">
+      <div class="row">
+        <div class="button">
+          <button class="back-button ps-3">
+            Back
+            <img src="./assets/images/back.svg" alt="" />
+          </button>
+        </div>
+      </div>
+      <div class="col-12 mt-5"> 
+        <h5 id="family-details">Occupation Details</h5> <!--TITLE-->
+         <!-- First Row -->
+         <div class="col-md-4">
+          <label for="inputOccupation1" class="form-label yolo">
+            Occupation
+          </label>
+          <select id="inputOccupation1" class="form-select">
+            <option selected>Occupation</option>
+          </select>
+        </div>
+        
+        <div class="row gx-4 gy-4">
+         
+          
+          <!-- Second Row -->
+          <div class="col-md-3">
+            <label for="inputOccupation2" class="form-label yolo">
+              Occupation 1
+            </label>
+            <select id="inputOccupation2" class="form-select">
+              <option selected>Occupation 1</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="inputOccupation3" class="form-label yolo">
+              Occupation 2
+            </label>
+            <select id="inputOccupation3" class="form-select">
+              <option selected>Occupation 2</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="inputOccupation4" class="form-label yolo">
+              Occupation 3
+            </label>
+            <select id="inputOccupation4" class="form-select">
+              <option selected>Occupation 3</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="inputOccupation5" class="form-label yolo">
+              Occupation 4
+            </label>
+            <select id="inputOccupation5" class="form-select">
+              <option selected>Occupation 4</option>
+            </select>
+          </div>
+          
+          <!-- Third Row -->
+          <div class="col-md-3">
+            <label for="inputOccupation6" class="form-label yolo">
+              Occupation 1
+            </label>
+            <select id="inputOccupation6" class="form-select">
+              <option selected>Occupation 1</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="inputOccupation7" class="form-label yolo">
+              Occupation 2
+            </label>
+            <select id="inputOccupation7" class="form-select">
+              <option selected>Occupation 2</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="inputOccupation8" class="form-label yolo">
+              Occupation 3
+            </label>
+            <select id="inputOccupation8" class="form-select">
+              <option selected>Occupation 3</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="inputOccupation9" class="form-label yolo">
+              Occupation 4
+            </label>
+            <select id="inputOccupation9" class="form-select">
+              <option selected>Occupation 4</option>
+            </select>
+          </div>
+        </div>
+           
+      
+      </div>
+    </div>
+        </div>
+      <div class="col-md-11 col-lg-9 col-xxl-8">
+    <div class="row" id="box-shadow">
+    
+      
+     
+        <div class="row gx-4 gy-4">
+          <!-- Scrollable Container -->
+          <div class="col-md-12 scroll-container">
+            <!-- Question 1 -->
+            <div class="question-container" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px; ">
+              <p style="font-weight: bold;">Question:</p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionYesRadio" value="yes">
+                <label class="form-check-label" for="questionYesRadio">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionNoRadio" value="no">
+                <label class="form-check-label" for="questionNoRadio">
+                  No
+                </label>
+              </div>
+            </div>
+            
+            
+            
+            <!-- Question 2 -->
+            <div class="question-container" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px; ">
+              <p style="font-weight: bold;">Question:</p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionYesRadio" value="yes">
+                <label class="form-check-label" for="questionYesRadio">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionNoRadio" value="no">
+                <label class="form-check-label" for="questionNoRadio">
+                  No
+                </label>
+              </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question-container" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px; ">
+              <p style="font-weight: bold;">Question:</p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="toogle_1" id="questionYesRadio" value="yes">
+                <label class="form-check-label" for="questionYesRadio">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="toogle_1" id="questionNoRadio" value="no">
+                <label class="form-check-label" for="questionNoRadio">
+                  No
+                </label>
+              </div>
+            </div>
+
+             <!-- toogle -->
+             <div class="question-container d-none"  id="toogle" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Nominee's Name</th>
+                    <th scope="col">Citizenship No.</th>
+                    <th scope="col">Date of Issue</th>
+                    <th scope="col">Place of Issue</th>
+                    <th scope="col">Relation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="text" class="form-control" id="nomineeName" name="nomineeName"></td>
+                    <td><input type="text" class="form-control" id="citizenshipNo" name="citizenshipNo"></td>
+                    <td><input type="text" class="form-control" id="dateOfIssue" name="dateOfIssue"></td>
+                    <td>
+                      <select class="form-select" id="placeOfIssue" name="placeOfIssue">
+                        <option value="Morang">Morang</option>
+                        <option value="Kathmandu">Kathmandu</option>
+                        <option value="Pokhara">Pokhara</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" id="relation" name="relation">
+                        <option value="Father">Father</option>
+                        <option value="Mother">Mother</option>
+                        <option value="Sibling">Sibling</option>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Repeat the above question-container pattern for the remaining questions -->
+            <!-- Question 4 -->
+            <div class="question-container" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px; ">
+              <p style="font-weight: bold;">Question:</p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionYesRadio" value="yes">
+                <label class="form-check-label" for="questionYesRadio">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionNoRadio" value="no">
+                <label class="form-check-label" for="questionNoRadio">
+                  No
+                </label>
+              </div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question-container" style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10px; ">
+              <p style="font-weight: bold;">Question:</p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionYesRadio" value="yes">
+                <label class="form-check-label" for="questionYesRadio">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="questionOption" id="questionNoRadio" value="no">
+                <label class="form-check-label" for="questionNoRadio">
+                  No
+                </label>
+              </div>
+            </div> 
+    </div>
+    <div class="col-12 mt-5 mb-5 d-flex justify-content-between">
+      <button type="button" class="btn pcolor text-white ps-3 pe-3" id="Occ_prev">Previous</button> 
+      <button type="button" class="btn btn-outline-dark text-danger ps-4 pe-4 " id="Apply">Apply</button>
+</div> 
+  </div>
+</div>
+
+
+
+
+
+       <!-- Document Details and Proof Upload Section -->
+      <!--Proof Upload-->
+      <div class="row justify-content-evenly d-none mt-5 mb-5"  id="generald" >
+        <div class="col-md-11 col-lg-9 col-xxl-8" id="form-section">
+          <div class="row " id="form">
+              <div class="col-12" >
+                <div class="row text-center" id="text">
+                  <span class="text text-center mt-5">Document Type</span>
+                </div>
+                <form class="row ps-5 pe-5">
+                  <!-- switch radio buttons -->
+                  <div class="col-md-12 d-flex justify-content-center mt-4 mb-4" >
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="proof_switch"
+                          value="citizenship"
+                          id="flexRadioDefault1"
+                          checked
+                        
+                        />
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Citizenship
+                        </label>
+                      </div>
+              
+    
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="proof_switch"
+                        id="flexRadioDefault2"
+                        value="passport"
+                      />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Passport
+                      </label>
+                    </div>
+                
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          name="proof_switch"
+                          value="voter"
+                          id="flexRadioDefault2"
+                        />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Voter ID
+                        </label>
+                      </div>
+                    </a>
+                  </div>
+
+                <!--TIT-->
+                <div class="col-12 mt-4">
+                  <h5 class="" id="personal-details">Details</h5>
+                </div>
+  
+                <!--Citizenship Form-->
+                <div class="col-12 " id="citizenship">
+                  <div class="row gy-4">
+                    <div class="col-md-4">
+                      <label for="inputCitizenshipNumber" class="form-label yolo">
+                        Citizenship Number
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="inputCitizenshipNumber"
+                        placeholder="01-0024984"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label yolo">Date of Issue (B.S.)</label>
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label yolo">Date of Issue (A.D.)</label>
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="inputPlaceOfIssue" class="form-label yolo">
+                        Place of Issue
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="inputPlaceofIssue"
+                        placeholder="01-0024984"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label yolo">Issuing Authority</label>
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                  </div>
+                 
+                </div>
+  
+                <!-- passport form -->
+                <div class=" col-12 d-none" id="passport">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="inputPassportNumber" class="form-label yolo required"
+                        >Passport No</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="inputPassportNumber"
+                        placeholder="01-0024984"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="inputPlaceOfIssue" class="form-label yolo required"
+                        >Select Place of Issue</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="inputPlaceofIssue"
+                        placeholder="01-0024984"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="inputPIssueAuthority" class="form-label yolo required"
+                        >Issuing Authority</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="inputIssue"
+                        placeholder="01-0024984"
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for = "inputDateIssuue" class="form-label yolo required"
+                        >Date of Issue (A.D.)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for="inputDate" class="form-label yolo required"
+                        >Date of Issue (B.S.)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for="InputeExpiry" class="form-label yolo required"
+                        >ID Expiry Date (A.D.)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for="InputIDExpiry" class="form-label yolo required"
+                        >ID Expiry Date (B.S.)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for ="inputPassport" class="form-label yolo required"
+                        >Passport Issue For Foreigner</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for="inputPassportIssue" class="form-label yolo required"
+                        >Passport Issue Date(B.S.)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for="inputPassportExpiry" class="form-label yolo required"
+                        >Passport Expiry (for foreigners)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                    <div class="col-md-4 mt-4">
+                      <label for="inputPassportExDate" class="form-label yolo required"
+                        >Passport Expiry Date (B.S.)</label
+                      >
+                      <input
+                        type="date"
+                        name="DOB"
+                        class="form-control text"
+                        placeholder=""
+                      />
+                    </div>
+                  </div>
+                 
+                </div>
+  
+                <!--Voter card form-->
+                <div class=" col-12 d-none" id="voter">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="inputSalutation" class="form-label yolo">Voter ID</label>
+                      <select id="inputSalutation" class="form-select">
+                        <option selected>01-0024984</option>
+                      </select>
+                  </div>
+                  <div class="col-md-4 ">
+                      <label class="form-label yolo">Date of Issue (B.S.)</label>
+                      <input type="date" name="DOB" class="form-control text" placeholder="">
+                  </div>
+                  <div class="col-md-4 ">
+                      <label class="form-label yolo">Date of Issue (A.D.)</label>
+                      <input type="date" name="DOB" class="form-control text" placeholder="">
+                  </div>
+                  </div>
+                 
+                </div>
+                <!-- upload documents -->
+                <div class="document_upload">
+                  <div class="col-12">
+                    <h5 class="mt-5" id="personal-details">Upload Document</h5>
+                  </div>
+                  <div class="col-md-12 mb-3">
+                    <div class="col-lg-10">
+                    <div class="col-lg-10">
+                      <div class="row d-flex">
+                        <div class="col-md-5 col-lg-3 col-xl-4">
+                          <label for="inputCitizenship" class="form-label yolo required"
+                            >Citizenship/Passport/Voter's ID</label
+                          >
+                        </div>
+                        <div class="col-md-6">
+                        <div class="col-md-6">
+                          <div class="row">
+                            <input
+                              class="form-control form-control-lg"
+                              id="formFileLg"
+                              type="file"
+                            />
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="col-lg-10">
+                    <div class="col-lg-10">
+                      <div class="row d-flex">
+                        <div class="col-md-5 col-lg-3 col-xl-4">
+                          <label for="inputPP" class="form-label yolo"
+                            >Passport Size Photograph</label
+                          >
+                        </div>
+                        <div class="col-md-6">
+                        <div class="col-md-6">
+                          <div class="row">
+                            <input
+                              class="form-control form-control-lg"
+                              id="formFileLg"
+                              type="file"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <div class="col-12 d-flex justify-content-between mt-5 mb-5">
+                  <button
+                    type="button"
+                    class="btn pcolor text-white ps-3 pe-3"
+                    id="proof_prev"
+                  >
+                    Previous
+                  </button>
+                  <button
+                  type="button"
+                  class="btn btn-outline-dark text-danger ps-3 pe-3"
+                  id="kyc_submit"
+                >
+                  Submit
+                </button>
+                </div>
+           
+              </form>  
+            </div>
+        
+          
+
+          </div>
+        </div>
+      </div>
+    
+
+        
+        </div>
+
+     
+     
+     
+        <!-- ######## Start Footer Section ######## -->
+     <div class="loadAjax" data-url="./partials/footer.html"></div>
+     <!-- ######## End Footer Section ######## -->
+     
+    <!--Scrpits-->
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+      integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
+      integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+    src="https://code.jquery.com/jquery-2.2.0.min.js"
+    type="text/javascript"
+    ></script>
+
+    <script src="assets/js/KYCform.js"></script>
+  </body>
+</html>

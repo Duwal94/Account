@@ -1,0 +1,7 @@
+.vscode/
+.vscode/settings.json
+.DS_Store
+src/.DS_Store
+
+src/assets/.DS_Store
+src/assets/js/.DS_Store

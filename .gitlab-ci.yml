@@ -1,0 +1,15 @@
+variables:
+  GIT_DEPTH: "1"
+
+stages: 
+  - Online_MahaLaxmi
+
+Online_MahaLaxmi_job:
+  tags:
+    - ants-live-45-121
+  stage: Online_MahaLaxmi
+  only:
+    - branches
+  script:
+    - cd "E:\Hosting\INFICARE\online\mahalaxmi_online_form\src"
+    - git pull
