@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 interface IFormValues {
@@ -38,45 +38,45 @@ interface IFormValues {
 
 const individual: IFormValues = {
   eli01id: uuidv4(),
-  eli01first_name: "string2",
-  eli01middle_name: "string3",
-  eli01last_name: "string4",
-  eli01mobile_no: "string5",
-  eli01email: "string6",
+  eli01first_name: "",
+  eli01middle_name: "",
+  eli01last_name: "",
+  eli01mobile_no: "",
+  eli01email: "",
   eli01bra01uin: 1,
   eli01iscompleted: true,
-  eli01eligibility_type: "string7",
-  eli01ploan_type: "1",
+  eli01eligibility_type: "",
+  eli01ploan_type: "",
   eli01eli00uin: 1,
-  eli01eli02uin: "1",
+  eli01eli02uin: "",
   eli01requested_loan_amount: 0,
   eli01value_of_property: 0,
   eli01is_micro_loan: true,
-  eli01monthly_income: "2",
+  eli01monthly_income: "",
   eli01loan_period_month: 0,
   eli01loan_period_year: 0,
   eli01emi: 0,
   eli01status: true,
   eli01is_eligible: true,
   eli01deleted: true,
-  eli01address: "string13",
+  eli01address: "",
   // ...other form fields
 };
 
 const business: IFormValues = {
   eli01id: uuidv4(),
-  eli01first_name: "string2",
-  eli01middle_name: "string3",
-  eli01last_name: "string4",
-  eli01mobile_no: "string5",
-  eli01email: "string6",
+  eli01first_name: "",
+  eli01middle_name: "",
+  eli01last_name: "",
+  eli01mobile_no: "",
+  eli01email: "",
   eli01bra01uin: 1,
   eli01iscompleted: true,
-  eli01eligibility_type: "string7",
-  eli01company_name: "string8",
-  eli01nature_of_business: "9",
+  eli01eligibility_type: "",
+  eli01company_name: "",
+  eli01nature_of_business: "",
   eli01eli00uin: 1,
-  eli01eli02uin: "1",
+  eli01eli02uin: "",
   eli01requested_loan_amount: 0,
   eli01value_of_property: 0,
   eli01is_micro_loan: true,
@@ -85,18 +85,22 @@ const business: IFormValues = {
   eli01status: true,
   eli01is_eligible: true,
   eli01deleted: true,
-  eli01address: "string13",
-  eli01experience: "0",
+  eli01address: "",
+  eli01experience: "",
 
   // ...other form fields
 };
 
 const useFormValues = (
-  eligibilityType
+  eligibilityType: boolean
 ): [IFormValues, React.Dispatch<React.SetStateAction<IFormValues>>] => {
   const [formValues, setFormValues] = useState<IFormValues>(
-    eligibilityType === "individual" ? individual : business
+    eligibilityType ? individual : business
   );
+
+  useEffect(() => {
+    setFormValues(eligibilityType ? individual : business);
+  }, [eligibilityType]);
 
   return [formValues, setFormValues];
 };

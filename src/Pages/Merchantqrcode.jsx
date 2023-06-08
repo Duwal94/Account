@@ -1,17 +1,28 @@
 import { useState, useEffect } from "react";
 import ExitImg from "../Assets/images/Exit icon/exit.png";
 import Select from "react-select";
+import useFormValues from "../States/MerchantQr.tsx";
+import Modal from "react-modal";
 
 function Merchantqrcode() {
-  const [selection, setSelection] = useState("business");
+  const [selection, setSelection] = useState(true);
+
   const [branchApi, setBranchApi] = useState([]);
   const [registeredApi, setRegisteredApi] = useState([]);
   const [businessNatureApi, setBusinessNatureApi] = useState([]);
-  const [otpVerify, setOtpVerify] = useState(true);
+  const [acctApi, setAcctApi] = useState(null);
+  const [otpApi, setOtpApi] = useState(null);
 
-  const handleSelectionChange = (event) => {
-    setSelection(event.target.value);
-  };
+  const [otpNo, setOtpNo] = useState("");
+
+  const [otpVerify, setOtpVerify] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("hello");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const eligibilityType = selection;
+
+  const [formValues, setFormValues] = useFormValues(eligibilityType);
+
+  // fetch api data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,7 +49,117 @@ function Merchantqrcode() {
 
     fetchData();
   }, []);
+  //fetch Account verify data from the api
+  const fetchAcctVerifyData = async () => {
+    try {
+      const response = await fetch(
+        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
+      );
+      const jsonData = await response.json();
+      setAcctApi(jsonData);
+      setOtpVerify(true);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  //fetch otp data
+  const fetchOtpVerifyData = async () => {
+    try {
+      const response = await fetch(
+        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+      );
+      const jsonData = await response.json();
+      setOtpApi(jsonData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
+  const handleSelectionChange = (event) => {
+    const newValue = event.target.value === "true";
+    setSelection(newValue);
+  };
+
+  //set name,value to form
+  const handleChange = (e) => {
+    const { name, value, type, files, checked } = e.target;
+    const newValue =
+      type === "file" ? files[0] : type === "checkbox" ? checked : value;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: newValue,
+    }));
+  };
+  //for select-form
+  const handleChangeSelect = (selectedOption) => {
+    if (selectedOption) {
+      const { name, value } = selectedOption;
+
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
+    }
+  };
+  // ////////checking
+  // useEffect(() => {
+  //   // Perform the desired action whenever `selection` changes
+  //   console.log(formValues);
+  // }, [formValues]);
+
+  //post fetch
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = "http://api.onlineform.ants.com.np/MerchantAcquisition"; // Replace with your API endpoint URL
+
+    const formData = new FormData();
+    Object.entries(formValues).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        if (responseData.status === true) {
+          setResponseMessage("Form submitted successfully"); // Assuming the response contains a 'message' field
+          setModalIsOpen(true);
+        } else {
+          setResponseMessage(responseData.error_msg);
+          setModalIsOpen(true);
+        }
+      } else {
+        throw new Error("Request failed with status " + response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setResponseMessage("An error occurred while submitting the form.");
+      setModalIsOpen(true);
+
+      // Handle error
+    }
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+  const modalStyle = {
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
   return (
     <div className="container-fluid">
       <div className="col-12 pcolor mb-5" id="loan">
@@ -66,6 +187,7 @@ function Merchantqrcode() {
                 className="row gx-5 gy-4 px-5"
                 id="Merch_qr"
                 name="validation"
+                onSubmit={handleSubmit}
               >
                 <div className="col-12">
                   <div className="row mt-5 ">
@@ -74,11 +196,13 @@ function Merchantqrcode() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="ind_bus_switch"
+                          name="car06is_individual"
                           id="ind_switch"
-                          value="individual"
-                          checked={selection === "individual"}
-                          onChange={handleSelectionChange}
+                          value="true"
+                          checked={selection === true}
+                          onChange={(e) => {
+                            handleSelectionChange(e);
+                          }}
                         />
                         <label
                           className="form-check-label"
@@ -91,11 +215,13 @@ function Merchantqrcode() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="ind_bus_switch"
+                          name="car06is_individual"
                           id="bus_switch"
-                          value="business"
-                          checked={selection === "business"}
-                          onChange={handleSelectionChange}
+                          value="false"
+                          checked={selection === false}
+                          onChange={(e) => {
+                            handleSelectionChange(e);
+                          }}
                         />
                         <label
                           className="form-check-label"
@@ -122,9 +248,12 @@ function Merchantqrcode() {
                     className="form-control"
                     id="inputName"
                     placeholder="Refferer Name"
-                    name="Refferers_name"
+                    name="car06reffered_by"
+                    value={formValues.car06reffered_by}
+                    onChange={handleChange}
                   />
                 </div>
+                {/* ref contact no */}
                 <div className="col-md-5">
                   <label htmlFor="inputnumber" className="form-label yolo">
                     Contact Number
@@ -134,7 +263,9 @@ function Merchantqrcode() {
                     className="form-control numberOnly"
                     id="inputMiddleName"
                     placeholder="Contact Number(Refferer's)"
-                    name="r_contact"
+                    name="car06refferer_contact_no"
+                    onChange={handleChange}
+                    value={formValues.car06refferer_contact_no}
                   />
                 </div>
                 <div className="col-12 mt-4">
@@ -171,15 +302,18 @@ function Merchantqrcode() {
                       className="form-control numberOnly"
                       placeholder="Account Number"
                       id="accounts_number"
-                      name="mobilenumber"
+                      value={formValues.car06acc_no}
+                      name="car06acc_no"
                       aria-label="Account Number"
                       aria-describedby="verify"
+                      onChange={handleChange}
                     />
                     <div className="input-group-append">
                       <button
                         className="btn btn-danger btnclick otpStep"
                         id="verifyX"
                         type="button"
+                        onClick={fetchAcctVerifyData}
                       >
                         <i className /> Verify Account
                       </button>
@@ -194,12 +328,17 @@ function Merchantqrcode() {
                       <span className="text-danger">*</span>
                     </label>
                     <div className="input-group mb-4">
-                      <input type="text" className="form-control" />
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={acctApi.ref_id}
+                      />
                       <div className="input-group-append">
                         <button
                           className="btn btn-warning"
                           type="button"
                           id="VerifyOtp"
+                          onClick={fetchOtpVerifyData}
                         >
                           <i className="fas fa-sync-alt" /> Verify OTP
                         </button>
@@ -209,6 +348,7 @@ function Merchantqrcode() {
                           className="btn btn-primary"
                           type="button"
                           id="resendOtp"
+                          onClick={fetchAcctVerifyData}
                         >
                           <i className="fas fa-sync-alt" /> Resend OTP
                         </button>
@@ -224,7 +364,7 @@ function Merchantqrcode() {
                     </p>
                   </div>
                 )}
-
+                {/* name */}
                 <div className="col-md-5">
                   <label htmlFor="inputname" className="form-label yolo">
                     Name
@@ -233,10 +373,12 @@ function Merchantqrcode() {
                     type="text"
                     className="form-control"
                     id="inputname"
-                    placeholder="Enter your name"
-                    name="name"
+                    name="car06name"
+                    disabled
+                    value={otpApi?.name || ""}
                   />
                 </div>
+                {/* contact */}
                 <div className="col-md-5">
                   <label htmlFor="inputnumber" className="form-label yolo">
                     Contact Number
@@ -247,9 +389,12 @@ function Merchantqrcode() {
                     id="inputnumber"
                     placeholder="Contact Number(Refferer's)"
                     name="mobilenumber"
+                    disabled
+                    value={otpApi?.contact || ""}
                   />
                 </div>
-                {selection === "business" && (
+                {/* pan */}
+                {selection === false && (
                   <div className="col-md-5">
                     <label htmlFor="inputpan" className="form-label yolo">
                       PAN Number
@@ -259,13 +404,15 @@ function Merchantqrcode() {
                       className="form-control numberOnly"
                       id="inputpan"
                       placeholder="01-1918292"
-                      name="pan"
+                      name="car06pan_or_vat"
+                      onChange={handleChange}
+                      value={formValues.car06pan_or_vat}
                     />
                   </div>
                 )}
-                {selection === "business" && (
+                {/*Registered with*/}
+                {selection === false && (
                   <div className="col-md-5 business ">
-                    {/*Business Type*/}
                     <label
                       htmlFor="inputbusinesstype"
                       className="form-label yolo "
@@ -275,7 +422,8 @@ function Merchantqrcode() {
                     <select
                       className="form-select"
                       id="business_type"
-                      name="eli01nature_of_business"
+                      name="car06car03uin"
+                      onChange={handleChange}
                     >
                       <option value={0} selected disabled>
                         registered with
@@ -303,9 +451,11 @@ function Merchantqrcode() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="flexRadioDefault"
+                          name="car06mobile_payment_type"
                           id="flexRadioDefault1"
+                          value="1"
                           defaultChecked
+                          onChange={handleChange}
                         />
                         <label
                           className="form-check-label"
@@ -318,8 +468,10 @@ function Merchantqrcode() {
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="flexRadioDefault"
+                            name="car06mobile_payment_type"
                             id="flexRadioDefault1"
+                            value="2"
+                            onChange={handleChange}
                           />
                           <label
                             className="form-check-label"
@@ -333,7 +485,7 @@ function Merchantqrcode() {
                   </div>
                 </div>
                 {/*Business Type*/}
-                {selection === "business" && (
+                {selection === false && (
                   <div className="col-md-5 business ">
                     <label
                       htmlFor="inputbusinesstype"
@@ -357,7 +509,8 @@ function Merchantqrcode() {
                     </select>
                   </div>
                 )}
-                {selection === "business" && (
+                {/* Name of Authorized Person of the Company */}
+                {selection === false && (
                   <div className="col-md-5">
                     <label
                       htmlFor="inputrefferedby"
@@ -370,11 +523,14 @@ function Merchantqrcode() {
                       className="form-control"
                       id="inputName"
                       placeholder="Name of Authorized Person of the Company "
-                      name="Refferers_name"
+                      name="car06authorized_person"
+                      value={formValues.car06authorized_person}
+                      onChange={handleChange}
                     />
                   </div>
                 )}
-                {selection === "business" && (
+                {/* Contact Number of Authorized Person */}
+                {selection === false && (
                   <div className="col-md-5">
                     <label
                       htmlFor="inputrefferedby"
@@ -387,11 +543,14 @@ function Merchantqrcode() {
                       className="form-control"
                       id="inputName"
                       placeholder="Contact Number of Authorized Person"
-                      name="Refferers_name"
+                      name="car06authorized_person_contact_no"
+                      onChange={handleChange}
+                      value={formValues.car06authorized_person_contact_no}
                     />
                   </div>
                 )}
-                {selection === "business" && (
+                {/* Name of Contact Person of Company */}
+                {selection === false && (
                   <div className="col-md-5">
                     <label
                       htmlFor="inputrefferedby"
@@ -404,28 +563,32 @@ function Merchantqrcode() {
                       className="form-control"
                       id="inputName"
                       placeholder="Name of Contact Person of Company *"
-                      name="Refferers_name"
+                      name="car06contact_person"
+                      value={formValues.car06contact_person}
+                      onChange={handleChange}
                     />
                   </div>
                 )}
-                {selection === "business" && (
+                {/* Contact Number of Contact Person * */}
+                {selection === false && (
                   <div className="col-md-5">
                     <label
                       htmlFor="inputrefferedby"
                       className="form-label yolo"
                     >
-                      Contact Number of Contact Person *
+                      Contact Number of Contact Person
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="inputName"
                       placeholder="Contact Number of Contact Person "
-                      name="Refferers_name"
+                      name="car06contact_person_contact_no"
+                      onChange={handleChange}
                     />
                   </div>
                 )}
-
+                {/* address */}
                 <div className="col-md-5">
                   <label htmlFor="inputaddress" className="form-label yolo">
                     Address
@@ -435,6 +598,9 @@ function Merchantqrcode() {
                     className="form-control"
                     id="inputaddress"
                     placeholder="Enter your address"
+                    name="car06address"
+                    onChange={handleChange}
+                    value={formValues.car06address}
                   />
                 </div>
 
@@ -444,19 +610,20 @@ function Merchantqrcode() {
                     Preferred Branch
                   </label>
                   <Select
-                    name="eli01bra01uin"
+                    name="car06bra01uin"
                     id="select_branch"
                     value={branchApi.find((item) => item.bra01name === "")}
+                    onChange={handleChangeSelect}
                     options={branchApi.map((item) => ({
                       value: item.bra01uin,
                       label: item.bra01name,
-                      name: "eli01bra01uin",
+                      name: "car06bra01uin",
                     }))}
                     placeholder="Name of the Branch"
                   />
                 </div>
-
-                {selection === "business" && (
+                {/* shop photo */}
+                {selection === false && (
                   <div className="col-md-5">
                     <label
                       htmlFor="inputCitizenship"
@@ -468,9 +635,12 @@ function Merchantqrcode() {
                       className="form-control form-control-lg"
                       id="formFileLg"
                       type="file"
+                      name="SignatureFile"
+                      onChange={handleChange}
                     />
                   </div>
                 )}
+                {/* Upload Citizenship */}
                 <div className="col-md-5">
                   <label
                     htmlFor="inputCitizenship"
@@ -482,6 +652,8 @@ function Merchantqrcode() {
                     className="form-control form-control-lg"
                     id="formFileLg"
                     type="file"
+                    name="CitizenShipFile"
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="col-12 mt-5 mb-5" id="btn">
@@ -494,6 +666,18 @@ function Merchantqrcode() {
                   </button>
                 </div>
               </form>
+              <div class="modal-dialog modal-dialog-centered">
+                <Modal
+                  isOpen={modalIsOpen}
+                  onRequestClose={closeModal}
+                  style={modalStyle}
+                >
+                  <h2>Response Message</h2>
+                  <p>{responseMessage}</p>
+
+                  <button onClick={closeModal}>Close</button>
+                </Modal>
+              </div>
             </div>
           </div>
         </div>

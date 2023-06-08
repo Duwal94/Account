@@ -49,6 +49,11 @@ function Loaneligibility() {
       }));
     }
   };
+  // ////////checking
+  // useEffect(() => {
+  //   // Perform the desired action whenever `selection` changes
+  //   console.log(formValues);
+  // }, [formValues]);
 
   //emi cal
   useEffect(() => {
@@ -111,11 +116,18 @@ function Loaneligibility() {
         body: JSON.stringify(formValues),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const responseData = await response.json();
+        if (responseData.status === true) {
+          setResponseMessage("Form submitted successfully"); // Assuming the response contains a 'message' field
+          setModalIsOpen(true);
+        } else {
+          setResponseMessage(responseData.error_msg);
+          setModalIsOpen(true);
+        }
+      } else {
         throw new Error("Request failed with status " + response.status);
       }
-      setResponseMessage("Form submitted successfully"); // Assuming the response contains a 'message' field
-      setModalIsOpen(true);
     } catch (error) {
       console.error("Error:", error);
       setResponseMessage("An error occurred while submitting the form.");
