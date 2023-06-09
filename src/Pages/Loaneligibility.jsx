@@ -152,6 +152,7 @@ function Loaneligibility() {
       transform: "translate(-50%, -50%)",
     },
   };
+
   return (
     <div className="container-fluid">
       <div className="row">

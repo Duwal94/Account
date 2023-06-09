@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 interface IFormValues {
-  CitizenShipFile?: File | null;
-  SignatureFile?: File | null;
+  CitizenShipFile?: null | File;
+  SignatureFile?: null | File;
   car02car01uin?: number;
   car02acc_holder_name?: string;
   car02acc_no?: string;
@@ -16,6 +16,7 @@ interface IFormValues {
 }
 
 const debit: IFormValues = {
+  car02car01uin: 1,
   car02acc_holder_name: "",
   car02acc_no: "",
   car02mobile_no: 0,
@@ -24,6 +25,7 @@ const debit: IFormValues = {
 };
 
 const modileandInternet: IFormValues = {
+  car02car01uin: 2,
   car02acc_holder_name: "",
   car02acc_no: "",
   car02mobile_no: 0,
@@ -35,6 +37,7 @@ const modileandInternet: IFormValues = {
 };
 
 const locker: IFormValues = {
+  car02car01uin: 3,
   car02acc_holder_name: "",
   car02acc_no: "",
   car02mobile_no: 0,
@@ -42,6 +45,7 @@ const locker: IFormValues = {
 };
 
 const cardblock: IFormValues = {
+  car02car01uin: 5,
   car02acc_holder_name: "",
   car02acc_no: "",
   car02mobile_no: 0,
@@ -56,13 +60,13 @@ const useFormValues = (
 
   useEffect(() => {
     let values: IFormValues;
-    if (eligibilityType === "debit") {
+    if (eligibilityType === "1") {
       values = debit;
-    } else if (eligibilityType === "modileandInternet") {
+    } else if (eligibilityType === "2" || eligibilityType === "4") {
       values = modileandInternet;
-    } else if (eligibilityType === "locker") {
+    } else if (eligibilityType === "3") {
       values = locker;
-    } else if (eligibilityType === "cardblock") {
+    } else if (eligibilityType === "5") {
       values = cardblock;
     } else {
       values = {};

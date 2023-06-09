@@ -2,18 +2,41 @@ import React from "react";
 import ExitImg from "../Assets/images/Exit icon/exit.png";
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import useFormValues from "../States/GeneralRequest.tsx";
+import Modal from "react-modal";
 
 function Generalrequest() {
   const [selectedOption, setSelectedOption] = useState("1");
+
+  const eligibilityType = selectedOption;
+  const [formValues, setFormValues] = useFormValues(eligibilityType);
 
   const [typesApi, setTypesApi] = useState([]);
   const [branchApi, setBranchApi] = useState([]);
   const [serviceTypeApi, setServiceTypeApi] = useState([]);
   const [customertypeApi, setCustomertypeApi] = useState([]);
   const [otpVerify, setOtpVerify] = useState(false);
+  const [acctApi, setAcctApi] = useState(null);
+  const [otpApi, setOtpApi] = useState(null);
+  const [responseMessage, setResponseMessage] = useState("hello");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleDropdownChange = (event) => {
     setSelectedOption(event.target.value);
+    setOtpVerify(false);
+    setOtpApi(null);
+  };
+
+  //set name,value to form
+  const handleChange = (e) => {
+    const { name, value, type, files, checked } = e.target;
+    const newValue =
+      type === "file" ? files[0] : type === "checkbox" ? checked : value;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: newValue,
+    }));
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +82,97 @@ function Generalrequest() {
       }));
     }
   };
+  //fetch Account verify data from the api
+  const fetchAcctVerifyData = async () => {
+    try {
+      const response = await fetch(
+        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
+      );
+      const jsonData = await response.json();
+      setAcctApi(jsonData);
+      setOtpVerify(true);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  //fetch otp data
+  const fetchOtpVerifyData = async () => {
+    try {
+      const response = await fetch(
+        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+      );
+      const jsonData = await response.json();
+      setOtpApi(jsonData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
+  // // ////////checking
+  // useEffect(() => {
+  //   // Perform the desired action whenever `[]` changes
+  //   console.log(formValues);
+  // }, [formValues]);
+  //post fetch
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = "http://api.onlineform.ants.com.np/OnlineRequest"; // Replace with your API endpoint URL
+
+    const formData = new FormData();
+    Object.entries(formValues).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        if (responseData.status === true) {
+          setResponseMessage("Form submitted successfully"); // Assuming the response contains a 'message' field
+          setModalIsOpen(true);
+        } else {
+          setResponseMessage(responseData.error_msg);
+          setModalIsOpen(true);
+        }
+      } else {
+        throw new Error("Request failed with status " + response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setResponseMessage("An error occurred while submitting the form.");
+      setModalIsOpen(true);
+
+      // Handle error
+    }
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+  const modalStyle = {
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
+  useEffect(() => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      car05acc_holder_name: otpApi?.name || prevValues.car05acc_holder_name,
+      car05contact_no: otpApi?.contact || prevValues.car05contact_no,
+      car05email_id: otpApi?.email || prevValues.car05email_id,
+    }));
+  }, [otpApi?.name, otpApi?.contact, otpApi?.email]);
   return (
     <div classname="GeneralRequest">
       <div className="container-fluid">
@@ -87,7 +200,7 @@ function Generalrequest() {
                     <p className="text-center">How can we help you?</p>
                   </div>
                 </div>
-                <form method="post" id="myform">
+                <form method="post" onSubmit={handleSubmit}>
                   <div className="row mt-5">
                     <div className="col-12">
                       <div className="row">
@@ -132,18 +245,18 @@ function Generalrequest() {
                                 className="form-control numberOnly"
                                 placeholder="Account Number"
                                 id="accounts_number"
-                                // value={formValues.car06acc_no}
-                                name="car06acc_no"
+                                value={formValues.car02acc_no}
+                                name="car02acc_no"
                                 aria-label="Account Number"
                                 aria-describedby="verify"
-                                // onChange={handleChange}
+                                onChange={handleChange}
                               />
                               <div className="input-group-append">
                                 <button
                                   className="btn btn-danger btnclick otpStep"
                                   id="verifyX"
                                   type="button"
-                                  // onClick={fetchAcctVerifyData}
+                                  onClick={fetchAcctVerifyData}
                                 >
                                   <i className /> Verify Account
                                 </button>
@@ -161,14 +274,14 @@ function Generalrequest() {
                                 <input
                                   type="text"
                                   className="form-control"
-                                  // value={acctApi.ref_id}
+                                  value={acctApi.ref_id}
                                 />
                                 <div className="input-group-append">
                                   <button
                                     className="btn btn-warning"
                                     type="button"
                                     id="VerifyOtp"
-                                    // onClick={fetchOtpVerifyData}
+                                    onClick={fetchOtpVerifyData}
                                   >
                                     <i className="fas fa-sync-alt" /> Verify OTP
                                   </button>
@@ -178,7 +291,7 @@ function Generalrequest() {
                                     className="btn btn-primary"
                                     type="button"
                                     id="resendOtp"
-                                    // onClick={fetchAcctVerifyData}
+                                    onClick={fetchAcctVerifyData}
                                   >
                                     <i className="fas fa-sync-alt" /> Resend OTP
                                   </button>
@@ -210,6 +323,7 @@ function Generalrequest() {
                               id="validationholder accountholder required"
                               name="accountholder"
                               disabled
+                              value={otpApi?.name || ""}
                             />
                           </div>
 
@@ -227,6 +341,7 @@ function Generalrequest() {
                               name="Email"
                               id="validationemail  "
                               disabled
+                              value={otpApi?.email || ""}
                             />
                           </div>
 
@@ -243,9 +358,10 @@ function Generalrequest() {
                               name="mobilenumber"
                               id="validationmobile  "
                               disabled
+                              value={otpApi?.contact || ""}
                             />
                           </div>
-                          {/*Business Type*/}
+                          {/*branch*/}
                           {selectedOption === "1" && (
                             <div className="md-3">
                               <label
@@ -255,7 +371,7 @@ function Generalrequest() {
                                 Preferred Branch
                               </label>
                               <Select
-                                name="car06bra01uin"
+                                name="car02bra01uin"
                                 id="select_branch"
                                 value={branchApi.find(
                                   (item) => item.bra01name === ""
@@ -270,7 +386,7 @@ function Generalrequest() {
                               />
                             </div>
                           )}
-
+                          {/* Customer Type* */}
                           {(selectedOption === "4" ||
                             selectedOption === "2") && (
                             <div className="mb-3" id="Online">
@@ -283,7 +399,8 @@ function Generalrequest() {
                               <select
                                 id="inputstate"
                                 className="form-select"
-                                name="select_req"
+                                name="car02enum_cus_type"
+                                onChange={handleChange}
                               >
                                 <option selected>-- select an option --</option>
                                 {customertypeApi.map((item) => (
@@ -310,7 +427,8 @@ function Generalrequest() {
                               <select
                                 id="inputstate"
                                 className="form-select"
-                                name="select_req"
+                                name="car02enum_ser_type"
+                                onChange={handleChange}
                               >
                                 <option selected>-- select an option --</option>
                                 {serviceTypeApi.map((item) => (
@@ -339,7 +457,7 @@ function Generalrequest() {
                                 id="formFileLg"
                                 type="file"
                                 name="CitizenShipFile"
-                                // onChange={handleChange}
+                                onChange={handleChange}
                               />
                             </div>
                           )}
@@ -357,8 +475,8 @@ function Generalrequest() {
                                 className="form-control form-control-lg"
                                 id="formFileLg"
                                 type="file"
-                                name="CitizenShipFile"
-                                // onChange={handleChange}
+                                name="SignatureFile"
+                                onChange={handleChange}
                               />
                             </div>
                           )}
@@ -374,9 +492,10 @@ function Generalrequest() {
                               </label>
                               <input
                                 className="form-control numberOnly"
-                                name="mobilenumber"
+                                name="car02card_no"
                                 id="validationmobile  "
                                 placeholder="card number"
+                                onChange={handleChange}
                               />
                             </div>
                           )}
@@ -392,9 +511,10 @@ function Generalrequest() {
                               </label>
                               <input
                                 className="form-control numberOnly"
-                                name="mobilenumber"
+                                name="car02reason_for_block"
                                 id="validationmobile  "
                                 placeholder="Reason for block"
+                                onChange={handleChange}
                               />
                             </div>
                           )}
@@ -422,7 +542,6 @@ function Generalrequest() {
                           <button
                             type="submit"
                             className="btn btn-outline-dark text-danger ps-4 pe-4"
-                            id="submit"
                           >
                             Send
                           </button>
@@ -463,6 +582,18 @@ function Generalrequest() {
                     </div>
                   </div>
                 </form>
+                <div class="modal-dialog modal-dialog-centered">
+                  <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={modalStyle}
+                  >
+                    <h2>Response Message</h2>
+                    <p>{responseMessage}</p>
+
+                    <button onClick={closeModal}>Close</button>
+                  </Modal>
+                </div>
               </div>
             </div>
           </div>
