@@ -3,6 +3,7 @@ import ExitImg from "../Assets/images/Exit icon/exit.png";
 import Select from "react-select";
 import useFormValues from "../States/MerchantQr.tsx";
 import Modal from "react-modal";
+import useFormValidationSchema from "../Validation/MerchantValid";
 
 function Merchantqrcode() {
   const [selection, setSelection] = useState(true);
@@ -12,6 +13,7 @@ function Merchantqrcode() {
   const [businessNatureApi, setBusinessNatureApi] = useState([]);
   const [acctApi, setAcctApi] = useState(null);
   const [otpApi, setOtpApi] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
 
   const [otpNo, setOtpNo] = useState("");
 
@@ -19,7 +21,7 @@ function Merchantqrcode() {
   const [responseMessage, setResponseMessage] = useState("hello");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const eligibilityType = selection;
-
+  const validationSchema = useFormValidationSchema(eligibilityType);
   const [formValues, setFormValues] = useFormValues(eligibilityType);
 
   // fetch api data
@@ -119,6 +121,11 @@ function Merchantqrcode() {
     });
 
     try {
+      // Validate the form using Yup
+      await validationSchema.validate(formValues, { abortEarly: false });
+
+      // Clear form errors if form is valid
+      setFormErrors({});
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -137,10 +144,20 @@ function Merchantqrcode() {
         throw new Error("Request failed with status " + response.status);
       }
     } catch (error) {
+      // Validation error or API request error
       console.error("Error:", error);
-      setResponseMessage("An error occurred while submitting the form.");
-      setModalIsOpen(true);
-
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // API request error
+        setResponseMessage("An error occurred while submitting the form.");
+        setModalIsOpen(true);
+      }
       // Handle error
     }
   };
@@ -252,6 +269,9 @@ function Merchantqrcode() {
                     value={formValues.car06reffered_by}
                     onChange={handleChange}
                   />
+                  {formErrors.car06reffered_by && (
+                    <div className="error">{formErrors.car06reffered_by}</div>
+                  )}
                 </div>
                 {/* ref contact no */}
                 <div className="col-md-5">
@@ -267,6 +287,11 @@ function Merchantqrcode() {
                     onChange={handleChange}
                     value={formValues.car06refferer_contact_no}
                   />
+                  {formErrors.car06refferer_contact_no && (
+                    <div className="error">
+                      {formErrors.car06refferer_contact_no}
+                    </div>
+                  )}
                 </div>
                 <div className="col-12 mt-4">
                   <h5 className="basic information" id="personal-details">
@@ -308,6 +333,7 @@ function Merchantqrcode() {
                       aria-describedby="verify"
                       onChange={handleChange}
                     />
+
                     <div className="input-group-append">
                       <button
                         className="btn btn-danger btnclick otpStep"
@@ -319,6 +345,9 @@ function Merchantqrcode() {
                       </button>
                     </div>
                   </div>
+                  {formErrors.car06acc_no && (
+                    <div className="error">{formErrors.car06acc_no}</div>
+                  )}
                 </div>
                 {/* OTP verify */}
                 {otpVerify === true && (
@@ -388,11 +417,12 @@ function Merchantqrcode() {
                     className="form-control numberOnly"
                     id="inputnumber"
                     placeholder="Contact Number(Refferer's)"
-                    name="mobilenumber"
+                    name="car06contact_person_contact_no"
                     disabled
                     value={otpApi?.contact || ""}
                   />
                 </div>
+
                 {/* pan */}
                 {selection === false && (
                   <div className="col-md-5">
@@ -408,6 +438,9 @@ function Merchantqrcode() {
                       onChange={handleChange}
                       value={formValues.car06pan_or_vat}
                     />
+                    {formErrors.car06pan_or_vat && (
+                      <div className="error">{formErrors.car06pan_or_vat}</div>
+                    )}
                   </div>
                 )}
                 {/*Registered with*/}
@@ -434,6 +467,9 @@ function Merchantqrcode() {
                         </option>
                       ))}
                     </select>
+                    {formErrors.car06car03uin && (
+                      <div className="error">{formErrors.car06car03uin}</div>
+                    )}
                   </div>
                 )}
                 {/* QR FOR */}
@@ -507,6 +543,11 @@ function Merchantqrcode() {
                         </option>
                       ))}
                     </select>
+                    {formErrors.eli01nature_of_business && (
+                      <div className="error">
+                        {formErrors.eli01nature_of_business}
+                      </div>
+                    )}
                   </div>
                 )}
                 {/* Name of Authorized Person of the Company */}
@@ -527,6 +568,11 @@ function Merchantqrcode() {
                       value={formValues.car06authorized_person}
                       onChange={handleChange}
                     />
+                    {formErrors.car06authorized_person && (
+                      <div className="error">
+                        {formErrors.car06authorized_person}
+                      </div>
+                    )}
                   </div>
                 )}
                 {/* Contact Number of Authorized Person */}
@@ -547,6 +593,11 @@ function Merchantqrcode() {
                       onChange={handleChange}
                       value={formValues.car06authorized_person_contact_no}
                     />
+                    {formErrors.car06authorized_person_contact_no && (
+                      <div className="error">
+                        {formErrors.car06authorized_person_contact_no}
+                      </div>
+                    )}
                   </div>
                 )}
                 {/* Name of Contact Person of Company */}
@@ -567,6 +618,11 @@ function Merchantqrcode() {
                       value={formValues.car06contact_person}
                       onChange={handleChange}
                     />
+                    {formErrors.car06contact_person && (
+                      <div className="error">
+                        {formErrors.car06contact_person}
+                      </div>
+                    )}
                   </div>
                 )}
                 {/* Contact Number of Contact Person * */}
@@ -586,6 +642,11 @@ function Merchantqrcode() {
                       name="car06contact_person_contact_no"
                       onChange={handleChange}
                     />
+                    {formErrors.car06contact_person_contact_no && (
+                      <div className="error">
+                        {formErrors.car06contact_person_contact_no}
+                      </div>
+                    )}
                   </div>
                 )}
                 {/* address */}
@@ -602,6 +663,9 @@ function Merchantqrcode() {
                     onChange={handleChange}
                     value={formValues.car06address}
                   />
+                  {formErrors.car06address && (
+                    <div className="error">{formErrors.car06address}</div>
+                  )}
                 </div>
 
                 {/* Preferred Branch */}
@@ -621,6 +685,9 @@ function Merchantqrcode() {
                     }))}
                     placeholder="Name of the Branch"
                   />
+                  {formErrors.car06bra01uin && (
+                    <div className="error">{formErrors.car06bra01uin}</div>
+                  )}
                 </div>
                 {/* shop photo */}
                 {selection === false && (
@@ -638,6 +705,9 @@ function Merchantqrcode() {
                       name="SignatureFile"
                       onChange={handleChange}
                     />
+                    {formErrors.SignatureFile && (
+                      <div className="error">{formErrors.SignatureFile}</div>
+                    )}
                   </div>
                 )}
                 {/* Upload Citizenship */}
@@ -655,6 +725,9 @@ function Merchantqrcode() {
                     name="CitizenShipFile"
                     onChange={handleChange}
                   />
+                  {formErrors.CitizenShipFile && (
+                    <div className="error">{formErrors.CitizenShipFile}</div>
+                  )}
                 </div>
                 <div className="col-12 mt-5 mb-5" id="btn">
                   <button

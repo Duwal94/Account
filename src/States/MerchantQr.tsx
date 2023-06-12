@@ -45,7 +45,6 @@ const business: IFormValues = {
   car06name: "",
   car06car03uin: 0,
   car06pan_or_vat: "",
-
   car06has_account: true,
   car06acc_no: "",
   car06address: "",

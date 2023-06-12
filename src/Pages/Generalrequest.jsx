@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import useFormValues from "../States/GeneralRequest.tsx";
 import Modal from "react-modal";
+import useFormValidationSchema from "../Validation/GeneralValidation";
 
 function Generalrequest() {
   const [selectedOption, setSelectedOption] = useState("1");
 
   const eligibilityType = selectedOption;
+  const validationSchema = useFormValidationSchema(eligibilityType);
   const [formValues, setFormValues] = useFormValues(eligibilityType);
-
+  const [formErrors, setFormErrors] = useState({});
   const [typesApi, setTypesApi] = useState([]);
   const [branchApi, setBranchApi] = useState([]);
   const [serviceTypeApi, setServiceTypeApi] = useState([]);
@@ -124,6 +126,13 @@ function Generalrequest() {
     });
 
     try {
+      // Validate the form using Yup
+      await validationSchema.validate(formValues, { abortEarly: false });
+
+      // Clear form errors if form is valid
+      setFormErrors({});
+
+      // Send POST request to the API endpoint
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -142,10 +151,20 @@ function Generalrequest() {
         throw new Error("Request failed with status " + response.status);
       }
     } catch (error) {
+      // Validation error or API request error
       console.error("Error:", error);
-      setResponseMessage("An error occurred while submitting the form.");
-      setModalIsOpen(true);
-
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // API request error
+        setResponseMessage("An error occurred while submitting the form.");
+        setModalIsOpen(true);
+      }
       // Handle error
     }
   };
@@ -262,6 +281,11 @@ function Generalrequest() {
                                 </button>
                               </div>
                             </div>
+                            {formErrors.car02acc_no && (
+                              <div className="error">
+                                {formErrors.car02acc_no}
+                              </div>
+                            )}
                           </div>
                           {/* OTP verify */}
                           {otpVerify === true && (
@@ -380,10 +404,15 @@ function Generalrequest() {
                                 options={branchApi.map((item) => ({
                                   value: item.bra01uin,
                                   label: item.bra01name,
-                                  name: "car06bra01uin",
+                                  name: "car02bra01uin",
                                 }))}
                                 placeholder="Name of the Branch"
                               />
+                              {formErrors.car02bra01uin && (
+                                <div className="error">
+                                  {formErrors.car02bra01uin}
+                                </div>
+                              )}
                             </div>
                           )}
                           {/* Customer Type* */}
@@ -412,6 +441,11 @@ function Generalrequest() {
                                   </option>
                                 ))}
                               </select>
+                              {formErrors.car02enum_cus_type && (
+                                <div className="error">
+                                  {formErrors.car02enum_cus_type}
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -440,6 +474,11 @@ function Generalrequest() {
                                   </option>
                                 ))}
                               </select>
+                              {formErrors.car02enum_ser_type && (
+                                <div className="error">
+                                  {formErrors.car02enum_ser_type}
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -459,6 +498,11 @@ function Generalrequest() {
                                 name="CitizenShipFile"
                                 onChange={handleChange}
                               />
+                              {formErrors.CitizenShipFile && (
+                                <div className="error">
+                                  {formErrors.CitizenShipFile}
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -478,6 +522,11 @@ function Generalrequest() {
                                 name="SignatureFile"
                                 onChange={handleChange}
                               />
+                              {formErrors.SignatureFile && (
+                                <div className="error">
+                                  {formErrors.SignatureFile}
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -497,6 +546,11 @@ function Generalrequest() {
                                 placeholder="card number"
                                 onChange={handleChange}
                               />
+                              {formErrors.car02card_no && (
+                                <div className="error">
+                                  {formErrors.car02card_no}
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -516,6 +570,11 @@ function Generalrequest() {
                                 placeholder="Reason for block"
                                 onChange={handleChange}
                               />
+                              {formErrors.car02reason_for_block && (
+                                <div className="error">
+                                  {formErrors.car02reason_for_block}
+                                </div>
+                              )}
                             </div>
                           )}
 

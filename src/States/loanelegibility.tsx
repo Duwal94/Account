@@ -33,7 +33,6 @@ interface IFormValues {
   eli01loan_subcat?: number;
   eli01share_margin?: number;
   eli01referrer?: number;
-  // ...other form fields
 }
 
 const individual: IFormValues = {
@@ -43,7 +42,7 @@ const individual: IFormValues = {
   eli01last_name: "",
   eli01mobile_no: "",
   eli01email: "",
-  eli01bra01uin: 1,
+  eli01bra01uin: 0,
   eli01iscompleted: true,
   eli01eligibility_type: "",
   eli01ploan_type: "",
@@ -70,7 +69,7 @@ const business: IFormValues = {
   eli01last_name: "",
   eli01mobile_no: "",
   eli01email: "",
-  eli01bra01uin: 1,
+  eli01bra01uin: 0,
   eli01iscompleted: true,
   eli01eligibility_type: "",
   eli01company_name: "",

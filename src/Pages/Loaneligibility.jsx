@@ -1,10 +1,11 @@
 import ReCAPTCHA from "react-google-recaptcha";
-
+import useFormValidationSchema from "../Validation/Loanvalid";
 import React, { useEffect, useState } from "react";
 import ExitImg from "../Assets/images/Exit icon/exit.png";
 import Select from "react-select";
 import useFormValues from "../States/loanelegibility.tsx";
 import Modal from "react-modal";
+import * as Yup from "yup";
 
 function Loaneligibility() {
   //form handles
@@ -12,7 +13,7 @@ function Loaneligibility() {
   const [years, setYears] = useState("");
   const [months, setMonths] = useState("");
   const [emi, setEmi] = useState("");
-
+  const [formErrors, setFormErrors] = useState({});
   // Api states
   const [selection, setSelection] = useState("individual");
   const [businessNatureApi, setBusinessNatureApi] = useState([]);
@@ -24,7 +25,7 @@ function Loaneligibility() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const eligibilityType = selection; // Set the eligibilityType value here
-
+  const validationSchema = useFormValidationSchema(eligibilityType);
   const [formValues, setFormValues] = useFormValues(eligibilityType);
   const handleSelectionChange = (event) => {
     setSelection(event.target.value);
@@ -108,6 +109,13 @@ function Loaneligibility() {
     const url = "http://api.onlineform.ants.com.np/LoanEligibility"; // Replace with your API endpoint URL
 
     try {
+      // Validate the form using Yup
+      await validationSchema.validate(formValues, { abortEarly: false });
+
+      // Clear form errors if form is valid
+      setFormErrors({});
+
+      // Send POST request to the API endpoint
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -116,22 +124,36 @@ function Loaneligibility() {
         body: JSON.stringify(formValues),
       });
 
-      if (response.ok) {
-        const responseData = await response.json();
-        if (responseData.status === true) {
-          setResponseMessage("Form submitted successfully"); // Assuming the response contains a 'message' field
-          setModalIsOpen(true);
-        } else {
-          setResponseMessage(responseData.error_msg);
-          setModalIsOpen(true);
-        }
-      } else {
+      if (!response.ok) {
         throw new Error("Request failed with status " + response.status);
       }
+
+      const responseData = await response.json();
+
+      if (responseData.status === true) {
+        // Form submitted successfully
+        setResponseMessage("Form submitted successfully");
+        setModalIsOpen(true);
+      } else {
+        // Error in the API response
+        setResponseMessage(responseData.error_msg);
+        setModalIsOpen(true);
+      }
     } catch (error) {
+      // Validation error or API request error
       console.error("Error:", error);
-      setResponseMessage("An error occurred while submitting the form.");
-      setModalIsOpen(true);
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // API request error
+        setResponseMessage("An error occurred while submitting the form.");
+        setModalIsOpen(true);
+      }
     }
   };
 
@@ -236,6 +258,9 @@ function Loaneligibility() {
                   onChange={handleChange}
                   placeholder="Enter your first name"
                 />
+                {formErrors.eli01first_name && (
+                  <div className="error">{formErrors.eli01first_name}</div>
+                )}
               </div>
               <div className="col-md-5">
                 {/*Middle Name*/}
@@ -250,6 +275,9 @@ function Loaneligibility() {
                   value={formValues.eli01middle_name}
                   onChange={handleChange}
                 />
+                {formErrors.eli01middle_name && (
+                  <div className="error">{formErrors.eli01middle_name}</div>
+                )}
               </div>
               <div className="col-md-6 ">
                 {/*last Name*/}
@@ -264,6 +292,9 @@ function Loaneligibility() {
                   onChange={handleChange}
                   placeholder="Enter your lastname"
                 />
+                {formErrors.eli01last_name && (
+                  <div className="error">{formErrors.eli01last_name}</div>
+                )}
               </div>
               <div className="col-md-5 ">
                 {/*Address*/}
@@ -278,6 +309,9 @@ function Loaneligibility() {
                   onChange={handleChange}
                   placeholder="Enter your address"
                 />
+                {formErrors.eli01address && (
+                  <div className="error">{formErrors.eli01address}</div>
+                )}
               </div>
               <div className="col-md-6 ">
                 {/*Mobile Number*/}
@@ -295,7 +329,11 @@ function Loaneligibility() {
                   name="eli01mobile_no"
                   placeholder=" +977-XXXXXXXXXX"
                 />
+                {formErrors.eli01mobile_no && (
+                  <div className="error">{formErrors.eli01mobile_no}</div>
+                )}
               </div>
+              {/* ///////////////////////////////////////////////////////////////////////// */}
               <div className="col-md-5 ">
                 {" "}
                 {/*Email*/}
@@ -310,6 +348,9 @@ function Loaneligibility() {
                   name="eli01email"
                   placeholder="Enter your email"
                 />
+                {formErrors.eli01email && (
+                  <div className="error">{formErrors.eli01email}</div>
+                )}
               </div>
               {selection === "business" && (
                 <div className="col-md-6 business ">
@@ -325,6 +366,9 @@ function Loaneligibility() {
                     name="eli01company_name"
                     placeholder="Name of the business"
                   />
+                  {formErrors.eli01company_name && (
+                    <div className="error">{formErrors.eli01company_name}</div>
+                  )}
                 </div>
               )}
               {selection === "business" && (
@@ -351,6 +395,11 @@ function Loaneligibility() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.eli01nature_of_business && (
+                    <div className="error">
+                      {formErrors.eli01nature_of_business}
+                    </div>
+                  )}
                 </div>
               )}
               {selection === "business" && (
@@ -375,6 +424,9 @@ function Loaneligibility() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.eli01experience && (
+                    <div className="error">{formErrors.eli01experience}</div>
+                  )}
                 </div>
               )}
               {selection === "individual" && (
@@ -392,6 +444,11 @@ function Loaneligibility() {
                     onChange={handleChange}
                     placeholder="Monthly Income"
                   />
+                  {formErrors.eli01monthly_income && (
+                    <div className="error">
+                      {formErrors.eli01monthly_income}
+                    </div>
+                  )}
                 </div>
               )}
               {selection === "individual" && (
@@ -405,8 +462,9 @@ function Loaneligibility() {
                   </label>
                   <select
                     className="form-select"
-                    name="income_type"
+                    name="eli01eli02uin"
                     id="income_type"
+                    onChange={handleChange}
                   >
                     <option value={0} disabled selected>
                       Select the Income Type
@@ -417,6 +475,9 @@ function Loaneligibility() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.eli01eli02uin && (
+                    <div className="error">{formErrors.eli01eli02uin}</div>
+                  )}
                 </div>
               )}
               <div className="col-12 mt-5">
@@ -453,6 +514,11 @@ function Loaneligibility() {
                   <option value="11">11</option>
                   <option value="12">12</option>
                 </select>
+                {formErrors.eli01loan_period_year && (
+                  <div className="error">
+                    {formErrors.eli01loan_period_year}
+                  </div>
+                )}
               </div>
               <div className="col-md-6">
                 {/*Period*/}
@@ -481,6 +547,11 @@ function Loaneligibility() {
                   <option value="11">11</option>
                   <option value="12">12</option>
                 </select>
+                {formErrors.eli01loan_period_month && (
+                  <div className="error">
+                    {formErrors.eli01loan_period_month}
+                  </div>
+                )}
               </div>
               {selection === "individual" && (
                 <div className="col-md-5">
@@ -507,6 +578,9 @@ function Loaneligibility() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.eli01ploan_type && (
+                    <div className="error">{formErrors.eli01ploan_type}</div>
+                  )}
                 </div>
               )}
               <div className="col-md-6 ">
@@ -523,6 +597,11 @@ function Loaneligibility() {
                   id="loanamount"
                   placeholder="NPR"
                 />
+                {formErrors.eli01requested_loan_amount && (
+                  <div className="error">
+                    {formErrors.eli01requested_loan_amount}
+                  </div>
+                )}
               </div>
               {selection === "individual" && (
                 <div className="col-md-5">
@@ -555,6 +634,11 @@ function Loaneligibility() {
                   value={formValues.eli01value_of_property}
                   onChange={handleChange}
                 />
+                {formErrors.eli01value_of_property && (
+                  <div className="error">
+                    {formErrors.eli01value_of_property}
+                  </div>
+                )}
               </div>
               <div className="col-md-5">
                 {/* Preferred Branch */}
@@ -573,6 +657,9 @@ function Loaneligibility() {
                   }))}
                   placeholder="Name of the Branch"
                 />
+                {formErrors.eli01bra01uin && (
+                  <div className="error">{formErrors.eli01bra01uin}</div>
+                )}
               </div>
               <div className="col-12 mt-4">
                 <div className="container">

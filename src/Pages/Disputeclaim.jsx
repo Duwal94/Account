@@ -3,11 +3,13 @@ import ReCAPTCHA from "react-google-recaptcha";
 import ExitImg from "../Assets/images/Exit icon/exit.png";
 import Modal from "react-modal";
 import useFormValues from "../States/Dispute.tsx";
-
+import useFormValidationSchema from "../Validation/DisputeValid";
 function Disputeclaim() {
   const [selectedOption, setSelectedOption] = useState("1");
+  const [formErrors, setFormErrors] = useState({});
 
   const eligibilityType = selectedOption;
+  const validationSchema = useFormValidationSchema(eligibilityType);
   const [formValues, setFormValues] = useFormValues(eligibilityType);
 
   const [cardTypeApi, setCardTypeApi] = useState([]);
@@ -105,6 +107,12 @@ function Disputeclaim() {
     const url = "http://api.onlineform.ants.com.np/DisputeClaim"; // Replace with your API endpoint URL
 
     try {
+      // Validate the form using Yup
+      await validationSchema.validate(formValues, { abortEarly: false });
+
+      // Clear form errors if form is valid
+      setFormErrors({});
+      // Send POST request to the API endpoint
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -126,9 +134,20 @@ function Disputeclaim() {
         throw new Error("Request failed with status " + response.status);
       }
     } catch (error) {
+      // Validation error or API request error
       console.error("Error:", error);
-      setResponseMessage("An error occurred while submitting the form.");
-      setModalIsOpen(true);
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // API request error
+        setResponseMessage("An error occurred while submitting the form.");
+        setModalIsOpen(true);
+      }
     }
   };
   const closeModal = () => {
@@ -221,6 +240,9 @@ function Disputeclaim() {
                         placeholder="card number"
                         onChange={handleChange}
                       />
+                      {formErrors.car05card_no && (
+                        <div className="error">{formErrors.car05card_no}</div>
+                      )}
                     </div>
                   )}
                   {selectedOption === "1" && (
@@ -247,6 +269,9 @@ function Disputeclaim() {
                           </option>
                         ))}
                       </select>
+                      {formErrors.car05car04uin && (
+                        <div className="error">{formErrors.car05car04uin}</div>
+                      )}
                     </div>
                   )}
                   {/* Registered Mobile Number * */}
@@ -266,6 +291,11 @@ function Disputeclaim() {
                         placeholder="card number"
                         onChange={handleChange}
                       />
+                      {formErrors.car05registered_mobile_no && (
+                        <div className="error">
+                          {formErrors.car05registered_mobile_no}
+                        </div>
+                      )}
                     </div>
                   )}
                   {/* iTouch Username * */}
@@ -280,11 +310,16 @@ function Disputeclaim() {
                       </label>
                       <input
                         className="form-control numberOnly"
-                        name=" car05itouch_user_name"
+                        name="car05itouch_user_name"
                         id="validationmobile  "
                         placeholder="card number"
                         onChange={handleChange}
                       />
+                      {formErrors.car05itouch_user_name && (
+                        <div className="error">
+                          {formErrors.car05itouch_user_name}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -320,6 +355,9 @@ function Disputeclaim() {
                           </button>
                         </div>
                       </div>
+                      {formErrors.car05acc_no && (
+                        <div className="error">{formErrors.car05acc_no}</div>
+                      )}
                     </div>
                     {/* OTP verify */}
                     {otpVerify === true && (
@@ -428,6 +466,9 @@ function Disputeclaim() {
                         onChange={handleChange}
                         value={formValues.car05tran_date}
                       />
+                      {formErrors.car05tran_date && (
+                        <div className="error">{formErrors.car05tran_date}</div>
+                      )}
                     </div>
                     <div className="col-md-5 mt-3">
                       <label
@@ -445,6 +486,11 @@ function Disputeclaim() {
                         onChange={handleChange}
                         value={formValues.car05dispute_amount}
                       />
+                      {formErrors.car05dispute_amount && (
+                        <div className="error">
+                          {formErrors.car05dispute_amount}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="row">
@@ -464,6 +510,9 @@ function Disputeclaim() {
                         onChange={handleChange}
                         value={formValues.car05txn_bank}
                       />
+                      {formErrors.car05txn_bank && (
+                        <div className="error">{formErrors.car05txn_bank}</div>
+                      )}
                     </div>
                     <div className="col-md-5 mt-3">
                       <label
@@ -481,6 +530,11 @@ function Disputeclaim() {
                         onChange={handleChange}
                         value={formValues.car05txn_location}
                       />
+                      {formErrors.car05txn_location && (
+                        <div className="error">
+                          {formErrors.car05txn_location}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="row mt-5">
