@@ -5,11 +5,18 @@ import TIW from "../Assets/images/After_Verification/Social Network/Twitter.png"
 import LinkedIn from "../Assets/images/After_Verification/Social Network/LinkedIn.png";
 import useFormValues from "../States/KYC.tsx";
 import Select from "react-select";
+import Modal from "react-modal";
+import {
+  useFormValidationSchema,
+  useStateValidationSchema,
+} from "../Validation/KycVaild";
 
 function OnlineKyc() {
   const [selection, setSelection] = useState("terms");
   const [internalRadio, setInternalradio] = useState("citizen");
   const [districtApi, setDistrictApi] = useState([]);
+  const [genaraldistrictApi, setGeneralDistrictApi] = useState([]);
+
   const [branchApi, setBranchApi] = useState([]);
   const [provienceApi, setProvienceApi] = useState([]);
   const [municipalityApi, setMunicipalityApi] = useState([]);
@@ -22,7 +29,14 @@ function OnlineKyc() {
   const [street, setStreet] = useState(""); // Store the selected municipality value
   const [house, setHouse] = useState(""); // Store the selected municipality value
 
+  const [formErrors, setFormErrors] = useState({});
+  const [responseMessage, setResponseMessage] = useState("hello");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const eligibilityType = internalRadio; // Set the eligibilityType value here
+  const formstates = selection;
+  const validationStates = useStateValidationSchema(formstates);
+  const validationSchema = useFormValidationSchema(eligibilityType);
 
   const [formValues, setFormValues] = useFormValues(eligibilityType);
 
@@ -32,9 +46,30 @@ function OnlineKyc() {
     console.log(formValues);
   }, [formValues]);
 
-  const handleChangeSelection = (newValue) => {
+  const handleChangeSelection = async (newValue) => {
+    try {
+      // Validate the form using Yup
+      await validationStates.validate(formValues, { abortEarly: false });
+
+      // Clear form errors if the form is valid
+      setFormErrors({});
+      setSelection(newValue);
+    } catch (error) {
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      }
+    }
+  };
+
+  const handlePrevious = (newValue) => {
     setSelection(newValue);
   };
+
   const handleSelectionChangeRadio = (event) => {
     setSelection(event.target.value);
   };
@@ -94,6 +129,11 @@ function OnlineKyc() {
         );
         const data2 = await response2.json();
         setBranchApi(data2);
+        const response7 = await fetch(
+          "http://api.onlineform.ants.com.np/GeneralComponents/GetDistricts"
+        );
+        const data7 = await response7.json();
+        setGeneralDistrictApi(data7);
       } catch (error) {
         console.error(error);
       }
@@ -151,6 +191,74 @@ function OnlineKyc() {
       setHouse(formValues.kyc03house_no);
     }
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = "http://api.onlineform.ants.com.np/KYC"; // Replace with your API endpoint URL
+
+    const formData = new FormData();
+    Object.entries(formValues).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    try {
+      // Validate the form using Yup
+      await validationSchema.validate(formValues, { abortEarly: false });
+
+      // // Clear form errors if form is valid
+      setFormErrors({});
+
+      // Send POST request to the API endpoint
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        if (responseData.status === true) {
+          setResponseMessage("Form submitted successfully"); // Assuming the response contains a 'message' field
+          setModalIsOpen(true);
+        } else {
+          setResponseMessage(responseData.error_msg);
+          setModalIsOpen(true);
+        }
+      } else {
+        throw new Error("Request failed with status " + response.status);
+      }
+    } catch (error) {
+      // Validation error or API request error
+      console.error("Error:", error);
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // API request error
+        setResponseMessage("An error occurred while submitting the form.");
+        setModalIsOpen(true);
+      }
+      // // Handle error
+    }
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+  const modalStyle = {
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
   //disable field value intake
   useEffect(() => {
     setFormValues((prevValues) => ({
@@ -165,7 +273,7 @@ function OnlineKyc() {
   }, [province, district, municipality, ward, street, house]);
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="row " id="kyc_banner">
           <div className="col-12 pcolor mb-5" id="loan">
             <h4 className="card-title text-warning">KYC Form</h4>
@@ -443,16 +551,20 @@ function OnlineKyc() {
                       Preferred Branch
                     </label>
                     <Select
-                      name="eli01bra01uin"
+                      name="kyc01bra01uin"
                       id="select_branch"
                       onChange={handleChangeSelect}
                       options={branchApi.map((item) => ({
                         value: item.bra01uin,
                         label: item.bra01name,
-                        name: "eli01bra01uin",
+                        name: "kyc01bra01uin",
                       }))}
                       placeholder="Name of the Branch"
                     />
+
+                    {formErrors.kyc01bra01uin && (
+                      <div className="error">{formErrors.kyc01bra01uin}</div>
+                    )}
                   </div>
                   <div className="col-md-5">
                     {" "}
@@ -468,9 +580,10 @@ function OnlineKyc() {
                       <input
                         className="form-check-input"
                         type="radio"
-                        name="inlineRadioOptions"
+                        name="kyc01salutation"
                         id="inlineRadio1"
                         defaultValue="option1"
+                        onChange={handleChange}
                       />
                       <label
                         className="form-check-label"
@@ -482,9 +595,10 @@ function OnlineKyc() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
+                          name="kyc01salutation"
                           id="inlineRadio2"
                           defaultValue="option2"
+                          onChange={handleChange}
                         />
                         <label
                           className="form-check-label"
@@ -497,9 +611,10 @@ function OnlineKyc() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
+                          name="kyc01salutation"
                           id="inlineRadio3"
                           defaultValue="option3"
+                          onChange={handleChange}
                         />
                         <label
                           className="form-check-label"
@@ -512,9 +627,10 @@ function OnlineKyc() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
+                          name="kyc01salutation"
                           id="inlineRadio3"
                           defaultValue="option3"
+                          onChange={handleChange}
                         />
                         <label
                           className="form-check-label"
@@ -527,9 +643,10 @@ function OnlineKyc() {
                         <input
                           className="form-check-input"
                           type="radio"
-                          name="inlineRadioOptions"
+                          name="kyc01salutation"
                           id="inlineRadio3"
                           defaultValue="option3"
+                          onChange={handleChange}
                         />
                         <label
                           className="form-check-label"
@@ -539,6 +656,9 @@ function OnlineKyc() {
                         </label>
                       </div>
                     </div>
+                    {formErrors.kyc01salutation && (
+                      <div className="error">{formErrors.kyc01salutation}</div>
+                    )}
                   </div>
                   <div className="col-12 mt-4">
                     {" "}
@@ -561,6 +681,9 @@ function OnlineKyc() {
                       name="kyc01first_name"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01first_name && (
+                      <div className="error">{formErrors.kyc01first_name}</div>
+                    )}
                     <div className="invalid-feedback">
                       You cannot have this field empty!!
                     </div>
@@ -582,7 +705,11 @@ function OnlineKyc() {
                       name="kyc01middle_name"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01middle_name && (
+                      <div className="error">{formErrors.kyc01middle_name}</div>
+                    )}
                   </div>
+
                   <div className="col-md-3">
                     {" "}
                     {/*Last Name Field*/}
@@ -598,7 +725,11 @@ function OnlineKyc() {
                       name="kyc01last_name"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01last_name && (
+                      <div className="error">{formErrors.kyc01last_name}</div>
+                    )}
                   </div>
+
                   <div className="col-md-4">
                     {" "}
                     {/*Mobile Number Field*/}
@@ -611,12 +742,15 @@ function OnlineKyc() {
                     <input
                       type="text"
                       className="form-control"
-                      id="inputMobileNumber"
+                      id="num"
                       placeholder="+977 9898989898"
                       required
                       name="kyc01mobile_no"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01mobile_no && (
+                      <div className="error">{formErrors.kyc01mobile_no}</div>
+                    )}
                   </div>
                   <div className="col-md-4">
                     {" "}
@@ -633,6 +767,9 @@ function OnlineKyc() {
                       name="kyc01email"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01email && (
+                      <div className="error">{formErrors.kyc01email}</div>
+                    )}
                   </div>
                   <div className="col-md-3">
                     {" "}
@@ -646,12 +783,15 @@ function OnlineKyc() {
                     <input
                       type="text"
                       className="form-control"
-                      id="inputTelephoneNumber"
+                      id="num"
                       placeholder="01-0024984"
                       required
-                      name="kyc01mobile_no"
+                      name="kyc01phone_no"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01phone_no && (
+                      <div className="error">{formErrors.kyc01phone_no}</div>
+                    )}
                   </div>
                   <div className="col-md-4">
                     {" "}
@@ -665,10 +805,9 @@ function OnlineKyc() {
                     <input
                       type="text"
                       className="form-control"
-                      id="inputMobileNumber2"
+                      id="num"
                       placeholder="01-0024984"
                       required
-                      name="kyc01phone_no"
                       onChange={handleChange}
                     />
                   </div>
@@ -686,6 +825,9 @@ function OnlineKyc() {
                       name="kyc01dob_nep"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01dob_nep && (
+                      <div className="error">{formErrors.kyc01dob_nep}</div>
+                    )}
                   </div>
                   <div className="col-md-3">
                     {" "}
@@ -701,6 +843,9 @@ function OnlineKyc() {
                       name="kyc01dob_eng"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01dob_eng && (
+                      <div className="error">{formErrors.kyc01dob_eng}</div>
+                    )}
                   </div>
                   <div className="col-md-4">
                     {" "}
@@ -726,12 +871,17 @@ function OnlineKyc() {
                     <input
                       type="text"
                       className="form-control"
-                      id="inputMobileNumber2"
+                      id="num"
                       placeholder="Username or URL Link"
                       required
                       name="kyc01contact_medium_id"
                       onChange={handleChange}
                     />
+                    {formErrors.kyc01contact_medium_id && (
+                      <div className="error">
+                        {formErrors.kyc01contact_medium_id}
+                      </div>
+                    )}
                   </div>
                   <div className="col-12 mt-5">
                     {" "}
@@ -756,6 +906,11 @@ function OnlineKyc() {
                           name="kyc02grandfather_name"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02grandfather_name && (
+                          <div className="error">
+                            {formErrors.kyc02grandfather_name}
+                          </div>
+                        )}
                       </div>
                       <div className="col-12 col-md-5">
                         {" "}
@@ -775,6 +930,11 @@ function OnlineKyc() {
                           name="kyc02grandfather_nationality"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02grandfather_nationality && (
+                          <div className="error">
+                            {formErrors.kyc02grandfather_nationality}
+                          </div>
+                        )}
                       </div>
                       <div className="col-12 col-md-6">
                         {" "}
@@ -794,6 +954,11 @@ function OnlineKyc() {
                           name="kyc02father_name"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02father_name && (
+                          <div className="error">
+                            {formErrors.kyc02father_name}
+                          </div>
+                        )}
                       </div>
                       <div className="col-12 col-md-5">
                         {" "}
@@ -813,6 +978,11 @@ function OnlineKyc() {
                           name="kyc02father_nationality"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02father_nationality && (
+                          <div className="error">
+                            {formErrors.kyc02father_nationality}
+                          </div>
+                        )}
                       </div>
                       <div className="col-12 col-md-6">
                         {" "}
@@ -832,6 +1002,11 @@ function OnlineKyc() {
                           name="kyc02mother_name"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02mother_name && (
+                          <div className="error">
+                            {formErrors.kyc02mother_name}
+                          </div>
+                        )}
                       </div>
                       <div className="col-12 col-md-5">
                         {" "}
@@ -851,6 +1026,11 @@ function OnlineKyc() {
                           name="kyc02mother_nationality"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02mother_nationality && (
+                          <div className="error">
+                            {formErrors.kyc02mother_nationality}
+                          </div>
+                        )}
                       </div>
                       <div className="col-12 col-md-6">
                         {" "}
@@ -870,6 +1050,9 @@ function OnlineKyc() {
                           name="kyc02spouse"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02spouse && (
+                          <div className="error">{formErrors.kyc02spouse}</div>
+                        )}
                       </div>
                       <div className="col-12 col-md-5">
                         {" "}
@@ -889,6 +1072,11 @@ function OnlineKyc() {
                           name="kyc02spouse_nationality"
                           onChange={handleChange}
                         />
+                        {formErrors.kyc02spouse_nationality && (
+                          <div className="error">
+                            {formErrors.kyc02spouse_nationality}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -952,6 +1140,9 @@ function OnlineKyc() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.kyc03set03uin && (
+                    <div className="error">{formErrors.kyc03set03uin}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputDistrict" className="form-label yolo">
@@ -970,6 +1161,9 @@ function OnlineKyc() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.kyc03set04uin && (
+                    <div className="error">{formErrors.kyc03set04uin}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label
@@ -991,6 +1185,9 @@ function OnlineKyc() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.kyc03set05uin && (
+                    <div className="error">{formErrors.kyc03set05uin}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputWardNumber" className="form-label yolo">
@@ -1005,6 +1202,9 @@ function OnlineKyc() {
                     required
                     onChange={handleChange}
                   />
+                  {formErrors.kyc03ward_no && (
+                    <div className="error">{formErrors.kyc03ward_no}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputStreet" className="form-label yolo">
@@ -1019,6 +1219,9 @@ function OnlineKyc() {
                     required
                     onChange={handleChange}
                   />
+                  {formErrors.kyc03street && (
+                    <div className="error">{formErrors.kyc03street}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1032,6 +1235,9 @@ function OnlineKyc() {
                     maxLength={100}
                     onChange={handleChange}
                   />
+                  {formErrors.kyc03house_no && (
+                    <div className="error">{formErrors.kyc03house_no}</div>
+                  )}
                 </div>
                 {/* same asa above */}
                 <div className="col-12 mt-4">
@@ -1075,6 +1281,9 @@ function OnlineKyc() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.kyc03set03uin_temp && !sameAsAbove && (
+                    <div className="error">{formErrors.kyc03set03uin_temp}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputDistrict" className="form-label yolo">
@@ -1098,6 +1307,9 @@ function OnlineKyc() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.kyc03set04uin_temp && !sameAsAbove && (
+                    <div className="error">{formErrors.kyc03set04uin_temp}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label
@@ -1124,6 +1336,9 @@ function OnlineKyc() {
                       </option>
                     ))}
                   </select>
+                  {formErrors.kyc03set05uin_temp && !sameAsAbove && (
+                    <div className="error">{formErrors.kyc03set05uin_temp}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputWardNumber" className="form-label yolo">
@@ -1140,6 +1355,9 @@ function OnlineKyc() {
                     onChange={handleChange}
                     disabled={sameAsAbove}
                   />
+                  {formErrors.kyc03ward_no_temp && !sameAsAbove && (
+                    <div className="error">{formErrors.kyc03ward_no_temp}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputStreet" className="form-label yolo">
@@ -1156,6 +1374,9 @@ function OnlineKyc() {
                     onChange={handleChange}
                     disabled={sameAsAbove}
                   />
+                  {formErrors.kyc03street_temp && !sameAsAbove && (
+                    <div className="error">{formErrors.kyc03street_temp}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1171,13 +1392,16 @@ function OnlineKyc() {
                     value={house}
                     disabled={sameAsAbove}
                   />
+                  {formErrors.kyc03house_no_temp && !sameAsAbove && (
+                    <div className="error">{formErrors.kyc03house_no_temp}</div>
+                  )}
                 </div>
                 <div className="col-12 mt-5 mb-5 d-flex justify-content-between">
                   <button
                     type="button"
                     className="btn btn-outline-dark text-danger ps-4 pe-4 "
                     id="addr_prev"
-                    onClick={() => handleChangeSelection("no")}
+                    onClick={() => handlePrevious("no")}
                   >
                     Previous
                   </button>
@@ -1281,7 +1505,14 @@ function OnlineKyc() {
                             className="form-control"
                             id="inputCitizenshipNumber"
                             placeholder="01-0024984"
+                            name="kyc04identity_no"
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04identity_no && (
+                            <div className="error">
+                              {formErrors.kyc04identity_no}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3  ">
                           {/*Business Type*/}
@@ -1293,13 +1524,14 @@ function OnlineKyc() {
                           </label>
                           <select
                             className="form-select"
-                            id="business_type"
-                            name="eli01nature_of_business"
+                            id="num"
+                            name="kyc04set04uin"
+                            onChange={handleChange}
                           >
                             <option value={0} selected disabled>
                               Place of Issue
                             </option>
-                            {districtApi.map((item) => (
+                            {genaraldistrictApi.map((item) => (
                               <option
                                 key={item.bindField}
                                 value={item.bindField}
@@ -1308,6 +1540,11 @@ function OnlineKyc() {
                               </option>
                             ))}
                           </select>
+                          {formErrors.kyc04set04uin && (
+                            <div className="error">
+                              {formErrors.kyc04set04uin}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3">
                           <label className="form-label yolo">
@@ -1315,10 +1552,16 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04issued_office"
+                            onChange={handleChange}
                             className="form-control text"
                             placeholder
                           />
+                          {formErrors.kyc04issued_office && (
+                            <div className="error">
+                              {formErrors.kyc04issued_office}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3">
                           <label className="form-label yolo">
@@ -1326,10 +1569,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04issued_date_nep"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04issued_date_nep && (
+                            <div className="error">
+                              {formErrors.kyc04issued_date_nep}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3">
                           <label className="form-label yolo">
@@ -1337,10 +1585,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04issued_date_eng"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04issued_date_eng && (
+                            <div className="error">
+                              {formErrors.kyc04issued_date_eng}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1361,21 +1614,46 @@ function OnlineKyc() {
                             className="form-control"
                             id="inputPassportNumber"
                             placeholder="01-0024984"
+                            name="kyc04passport_identity_no"
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04passport_identity_no && (
+                            <div className="error">
+                              {formErrors.kyc04passport_identity_no}
+                            </div>
+                          )}
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3  ">
+                          {/*Business Type*/}
                           <label
-                            htmlFor="inputPlaceOfIssue"
-                            className="form-label yolo required"
+                            htmlFor="inputbusinesstype"
+                            className="form-label yolo "
                           >
-                            Select Place of Issue
+                            Place of Issue
                           </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="inputPlaceofIssue"
-                            placeholder="01-0024984"
-                          />
+                          <select
+                            className="form-select"
+                            id="business_type"
+                            name="kyc04set04uin"
+                            onChange={handleChange}
+                          >
+                            <option value={0} selected disabled>
+                              Place of Issue
+                            </option>
+                            {genaraldistrictApi.map((item) => (
+                              <option
+                                key={item.bindField}
+                                value={item.bindField}
+                              >
+                                {item.displayField}
+                              </option>
+                            ))}
+                          </select>
+                          {formErrors.kyc04set04uin && (
+                            <div className="error">
+                              {formErrors.kyc04set04uin}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3">
                           <label
@@ -1389,7 +1667,14 @@ function OnlineKyc() {
                             className="form-control"
                             id="inputIssue"
                             placeholder="01-0024984"
+                            name="kyc04issued_office"
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04issued_office && (
+                            <div className="error">
+                              {formErrors.kyc04issued_office}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-4 mt-3">
                           <label
@@ -1400,10 +1685,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
                             className="form-control text"
-                            placeholder
+                            name="kyc04passport_issued_date_eng"
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04passport_issued_date_eng && (
+                            <div className="error">
+                              {formErrors.kyc04passport_issued_date_eng}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-4 mt-3">
                           <label
@@ -1414,10 +1704,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04passport_issued_date_nep"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04passport_issued_date_nep && (
+                            <div className="error">
+                              {formErrors.kyc04passport_issued_date_nep}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3 mt-3">
                           <label
@@ -1428,10 +1723,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04expiry_date_eng"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04expiry_date_eng && (
+                            <div className="error">
+                              {formErrors.kyc04expiry_date_eng}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-4 mt-3">
                           <label
@@ -1442,10 +1742,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04expiry_date_nep"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04expiry_date_nep && (
+                            <div className="error">
+                              {formErrors.kyc04expiry_date_nep}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-4 mt-4">
                           <label
@@ -1456,10 +1761,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04visa_issue_date_eng"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04visa_issue_date_eng && (
+                            <div className="error">
+                              {formErrors.kyc04visa_issue_date_eng}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3 mt-4">
                           <label
@@ -1470,10 +1780,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04visa_issue_date_nep"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04visa_issue_date_nep && (
+                            <div className="error">
+                              {formErrors.kyc04visa_issue_date_nep}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-4 mt-4">
                           <label
@@ -1484,10 +1799,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04visa_expiry_date_eng"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04visa_expiry_date_eng && (
+                            <div className="error">
+                              {formErrors.kyc04visa_expiry_date_eng}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-4 mt-4">
                           <label
@@ -1498,10 +1818,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04visa_expiry_date_nep"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04visa_expiry_date_nep && (
+                            <div className="error">
+                              {formErrors.kyc04visa_expiry_date_nep}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1510,27 +1835,42 @@ function OnlineKyc() {
                   {internalRadio === "voter" && (
                     <div className=" col-12 " id="voter">
                       <div className="row">
-                        <div className="col-md-4">
-                          <label
-                            htmlFor="inputSalutation"
-                            className="form-label yolo"
-                          >
+                        <div className="col-md-4 voter">
+                          {/*Last Name Field*/}
+                          <label htmlFor className="form-label yolo">
                             Voter ID
+                            <span className="text-danger">*</span>
                           </label>
-                          <select id="inputSalutation" className="form-select">
-                            <option selected>01-0024984</option>
-                          </select>
+                          <input
+                            type="text"
+                            className="form-control required"
+                            id="voterIdentity"
+                            name="kyc04voter_identity_no"
+                            onChange={handleChange}
+                          />
+                          {formErrors.kyc04voter_identity_no && (
+                            <div className="error">
+                              {formErrors.kyc04voter_identity_no}
+                            </div>
+                          )}
                         </div>
+
                         <div className="col-md-4 ">
                           <label className="form-label yolo">
                             Date of Issue (B.S.)
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04voterid_issued_date_nep"
                             className="form-control text"
                             placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04voterid_issued_date_nep && (
+                            <div className="error">
+                              {formErrors.kyc04voterid_issued_date_nep}
+                            </div>
+                          )}
                         </div>
                         <div className="col-md-3 ">
                           <label className="form-label yolo">
@@ -1538,10 +1878,15 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="DOB"
+                            name="kyc04voterid_issued_date_eng"
                             className="form-control text"
-                            placeholder
+                            onChange={handleChange}
                           />
+                          {formErrors.kyc04voterid_issued_date_eng && (
+                            <div className="error">
+                              {formErrors.kyc04voterid_issued_date_eng}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1555,66 +1900,62 @@ function OnlineKyc() {
                     </div>
                     <div className="col-md-12 mb-3">
                       <div className="col-lg-10">
-                        <div className="col-lg-10">
-                          <div className="row d-flex">
-                            <div className="col-md-5 col-lg-3 col-xl-4">
-                              <label
-                                htmlFor="inputCitizenship"
-                                className="form-label yolo required"
-                              >
-                                Citizenship/Passport/Voter's ID
-                              </label>
+                        <div className="col-md-4 voter" id="Citizenship">
+                          <label
+                            htmlFor="inputCitizenship"
+                            className="form-label yolo"
+                          >
+                            Citizenship / Passport/ Voter's ID
+                            <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            className="form-control form-control-lg"
+                            id="formFileLg"
+                            type="file"
+                            name="CitizenShipFile"
+                            onChange={handleChange}
+                          />
+                          {formErrors.CitizenShipFile && (
+                            <div className="error">
+                              {formErrors.CitizenShipFile}
                             </div>
-                            <div className="col-md-6">
-                              <div className="col-md-6">
-                                <div className="row">
-                                  <input
-                                    className="form-control form-control-lg"
-                                    id="formFileLg"
-                                    type="file"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                          )}
                         </div>
+
                         <div className="col-md-12">
-                          <div className="col-lg-10">
-                            <div className="col-lg-10">
-                              <div className="row d-flex">
-                                <div className="col-md-5 col-lg-3 col-xl-4">
-                                  <label
-                                    htmlFor="inputPP"
-                                    className="form-label yolo required"
-                                  >
-                                    Passport Size Photograph
-                                  </label>
-                                </div>
-                                <div className="col-md-6">
-                                  <div className="col-md-6">
-                                    <div className="row">
-                                      <input
-                                        className="form-control form-control-lg"
-                                        id="formFileLg"
-                                        type="file"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
+                          <div className="col-md-4 voter" id="Signature">
+                            <label
+                              htmlFor="inputSignature"
+                              className="form-label yolo"
+                            >
+                              PassportSize Photograph
+                              <span className="text-danger">*</span>
+                            </label>
+                            <input
+                              type="file"
+                              className="form-control form-control-lg"
+                              name="PhotoFile"
+                              placeholder="Insert Signature"
+                              onChange={handleChange}
+                            />
+                            {formErrors.PhotoFile && (
+                              <div className="error">
+                                {formErrors.PhotoFile}
                               </div>
-                            </div>
+                            )}
                           </div>
+
                           <div className="col-12 d-flex justify-content-between mt-5 mb-5">
                             <button
                               type="button"
                               className="btn btn-outline-dark text-danger ps-4 pe-4"
                               id="proof_prev"
-                              onClick={() => handleChangeSelection("Address")}
+                              onClick={() => handlePrevious("Address")}
                             >
                               Previous
                             </button>
                             <button
-                              type="button"
+                              type="submit"
                               className="btn btn-outline-dark text-danger ps-3 pe-3"
                               id="kyc_submit"
                             >
@@ -1631,6 +1972,18 @@ function OnlineKyc() {
           </div>
         )}
       </form>
+      <div class="modal-dialog modal-dialog-centered">
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={modalStyle}
+        >
+          <h2>Response Message</h2>
+          <p>{responseMessage}</p>
+
+          <button onClick={closeModal}>Close</button>
+        </Modal>
+      </div>
     </div>
   );
 }

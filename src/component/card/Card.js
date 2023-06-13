@@ -56,7 +56,7 @@ const CardS = ({ title, bulletPoints }) => {
 
 
           <a
-            href="savingaccountform.html"
+            href="/Savings"
             className="btn1"
           >
             Open Account
@@ -64,7 +64,7 @@ const CardS = ({ title, bulletPoints }) => {
           <button className="detail-button btn2  ">View Details</button>
         </div>
         <div className="card-back">
-          <button  className="back94">
+          <button className="back94">
             <img src={ExitImg} alt="Back" />Back
           </button>
 

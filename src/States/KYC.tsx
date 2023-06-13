@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 interface IFormValues {
-  CitizenShipFile?: string;
-  PhotoFile?: string;
+  CitizenShipFile?: null | File;
+  PhotoFile?: null | File;
   kyc01salutation?: string;
   kyc01first_name?: string;
   kyc01middle_name?: string;
@@ -59,10 +59,10 @@ interface IFormValues {
   kyc04voterid_issued_date_nep?: string;
 }
 const Kyc: IFormValues = {
-  CitizenShipFile: "",
-  PhotoFile: "",
+  CitizenShipFile: null,
+  PhotoFile: null,
   kyc01salutation: "",
-  kyc01first_name: "wqqqqqqqqqqqqqqqqqq",
+  kyc01first_name: "",
   kyc01middle_name: "",
   kyc01last_name: "",
   kyc01email: "",
@@ -72,7 +72,7 @@ const Kyc: IFormValues = {
   kyc01dob_eng: "",
   kyc01contact_medium: 0,
   kyc01contact_medium_id: "",
-  kyc01nationality: "",
+  kyc01nationality: "Nepal",
   kyc01bra01uin: 0,
   kyc03set03uin: 0,
   kyc03set04uin: 0,
@@ -134,12 +134,45 @@ const useFormValues = (
 
   useEffect(() => {
     let values: IFormValues;
+
     if (eligibilityType === "citizen") {
       values = { ...formValues, ...Citizen };
+      delete values.kyc04passport_identity_no; // Remove the Passport properties
+      delete values.kyc04passport_issued_date_eng;
+      delete values.kyc04passport_issued_date_nep;
+      delete values.kyc04expiry_date_eng;
+      delete values.kyc04expiry_date_nep;
+      delete values.kyc04visa_issue_date_eng;
+      delete values.kyc04visa_expiry_date_eng;
+      delete values.kyc04visa_issue_date_nep;
+      delete values.kyc04visa_expiry_date_nep;
+      delete values.kyc04voter_identity_no; // Remove the VoterId properties
+      delete values.kyc04voterid_issued_date_eng;
+      delete values.kyc04voterid_issued_date_nep;
     } else if (eligibilityType === "passport") {
       values = { ...formValues, ...Passport };
+      delete values.kyc04identity_no; // Remove the Citizen properties
+      delete values.kyc04issued_date_nep;
+      delete values.kyc04issued_date_eng;
+      delete values.kyc04voter_identity_no; // Remove the VoterId properties
+      delete values.kyc04voterid_issued_date_eng;
+      delete values.kyc04voterid_issued_date_nep;
     } else if (eligibilityType === "voter") {
       values = { ...formValues, ...VoterId };
+      delete values.kyc04identity_no; // Remove the Citizen properties
+      delete values.kyc04issued_date_nep;
+      delete values.kyc04issued_date_eng;
+      delete values.kyc04passport_identity_no; // Remove the Passport properties
+      delete values.kyc04passport_issued_date_eng;
+      delete values.kyc04passport_issued_date_nep;
+      delete values.kyc04expiry_date_eng;
+      delete values.kyc04expiry_date_nep;
+      delete values.kyc04visa_issue_date_eng;
+      delete values.kyc04visa_expiry_date_eng;
+      delete values.kyc04visa_issue_date_nep;
+      delete values.kyc04visa_expiry_date_nep;
+      delete values.kyc04issued_office;
+      delete values.kyc04set04uin;
     } else {
       values = { ...formValues };
     }
@@ -149,4 +182,5 @@ const useFormValues = (
 
   return [formValues, setFormValues];
 };
+
 export default useFormValues;

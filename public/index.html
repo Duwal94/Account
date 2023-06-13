@@ -25,118 +25,32 @@
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/fonts.css" />
   </head>
-  
-  <script
-      src="https://code.jquery.com/jquery-3.6.1.js"
-      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-      crossorigin="anonymous"
-    ></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Accounts</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="./assets/css/accounts.css" />
+  <link rel="stylesheet" href="./assets/CSS/common.css" />
+  <link rel="stylesheet" href="./assets/CSS/fonts.css" />
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
-      integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
-      crossorigin="anonymous"
-    ></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Online Accounts</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="./assets/css/accounts.css" />
-    <link rel="stylesheet" href="./assets/CSS/common.css" />
-    <link rel="stylesheet" href="./assets/CSS/fonts.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
 
-    <script
-      src="https://code.jquery.com/jquery-3.6.1.js"
-      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
-      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script src="./assets/js/common.js"></script>
-
-    <script src="assets/js/common.js"></script>
-    <script src="assets/js/GeneralRequest.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        console.log("JSON Response");
-        $("#myform").on("submit", function () {
-          console.log("called on submitted");
-          //1. grab data-bs-target
-          //2. post it to server
-          //3. parse server response
-          //4. display message according to
-
-          //1. grab data using name tag of input fields
-          $data = $("#myform").serialize();
-
-          //check if user input data is in $data variable
-          console.log($data);
-
-          //2. post it to server
-          $.get("./assets/mock_server/general_request.json", function (res) {
-            //3. parse server response
-            console.log(res);
-            if (res.status) {
-              //
-              // alert('Successfull request');
-            } else {
-              alert("Failed to parse server response");
-            }
-          });
-          return false;
-        });
-      });
-
-      $("#submit").click(function () {
-        var OnlineReqTyp = $("#inputstate").val();
-        var AccountNum = $("#validationAccount").val();
-        var AccountHolder = $("#accountholder").val();
-        var validationemail = $("#validationEmail").val();
-        var validationmobile = $("#validationAccount").val();
-        if (
-          OnlineReqTyp == "" ||
-          AccountNum == "" ||
-          AccountHolder == "" ||
-          validationemail == "" ||
-          validationmobile == ""
-        ) {
-          swal({
-            title: "Fields Empty!",
-            text: "Please check the missing field!",
-            icon: "warning",
-            button: "Okay",
-          });
-        } else {
-          swal({
-            title: "Successfully submitted",
-            icon: "success",
-            button: "okay",
-          });
-        }
-      });
-    </script>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>

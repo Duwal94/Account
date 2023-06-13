@@ -80,6 +80,7 @@ function Merchantqrcode() {
   const handleSelectionChange = (event) => {
     const newValue = event.target.value === "true";
     setSelection(newValue);
+    setOtpVerify(false);
   };
 
   //set name,value to form
