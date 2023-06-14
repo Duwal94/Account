@@ -10,6 +10,7 @@ import {
   useFormValidationSchema,
   useStateValidationSchema,
 } from "../Validation/KycVaild";
+import { API_URL } from "../Utilities/Constants";
 
 function OnlineKyc() {
   const [selection, setSelection] = useState("terms");
@@ -118,19 +119,15 @@ function OnlineKyc() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response3 = await fetch(
-          "http://api.onlineform.ants.com.np/KYC/GetProvienceList"
-        );
+        const response3 = await fetch(`${API_URL}/KYC/GetProvienceList`);
         const data3 = await response3.json();
         setProvienceApi(data3);
 
-        const response2 = await fetch(
-          "http://api.onlineform.ants.com.np/GeneralComponents/Branch"
-        );
+        const response2 = await fetch(`${API_URL}/GeneralComponents/Branch`);
         const data2 = await response2.json();
         setBranchApi(data2);
         const response7 = await fetch(
-          "http://api.onlineform.ants.com.np/GeneralComponents/GetDistricts"
+          ` ${API_URL}/GeneralComponents/GetDistricts`
         );
         const data7 = await response7.json();
         setGeneralDistrictApi(data7);
@@ -146,7 +143,7 @@ function OnlineKyc() {
     const fetchOtpVerifyData = async () => {
       try {
         const response1 = await fetch(
-          `http://api.onlineform.ants.com.np/KYC/GetDistrictsByProvinceId?id=${formValues.kyc03set03uin}`
+          `${API_URL}/KYC/GetDistrictsByProvinceId?id=${formValues.kyc03set03uin}`
         );
         const data1 = await response1.json();
         setDistrictApi(data1);
@@ -161,7 +158,7 @@ function OnlineKyc() {
     const fetchOtpVerifyData = async () => {
       try {
         const response4 = await fetch(
-          `http://api.onlineform.ants.com.np/KYC/GetMuncipalityByDistrictId?id=${formValues.kyc03set04uin}`
+          `${API_URL}/KYC/GetMuncipalityByDistrictId?id=${formValues.kyc03set04uin}`
         );
         const data4 = await response4.json();
         setMunicipalityApi(data4);
@@ -193,7 +190,7 @@ function OnlineKyc() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "http://api.onlineform.ants.com.np/KYC"; // Replace with your API endpoint URL
+    const url = `${API_URL}/KYC`; // Replace with your API endpoint URL
 
     const formData = new FormData();
     Object.entries(formValues).forEach(([key, value]) => {

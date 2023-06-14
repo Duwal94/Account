@@ -5,7 +5,7 @@ import ExitImg from "../Assets/images/Exit icon/exit.png";
 import Select from "react-select";
 import useFormValues from "../States/loanelegibility.tsx";
 import Modal from "react-modal";
-import * as Yup from "yup";
+import { API_URL } from "../Utilities/Constants";
 
 function Loaneligibility() {
   //form handles
@@ -70,29 +70,23 @@ function Loaneligibility() {
     const fetchData = async () => {
       try {
         const response1 = await fetch(
-          "http://api.onlineform.ants.com.np/GeneralComponents/BusinessNatures"
+          `${API_URL}/GeneralComponents/BusinessNatures`
         );
         const data1 = await response1.json();
         setBusinessNatureApi(data1);
 
-        const response2 = await fetch(
-          "http://api.onlineform.ants.com.np/GeneralComponents/Branch"
-        );
+        const response2 = await fetch(`${API_URL}/GeneralComponents/Branch`);
         const data2 = await response2.json();
         setBranchApi(data2);
-        const response3 = await fetch(
-          "http://api.onlineform.ants.com.np/LoanEligibility/IncomeTypes"
-        );
+        const response3 = await fetch(`${API_URL}/LoanEligibility/IncomeTypes`);
         const data3 = await response3.json();
         setIncomeTypesApi(data3);
         const response4 = await fetch(
-          "http://api.onlineform.ants.com.np/LoanEligibility/YearsOfExperience"
+          `${API_URL}/LoanEligibility/YearsOfExperience`
         );
         const data4 = await response4.json();
         setYearsOfExperienceApi(data4);
-        const response5 = await fetch(
-          "http://api.onlineform.ants.com.np/LoanEligibility/LoanTypes"
-        );
+        const response5 = await fetch(`${API_URL}/LoanEligibility/LoanTypes`);
         const data5 = await response5.json();
         setLoanTypesApi(data5);
       } catch (error) {
@@ -106,7 +100,7 @@ function Loaneligibility() {
   //handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "http://api.onlineform.ants.com.np/LoanEligibility"; // Replace with your API endpoint URL
+    const url = `${API_URL}/LoanEligibility`; // Replace with your API endpoint URL
 
     try {
       // Validate the form using Yup

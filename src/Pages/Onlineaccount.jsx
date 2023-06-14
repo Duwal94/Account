@@ -1,5 +1,6 @@
 import CardS from "../component/card/Card";
 import React, { useEffect, useState } from "react";
+import { API_URL } from "../Utilities/Constants";
 
 function Onlineaccount() {
   const [schema, setSchema] = useState([]);
@@ -22,9 +23,7 @@ function Onlineaccount() {
 
   const fetchSchema = async () => {
     try {
-      const response = await fetch(
-        "http://api.onlineform.ants.com.np/AccountInfo/SavingAccountTypes"
-      );
+      const response = await fetch(`${API_URL}/AccountInfo/SavingAccountTypes`);
       const data = await response.json();
       setSchema(data);
     } catch (error) {
@@ -33,9 +32,7 @@ function Onlineaccount() {
   };
   const fetchSchema2 = async () => {
     try {
-      const response = await fetch(
-        "http://api.onlineform.ants.com.np/AccountInfo/FDAccountTypes"
-      );
+      const response = await fetch(`${API_URL}/AccountInfo/FDAccountTypes`);
       const data = await response.json();
       setSchema2(data);
     } catch (error) {

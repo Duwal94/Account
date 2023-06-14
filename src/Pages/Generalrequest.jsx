@@ -5,7 +5,7 @@ import Select from "react-select";
 import useFormValues from "../States/GeneralRequest.tsx";
 import Modal from "react-modal";
 import useFormValidationSchema from "../Validation/GeneralValidation";
-
+import { API_URL } from "../Utilities/Constants";
 function Generalrequest() {
   const [selectedOption, setSelectedOption] = useState("1");
 
@@ -43,27 +43,19 @@ function Generalrequest() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response0 = await fetch(
-          "http://api.onlineform.ants.com.np/OnlineRequest/Types"
-        );
+        const response0 = await fetch(`${API_URL}/OnlineRequest/Types`);
         const data0 = await response0.json();
         setTypesApi(data0);
 
-        const response1 = await fetch(
-          "http://api.onlineform.ants.com.np/GeneralComponents/Branch"
-        );
+        const response1 = await fetch(`${API_URL}/GeneralComponents/Branch`);
         const data1 = await response1.json();
         setBranchApi(data1);
 
-        const response2 = await fetch(
-          "http://api.onlineform.ants.com.np/OnlineRequest/ServiceType"
-        );
+        const response2 = await fetch(`${API_URL}/OnlineRequest/ServiceType`);
         const data2 = await response2.json();
         setServiceTypeApi(data2);
 
-        const response3 = await fetch(
-          "http://api.onlineform.ants.com.np/OnlineRequest/CustomerType"
-        );
+        const response3 = await fetch(`${API_URL}/OnlineRequest/CustomerType`);
         const data3 = await response3.json();
         setCustomertypeApi(data3);
       } catch (error) {
@@ -88,7 +80,7 @@ function Generalrequest() {
   const fetchAcctVerifyData = async () => {
     try {
       const response = await fetch(
-        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
+        `${API_URL}/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
       );
       const jsonData = await response.json();
       setAcctApi(jsonData);
@@ -101,7 +93,7 @@ function Generalrequest() {
   const fetchOtpVerifyData = async () => {
     try {
       const response = await fetch(
-        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+        `${API_URL}/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
       );
       const jsonData = await response.json();
       setOtpApi(jsonData);
@@ -118,7 +110,7 @@ function Generalrequest() {
   //post fetch
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "http://api.onlineform.ants.com.np/OnlineRequest"; // Replace with your API endpoint URL
+    const url = `${API_URL}/OnlineRequest`; // Replace with your API endpoint URL
 
     const formData = new FormData();
     Object.entries(formValues).forEach(([key, value]) => {
@@ -584,6 +576,7 @@ function Generalrequest() {
                               type="checkbox"
                               defaultValue
                               id="flexCheckDefault"
+                              required
                             />
                             <label
                               className="form-check-label"
@@ -605,42 +598,11 @@ function Generalrequest() {
                             Send
                           </button>
                         </div>
-                        {/* Modal */}
-                        <div
-                          className="modal fade"
-                          id="exampleModal"
-                          tabIndex={-1}
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                        >
-                          <div className="modal-dialog">
-                            <div className="modal-content">
-                              <h1
-                                className="modal-title text-center"
-                                id="exampleModalLabel"
-                              >
-                                Successful!
-                              </h1>
-                              <div className="modal-body text-center">
-                                {/* ... 375 x 285 */}
-                                Your form has been successfully submitted.
-                              </div>
-                              <div className="modal-footer m-3">
-                                <p
-                                  className="text-center"
-                                  data-bs-dismiss="modal"
-                                >
-                                  Okay
-                                </p>
-                                {/* <button type="button" class="btn btn-dark" >Okay</button> */}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
                 </form>
+                {/* Modal */}
                 <div class="modal-dialog modal-dialog-centered">
                   <Modal
                     isOpen={modalIsOpen}

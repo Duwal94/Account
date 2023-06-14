@@ -547,6 +547,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"
@@ -565,6 +566,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"
@@ -582,6 +584,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"
@@ -598,6 +601,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"
@@ -615,6 +619,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"
@@ -635,6 +640,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"
@@ -651,6 +657,7 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
+                        required
                       />
                       <label
                         className="form-check-label"

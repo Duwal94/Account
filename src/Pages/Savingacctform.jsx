@@ -1,20 +1,106 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ExitImg from "../Assets/images/Exit icon/exit.png";
 import FaceB from "../Assets/images/After_Verification/Social Network/Facebook.png";
 import TIW from "../Assets/images/After_Verification/Social Network/Twitter.png";
 import LinkedIn from "../Assets/images/After_Verification/Social Network/LinkedIn.png";
 import RECap from "../Assets/images/recaptcha.png";
+import Select from "react-select";
+import { API_URL } from "../Utilities/Constants";
 
 function Savingacctform() {
   const [selection, setSelection] = useState("yes");
+  const [branchApi, setBranchApi] = useState([]);
+  const [districtApi, setDistrictApi] = useState([]);
+  const [provienceApi, setProvienceApi] = useState([]);
+  const [municipalityApi, setMunicipalityApi] = useState([]);
+  const [genderApi, setGenderApi] = useState([]);
+  const [martialApi, setMartialApi] = useState([]);
+  const [occupationApi, setOccupationApi] = useState([]);
+  const [annualApi, setAnnualApi] = useState([]);
+  const [totalAssetApi, setTotalAssetApi] = useState([]);
+  const [aoPurposeApi, setAoPurposeApi] = useState([]);
+  const [antiTaxamtApi, setAntiTaxamtApi] = useState([]);
+  const [eduApi, setEduApi] = useState([]);
+
+  const [sameAsAbove, setSameAsAbove] = useState(false);
+  const [show, setShow] = useState("false");
+
+  const [province, setProvince] = useState(""); // Store the selected province value
+  const [district, setDistrict] = useState(""); // Store the selected district value
+  const [municipality, setMunicipality] = useState(""); // Store the selected municipality value
+  const [ward, setWard] = useState(""); // Store the selected municipality value
+  const [street, setStreet] = useState(""); // Store the selected municipality value
+  const [house, setHouse] = useState(""); // Store the selected municipality value
+  const [selectedImages, setSelectedImages] = useState([]);
   const handleSelectionChange = (event) => {
     setSelection(event.target.value);
   };
-  const handleChange = (newValue) => {
+  const handleSelectionChange2 = (event) => {
+    setShow(event.target.value);
+  };
+  const handleState = (newValue) => {
     setSelection(newValue);
     console.log(selection);
   };
-  const [selectedImages, setSelectedImages] = useState([]);
+  const handlePrevious = (newValue) => {
+    setSelection(newValue);
+    console.log(selection);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response3 = await fetch(`${API_URL}/KYC/GetProvienceList`);
+        const data3 = await response3.json();
+        setProvienceApi(data3);
+
+        const response2 = await fetch(`${API_URL}/GeneralComponents/Branch`);
+        const data2 = await response2.json();
+        setBranchApi(data2);
+        const response1 = await fetch(`${API_URL}/GeneralComponents/Gender`);
+        const data1 = await response1.json();
+        setGenderApi(data1);
+        const response4 = await fetch(`${API_URL}/GeneralComponents/Education`);
+        const data4 = await response4.json();
+        setEduApi(data4);
+        const response5 = await fetch(
+          `${API_URL}/GeneralComponents/MaritalStatus`
+        );
+        const data5 = await response5.json();
+        setMartialApi(data5);
+        const response6 = await fetch(
+          `${API_URL}/GeneralComponents/Occupation`
+        );
+        const data6 = await response6.json();
+        setOccupationApi(data6);
+        const response7 = await fetch(
+          `${API_URL}/GeneralComponents/AnnualTransactionNumber`
+        );
+        const data7 = await response7.json();
+        setAnnualApi(data7);
+
+        const response8 = await fetch(
+          `${API_URL}/GeneralComponents/TotalAssets`
+        );
+        const data8 = await response8.json();
+        setTotalAssetApi(data8);
+        const response9 = await fetch(
+          `${API_URL}/GeneralComponents/PurposeOfAccountOpening`
+        );
+        const data9 = await response9.json();
+        setAoPurposeApi(data9);
+        const response10 = await fetch(
+          ` ${API_URL}/GeneralComponents/AnnualAnticipatedAmount`
+        );
+        const data10 = await response10.json();
+        setAntiTaxamtApi(data10);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
   //selection image facebook google etc
   const handleImageClick = (image) => {
     if (selectedImages.includes(image)) {
@@ -25,6 +111,18 @@ function Savingacctform() {
       setSelectedImages([...selectedImages, image]);
     }
   };
+  //for select-form
+  // const handleChangeSelect = (selectedOption) => {
+  //   if (selectedOption) {
+  //     const { name, value } = selectedOption;
+
+  //     setFormValues((prevValues) => ({
+  //       ...prevValues,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
+
   return (
     <div className="container-fluid mb-5">
       <form>
@@ -247,12 +345,25 @@ function Savingacctform() {
                     </div>
 
                     <div className="col-md-3">
-                      <label htmlFor="inputBranch" className="form-label">
-                        Prefered Branch
+                      {/* Preferred Branch */}
+                      <label htmlFor="branch" className="form-label yolo">
+                        Preferred Branch
                       </label>
-                      <select id="inputBranch" className="form-select">
-                        <option selected>Select Branch</option>
-                      </select>
+                      <Select
+                        name="kyc01bra01uin"
+                        id="select_branch"
+                        // onChange={handleChangeSelect}
+                        options={branchApi.map((item) => ({
+                          value: item.bra01uin,
+                          label: item.bra01name,
+                          name: "kyc01bra01uin",
+                        }))}
+                        placeholder="Name of the Branch"
+                      />
+
+                      {/* {formErrors.kyc01bra01uin && (
+                        <div className="error">{formErrors.kyc01bra01uin}</div>
+                      )} */}
                     </div>
                     <div className="col-12">
                       <h5 id="personal-details">Personal Details</h5>
@@ -464,7 +575,7 @@ function Savingacctform() {
                       <button
                         type="button"
                         className="btn btn-outline-dark text-danger ps-4 pe-4"
-                        onClick={() => handleChange("generald")}
+                        onClick={() => handleState("generald")}
                       >
                         next
                       </button>
@@ -485,9 +596,12 @@ function Savingacctform() {
                 <div className="row" id="box-shadow">
                   <div className="row">
                     <div className="button">
-                      <button className="back-button ps-3">
+                      <button
+                        className="back-button ps-3"
+                        onClick={() => handlePrevious("no")}
+                      >
                         Back
-                        <img src="./assets/images/back.svg" alt />
+                        <img src={ExitImg} alt="..." />
                       </button>
                     </div>
                   </div>
@@ -534,8 +648,20 @@ function Savingacctform() {
                         >
                           Gender
                         </label>
-                        <select id="inputGender" className="form-select">
-                          <option selected>Select Gender</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Gender
+                          </option>
+                          {genderApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="col-md-3">
@@ -545,8 +671,20 @@ function Savingacctform() {
                         >
                           Martail Status
                         </label>
-                        <select id="inputMartial" className="form-select">
-                          <option selected>Martail Status</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Status
+                          </option>
+                          {martialApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="col-md-3 ">
@@ -572,8 +710,20 @@ function Savingacctform() {
                         <label htmlFor="inputEdu" className="form-label yolo">
                           Education
                         </label>
-                        <select id="inputEdu" className="form-select">
-                          <option selected>Education</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Education
+                          </option>
+                          {eduApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="row m-3" id="box-shadow">
@@ -813,7 +963,7 @@ function Savingacctform() {
                         <button
                           type="button"
                           className="btn btn-outline-dark text-danger ps-4 pe-4"
-                          onClick={() => handleChange("addr_details")}
+                          onClick={() => handleState("addr_details")}
                         >
                           next
                         </button>
@@ -839,153 +989,300 @@ function Savingacctform() {
                   {" "}
                   {/*Back*/}
                   <div className="button">
-                    <a href="KYCform.html">
-                      <button className="back-button ps-3">
-                        Back
-                        <img src="./assets/images/back.svg" alt />
-                      </button>
-                    </a>
+                    <button
+                      className="back-button ps-3"
+                      onClick={() => handlePrevious("generald")}
+                    >
+                      Back
+                      <img src={ExitImg} alt="..." />
+                    </button>
                   </div>
                 </div>
-                <form className="row justify-content-evenly gy-3 gx-5">
-                  <div className="col-12 mt-4">
-                    <h5 id="personal-details">Permanent Address</h5>
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="inputProvince" className="form-label yolo">
-                      Province
-                    </label>
-                    <select id="inputProvince" className="form-select">
-                      <option selected>Select Province</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="inputDistrict" className="form-label yolo">
-                      District
-                    </label>
-                    <select id="inputDistrict" className="form-select">
-                      <option selected>Name of the District</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label
-                      htmlFor="inputMunicipality"
-                      className="form-label yolo"
-                    >
-                      Municipality
-                    </label>
-                    <select id="inputMunicipality" className="form-select">
-                      <option selected>Name of the Municipality/VDC</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label
-                      htmlFor="inputWardNumber"
-                      className="form-label yolo"
-                    >
-                      Ward Number
-                    </label>
-                    <select id="inputWard Number" className="form-select">
-                      <option selected>01-0024984</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="inputStreet" className="form-label yolo">
-                      Street
-                    </label>
-                    <select id="inputStreet" className="form-select">
-                      <option selected>Mandala Street</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label
-                      htmlFor="inputHouseNumber"
-                      className="form-label yolo"
-                    >
-                      House Number
-                    </label>
-                    <select id="inputHouseNumber" className="form-select">
-                      <option selected>01-0024984</option>
-                    </select>
-                  </div>
-                  <div className="col-12 mt-5">
-                    <h5 id="personal-details">Current Address</h5>
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="inputProvince" className="form-label yolo">
-                      Province
-                    </label>
-                    <select id="inputProvince" className="form-select">
-                      <option selected>Select Province</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="inputDistrict" className="form-label yolo">
-                      District
-                    </label>
-                    <select id="inputDistrict" className="form-select">
-                      <option selected>Name of the District</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label
-                      htmlFor="inputMunicipality"
-                      className="form-label yolo"
-                    >
-                      Municipality
-                    </label>
-                    <select id="inputMunicipality" className="form-select">
-                      <option selected>Name of the Municipality/VDC</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label
-                      htmlFor="inputWardNumber"
-                      className="form-label yolo"
-                    >
-                      Ward Number
-                    </label>
-                    <select id="inputWard Number" className="form-select">
-                      <option selected>01-0024984</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="inputStreet" className="form-label yolo">
-                      Street
-                    </label>
-                    <select id="inputStreet" className="form-select">
-                      <option selected>Mandala Street</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label
-                      htmlFor="inputHouseNumber"
-                      className="form-label yolo"
-                    >
-                      House Number
-                    </label>
-                    <select id="inputHouseNumber" className="form-select">
-                      <option selected>01-0024984</option>
-                    </select>
-                  </div>
-                </form>
+
+                <div className="col-12 mt-4">
+                  <h3 className="p-3">Address Details</h3>
+                  <h5 id="personal-details">Permanent Address</h5>
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputProvince" className="form-label yolo">
+                    Province
+                  </label>
+                  <select
+                    id="inputProvince"
+                    className="form-select"
+                    name="kyc03set03uin"
+                    //  onChange={handleChange}
+                  >
+                    <option selected>Select Province</option>
+                    {provienceApi.map((item) => (
+                      <option key={item.bindField} value={item.bindField}>
+                        {item.displayField}
+                      </option>
+                    ))}
+                  </select>
+                  {/* {formErrors.kyc03set03uin && (
+                   <div className="error">{formErrors.kyc03set03uin}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputDistrict" className="form-label yolo">
+                    District
+                  </label>
+                  <select
+                    id="inputDistrict"
+                    className="form-select"
+                    name="kyc03set04uin"
+                    //  onChange={handleChange}
+                  >
+                    <option selected>Name of the District</option>
+                    {districtApi.map((item) => (
+                      <option key={item.bindField} value={item.bindField}>
+                        {item.displayField}
+                      </option>
+                    ))}
+                  </select>
+                  {/* {formErrors.kyc03set04uin && (
+                   <div className="error">{formErrors.kyc03set04uin}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label
+                    htmlFor="inputMunicipality"
+                    className="form-label yolo"
+                  >
+                    Municipality
+                  </label>
+                  <select
+                    id="inputMunicipality"
+                    className="form-select"
+                    name="kyc03set05uin"
+                    //  onChange={handleChange}
+                  >
+                    <option selected>Name of the Municipality/VDC</option>
+                    {municipalityApi.map((item) => (
+                      <option key={item.bindField} value={item.bindField}>
+                        {item.displayField}
+                      </option>
+                    ))}
+                  </select>
+                  {/* {formErrors.kyc03set05uin && (
+                   <div className="error">{formErrors.kyc03set05uin}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputWardNumber" className="form-label yolo">
+                    Ward Number
+                  </label>
+                  <input
+                    type="num"
+                    className="form-control syncSame numberOnly"
+                    id="num"
+                    name="kyc03ward_no"
+                    maxLength={2}
+
+                    //  onChange={handleChange}
+                  />
+                  {/* {formErrors.kyc03ward_no && (
+                   <div className="error">{formErrors.kyc03ward_no}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputStreet" className="form-label yolo">
+                    Street
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control syncSame "
+                    id="Street"
+                    name="kyc03street"
+                    maxLength={10}
+
+                    //  onChange={handleChange}
+                  />
+                  {/* {formErrors.kyc03street && (
+                   <div className="error">{formErrors.kyc03street}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputHouseNumber" className="form-label yolo">
+                    House Number
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control syncSame numberOnly"
+                    id="num"
+                    name="kyc03house_no"
+                    maxLength={100}
+                    //  onChange={handleChange}
+                  />
+                  {/* {formErrors.kyc03house_no && (
+                   <div className="error">{formErrors.kyc03house_no}</div>
+                 )} */}
+                </div>
+                {/* same asa above */}
+                <div className="col-12 mt-4">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={sameAsAbove}
+                    // onChange={handleCheckboxChange}
+                    id="flexCheckApprove"
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="flexCheckDefault"
+                  >
+                    <p className="form-label yolo">Same as above:</p>
+                  </label>
+                </div>
+
+                <div className="col-12 mt-5">
+                  <h5 id="personal-details">Current Address</h5>
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputProvince" className="form-label yolo">
+                    Province
+                  </label>
+                  <select
+                    id="num"
+                    className="form-select"
+                    name="kyc03set03uin_temp"
+                    value={province}
+                    onChange={(e) => {
+                      setProvince(e.target.value);
+                      // handleChange(e);
+                    }}
+                    disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
+                  >
+                    <option value="">Select Province</option>
+                    {provienceApi.map((item) => (
+                      <option key={item.bindField} value={item.bindField}>
+                        {item.displayField}
+                      </option>
+                    ))}
+                  </select>
+                  {/* {formErrors.kyc03set03uin_temp && !sameAsAbove && (
+                   <div className="error">{formErrors.kyc03set03uin_temp}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputDistrict" className="form-label yolo">
+                    District
+                  </label>
+                  <select
+                    id="num"
+                    className="form-select"
+                    name="kyc03set04uin_temp"
+                    value={district}
+                    onChange={(e) => {
+                      setDistrict(e.target.value);
+                      // handleChange(e);
+                    }}
+                    disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
+                  >
+                    <option value="">Name of the District</option>
+                    {districtApi.map((item) => (
+                      <option key={item.bindField} value={item.bindField}>
+                        {item.displayField}
+                      </option>
+                    ))}
+                  </select>
+                  {/* {formErrors.kyc03set04uin_temp && !sameAsAbove && (
+                   <div className="error">{formErrors.kyc03set04uin_temp}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label
+                    htmlFor="inputMunicipality"
+                    className="form-label yolo"
+                  >
+                    Municipality
+                  </label>
+                  <select
+                    id="num"
+                    className="form-select"
+                    name="kyc03set05uin_temp"
+                    value={municipality}
+                    onChange={(e) => {
+                      setMunicipality(e.target.value);
+                      // handleChange(e);
+                    }}
+                    disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
+                  >
+                    <option value="">Name of the Municipality/VDC</option>
+                    {municipalityApi.map((item) => (
+                      <option key={item.bindField} value={item.bindField}>
+                        {item.displayField}
+                      </option>
+                    ))}
+                  </select>
+                  {/* {formErrors.kyc03set05uin_temp && !sameAsAbove && (
+                   <div className="error">{formErrors.kyc03set05uin_temp}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputWardNumber" className="form-label yolo">
+                    Ward Number
+                  </label>
+                  <input
+                    type="num"
+                    className="form-control syncSame numberOnly"
+                    id="num"
+                    name="kyc03ward_no_temp"
+                    value={ward}
+                    maxLength={2}
+                    //  onChange={handleChange}
+                    disabled={sameAsAbove}
+                  />
+                  {/* {formErrors.kyc03ward_no_temp && !sameAsAbove && (
+                   <div className="error">{formErrors.kyc03ward_no_temp}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputStreet" className="form-label yolo">
+                    Street
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control syncSame "
+                    id="Street"
+                    name="kyc03street_temp"
+                    maxLength={10}
+                    value={street}
+                    //  onChange={handleChange}
+                    disabled={sameAsAbove}
+                  />
+                  {/* {formErrors.kyc03street_temp && !sameAsAbove && (
+                   <div className="error">{formErrors.kyc03street_temp}</div>
+                 )} */}
+                </div>
+                <div className="col-md-5">
+                  <label htmlFor="inputHouseNumber" className="form-label yolo">
+                    House Number
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control syncSame numberOnly"
+                    id="num"
+                    name="kyc03house_no_temp"
+                    maxLength={100}
+                    //  onChange={handleChange}
+                    value={house}
+                    disabled={sameAsAbove}
+                  />
+                  {/* {formErrors.kyc03house_no_temp && !sameAsAbove && (
+                   <div className="error">{formErrors.kyc03house_no_temp}</div>
+                 )} */}
+                </div>
                 <div className="col-12 mt-5 mb-5 d-flex justify-content-between">
                   <button
                     type="button"
-                    className="btn pcolor text-white ps-3 pe-3"
-                    id="addr_prev"
+                    className="btn btn-outline-dark text-danger ps-4 pe-4 "
+                    id="addr_next"
+                    onClick={() => handleState("family")}
                   >
-                    Previous
+                    Next
                   </button>
-                  <div className="col-12 mt-5 mb-5 text-center">
-                    <button
-                      type="button"
-                      className="btn btn-outline-dark text-danger ps-4 pe-4"
-                      onClick={() => handleChange("family")}
-                    >
-                      next
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -998,9 +1295,12 @@ function Savingacctform() {
                 <div className="row" id="box-shadow">
                   <div className="row">
                     <div className="button">
-                      <button className="back-button ps-3">
+                      <button
+                        className="back-button ps-3"
+                        onClick={() => handlePrevious("addr_details")}
+                      >
                         Back
-                        <img src="./assets/images/back.svg" alt />
+                        <img src={ExitImg} alt="..." />
                       </button>
                     </div>
                   </div>
@@ -1195,7 +1495,7 @@ function Savingacctform() {
                     <button
                       type="button"
                       className="btn btn-outline-dark text-danger ps-4 pe-4"
-                      onClick={() => handleChange("occupation")}
+                      onClick={() => handleState("occupation")}
                     >
                       next
                     </button>
@@ -1215,9 +1515,12 @@ function Savingacctform() {
                 <div className="row" id="box-shadow">
                   <div className="row">
                     <div className="button">
-                      <button className="back-button ps-3">
+                      <button
+                        className="back-button ps-3"
+                        onClick={() => handlePrevious("family")}
+                      >
                         Back
-                        <img src="./assets/images/back.svg" alt />
+                        <img src={ExitImg} alt="..." />
                       </button>
                     </div>
                   </div>
@@ -1231,8 +1534,20 @@ function Savingacctform() {
                       >
                         Occupation
                       </label>
-                      <select id="inputOccupation1" className="form-select">
-                        <option selected>Occupation</option>
+                      <select
+                        className="form-select"
+                        id="num"
+                        name="kyc04set04uin"
+                        // onChange={handleChange}
+                      >
+                        <option value={0} selected disabled>
+                          Occupation
+                        </option>
+                        {occupationApi.map((item) => (
+                          <option key={item.bindField} value={item.bindField}>
+                            {item.displayField}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="row gx-4 gy-4">
@@ -1242,10 +1557,22 @@ function Savingacctform() {
                           htmlFor="inputOccupation2"
                           className="form-label yolo"
                         >
-                          Occupation 1
+                          Exp. Annual T/O
                         </label>
-                        <select id="inputOccupation2" className="form-select">
-                          <option selected>Occupation 1</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Select an option
+                          </option>
+                          {annualApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="col-md-3">
@@ -1253,44 +1580,74 @@ function Savingacctform() {
                           htmlFor="inputOccupation3"
                           className="form-label yolo"
                         >
-                          Occupation 2
+                          Amount Rs
                         </label>
-                        <select id="inputOccupation3" className="form-select">
-                          <option selected>Occupation 2</option>
-                        </select>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputFirstName"
+                          name=""
+                        />
                       </div>
                       <div className="col-md-3">
                         <label
                           htmlFor="inputOccupation4"
                           className="form-label yolo"
                         >
-                          Occupation 3
+                          Total Assets
                         </label>
-                        <select id="inputOccupation4" className="form-select">
-                          <option selected>Occupation 3</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Select an option
+                          </option>
+                          {totalAssetApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-2 ">
                         <label
                           htmlFor="inputOccupation5"
                           className="form-label yolo"
                         >
-                          Occupation 4
+                          Amount Rs
                         </label>
-                        <select id="inputOccupation5" className="form-select">
-                          <option selected>Occupation 4</option>
-                        </select>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputFirstName"
+                          name=""
+                        />
                       </div>
                       {/* Third Row */}
-                      <div className="col-md-3">
+                      <div className="col-md-3 mb-4">
                         <label
                           htmlFor="inputOccupation6"
                           className="form-label yolo"
                         >
-                          Occupation 1
+                          Purpose of AO
                         </label>
-                        <select id="inputOccupation6" className="form-select">
-                          <option selected>Occupation 1</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Select an option
+                          </option>
+                          {aoPurposeApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="col-md-3">
@@ -1298,33 +1655,51 @@ function Savingacctform() {
                           htmlFor="inputOccupation7"
                           className="form-label yolo"
                         >
-                          Occupation 2
+                          Purpose(if Other)
                         </label>
-                        <select id="inputOccupation7" className="form-select">
-                          <option selected>Occupation 2</option>
-                        </select>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputFirstName"
+                          name=""
+                        />
                       </div>
                       <div className="col-md-3">
                         <label
                           htmlFor="inputOccupation8"
                           className="form-label yolo"
                         >
-                          Occupation 3
+                          Anticipated Annual TXN
                         </label>
-                        <select id="inputOccupation8" className="form-select">
-                          <option selected>Occupation 3</option>
+                        <select
+                          className="form-select"
+                          id="num"
+                          name="kyc04set04uin"
+                          // onChange={handleChange}
+                        >
+                          <option value={0} selected disabled>
+                            Select an option
+                          </option>
+                          {antiTaxamtApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
                         </select>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-2">
                         <label
                           htmlFor="inputOccupation9"
                           className="form-label yolo"
                         >
-                          Occupation 4
+                          Anticipated Amt. of AI
                         </label>
-                        <select id="inputOccupation9" className="form-select">
-                          <option selected>Occupation 4</option>
-                        </select>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputFirstName"
+                          name=""
+                        />
                       </div>
                     </div>
                   </div>
@@ -1344,38 +1719,45 @@ function Savingacctform() {
                           marginBottom: 10,
                         }}
                       >
-                        <p style={{ fontWeight: "bold" }}>Question:</p>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionYesRadio"
-                            defaultValue="yes"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionYesRadio"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionNoRadio"
-                            defaultValue="no"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionNoRadio"
-                          >
-                            No
-                          </label>
+                        <p style={{ fontWeight: "bold" }}>
+                          Do you have any account with other Bank and Financial
+                          Institution? :
+                        </p>
+                        <div className="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption1"
+                              id="questionYesRadio1"
+                              defaultValue="yes"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionYesRadio1"
+                            >
+                              Yes
+                            </label>
+                          </div>
+
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption1"
+                              id="questionNoRadio1"
+                              defaultValue="no"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionNoRadio1"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
+
                       {/* Question 2 */}
                       <div
                         className="question-container"
@@ -1385,38 +1767,45 @@ function Savingacctform() {
                           marginBottom: 10,
                         }}
                       >
-                        <p style={{ fontWeight: "bold" }}>Question:</p>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionYesRadio"
-                            defaultValue="yes"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionYesRadio"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionNoRadio"
-                            defaultValue="no"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionNoRadio"
-                          >
-                            No
-                          </label>
+                        <p style={{ fontWeight: "bold" }}>
+                          Are You Associated with Any Criminal Activity Before?
+                          :
+                        </p>
+                        <div className="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption2"
+                              id="questionYesRadio1"
+                              defaultValue="yes"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionYesRadio1"
+                            >
+                              Yes
+                            </label>
+                          </div>
+
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption2"
+                              id="questionNoRadio1"
+                              defaultValue="no"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionNoRadio1"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
+
                       {/* Question 3 */}
                       <div
                         className="question-container"
@@ -1426,110 +1815,124 @@ function Savingacctform() {
                           marginBottom: 10,
                         }}
                       >
-                        <p style={{ fontWeight: "bold" }}>Question:</p>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="toogle_1"
-                            id="questionYesRadio"
-                            defaultValue="yes"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionYesRadio"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="toogle_1"
-                            id="questionNoRadio"
-                            defaultValue="no"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionNoRadio"
-                          >
-                            No
-                          </label>
+                        <p style={{ fontWeight: "bold" }}>
+                          Do You Have Nominee:
+                        </p>
+                        <div className="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption3"
+                              id="questionYesRadio1"
+                              value="true"
+                              checked={show === "true"}
+                              onChange={handleSelectionChange2}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionYesRadio1"
+                            >
+                              Yes
+                            </label>
+                          </div>
+
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption3"
+                              id="questionNoRadio1"
+                              defaultValue="no"
+                              value="false"
+                              checked={show === "false"}
+                              onChange={handleSelectionChange2}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionNoRadio1"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
-                      {/* toogle */}
-                      <div
-                        className="question-container d-none"
-                        id="toogle"
-                        style={{
-                          backgroundColor: "#f2f2f2",
-                          padding: 10,
-                          marginBottom: 10,
-                        }}
-                      >
-                        <table className="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Nominee's Name</th>
-                              <th scope="col">Citizenship No.</th>
-                              <th scope="col">Date of Issue</th>
-                              <th scope="col">Place of Issue</th>
-                              <th scope="col">Relation</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="nomineeName"
-                                  name="nomineeName"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="citizenshipNo"
-                                  name="citizenshipNo"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="dateOfIssue"
-                                  name="dateOfIssue"
-                                />
-                              </td>
-                              <td>
-                                <select
-                                  className="form-select"
-                                  id="placeOfIssue"
-                                  name="placeOfIssue"
-                                >
-                                  <option value="Morang">Morang</option>
-                                  <option value="Kathmandu">Kathmandu</option>
-                                  <option value="Pokhara">Pokhara</option>
-                                </select>
-                              </td>
-                              <td>
-                                <select
-                                  className="form-select"
-                                  id="relation"
-                                  name="relation"
-                                >
-                                  <option value="Father">Father</option>
-                                  <option value="Mother">Mother</option>
-                                  <option value="Sibling">Sibling</option>
-                                </select>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+
+                      {/* Toggle */}
+                      {show === "true" && (
+                        <div
+                          className="question-container "
+                          id="toggle"
+                          style={{
+                            backgroundColor: "#f2f2f2",
+                            padding: 10,
+                            marginBottom: 10,
+                          }}
+                        >
+                          <table className="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Nominee's Name</th>
+                                <th scope="col">Citizenship No.</th>
+                                <th scope="col">Date of Issue</th>
+                                <th scope="col">Place of Issue</th>
+                                <th scope="col">Relation</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    id="nomineeName"
+                                    name="nomineeName"
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    id="citizenshipNo"
+                                    name="citizenshipNo"
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    id="dateOfIssue"
+                                    name="dateOfIssue"
+                                  />
+                                </td>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    id="placeOfIssue"
+                                    name="placeOfIssue"
+                                  >
+                                    <option value="Morang">Morang</option>
+                                    <option value="Kathmandu">Kathmandu</option>
+                                    <option value="Pokhara">Pokhara</option>
+                                  </select>
+                                </td>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    id="relation"
+                                    name="relation"
+                                  >
+                                    <option value="Father">Father</option>
+                                    <option value="Mother">Mother</option>
+                                    <option value="Sibling">Sibling</option>
+                                  </select>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+
                       {/* Repeat the above question-container pattern for the remaining questions */}
                       {/* Question 4 */}
                       <div
@@ -1540,38 +1943,44 @@ function Savingacctform() {
                           marginBottom: 10,
                         }}
                       >
-                        <p style={{ fontWeight: "bold" }}>Question:</p>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionYesRadio"
-                            defaultValue="yes"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionYesRadio"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionNoRadio"
-                            defaultValue="no"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionNoRadio"
-                          >
-                            No
-                          </label>
+                        <p style={{ fontWeight: "bold" }}>
+                          Do you have any Beneficial Owner(BO)? :
+                        </p>
+                        <div className="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption4"
+                              id="questionYesRadio1"
+                              defaultValue="yes"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionYesRadio1"
+                            >
+                              Yes
+                            </label>
+                          </div>
+
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption4"
+                              id="questionNoRadio1"
+                              defaultValue="no"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionNoRadio1"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
+
                       {/* Question 5 */}
                       <div
                         className="question-container"
@@ -1581,39 +1990,46 @@ function Savingacctform() {
                           marginBottom: 10,
                         }}
                       >
-                        <p style={{ fontWeight: "bold" }}>Question:</p>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionYesRadio"
-                            defaultValue="yes"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionYesRadio"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="questionOption"
-                            id="questionNoRadio"
-                            defaultValue="no"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="questionNoRadio"
-                          >
-                            No
-                          </label>
+                        <p style={{ fontWeight: "bold" }}>
+                          Are You a US Resident/Citizen/ Permanent Resident/
+                          Green card Holder ?:
+                        </p>
+                        <div className="row">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption5"
+                              id="questionYesRadio1"
+                              defaultValue="yes"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionYesRadio1"
+                            >
+                              Yes
+                            </label>
+                          </div>
+
+                          <div className="form-check">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="questionOption5"
+                              id="questionNoRadio1"
+                              defaultValue="no"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="questionNoRadio1"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
+
                     <div className="col-12 mt-5 mb-5 d-flex justify-content-between">
                       <button
                         type="button"

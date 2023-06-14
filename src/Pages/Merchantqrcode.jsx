@@ -4,6 +4,7 @@ import Select from "react-select";
 import useFormValues from "../States/MerchantQr.tsx";
 import Modal from "react-modal";
 import useFormValidationSchema from "../Validation/MerchantValid";
+import { API_URL } from "../Utilities/Constants";
 
 function Merchantqrcode() {
   const [selection, setSelection] = useState(true);
@@ -28,19 +29,17 @@ function Merchantqrcode() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await fetch(
-          "http://api.onlineform.ants.com.np/MerchantAcquisition/Branch"
-        );
+        const response1 = await fetch(`${API_URL}/MerchantAcquisition/Branch`);
         const data1 = await response1.json();
         setBranchApi(data1);
 
         const response2 = await fetch(
-          "http://api.onlineform.ants.com.np/MerchantAcquisition/RegisteredWith"
+          `${API_URL}/MerchantAcquisition/RegisteredWith`
         );
         const data2 = await response2.json();
         setRegisteredApi(data2);
         const response3 = await fetch(
-          "http://api.onlineform.ants.com.np/GeneralComponents/BusinessNatures"
+          `${API_URL}/GeneralComponents/BusinessNatures`
         );
         const data3 = await response3.json();
         setBusinessNatureApi(data3);
@@ -55,7 +54,7 @@ function Merchantqrcode() {
   const fetchAcctVerifyData = async () => {
     try {
       const response = await fetch(
-        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
+        `${API_URL}/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
       );
       const jsonData = await response.json();
       setAcctApi(jsonData);
@@ -68,7 +67,7 @@ function Merchantqrcode() {
   const fetchOtpVerifyData = async () => {
     try {
       const response = await fetch(
-        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+        `${API_URL}/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
       );
       const jsonData = await response.json();
       setOtpApi(jsonData);
@@ -114,7 +113,7 @@ function Merchantqrcode() {
   //post fetch
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "http://api.onlineform.ants.com.np/MerchantAcquisition"; // Replace with your API endpoint URL
+    const url = `${API_URL}/MerchantAcquisition`; // Replace with your API endpoint URL
 
     const formData = new FormData();
     Object.entries(formValues).forEach(([key, value]) => {
