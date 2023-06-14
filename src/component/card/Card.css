@@ -1,0 +1,177 @@
+.card {
+  position: relative;
+  width: 312px;
+  height: 500px;
+  perspective: 800px;
+  margin: 20px;
+  
+}
+
+.back94 {
+  
+position: absolute;
+  top: 4%;
+  left: 8%;
+  background-color: #ae1f19;
+  border: none;
+}
+.ribbon-2 {
+  --f: 10px; /* control the folded part*/
+  --r: 15px; /* control the ribbon shape */
+  --t: 10px; /* the top offset */
+
+  position: absolute;
+  inset: var(--t) calc(-1 * var(--f)) auto auto;
+  padding: 0 10px var(--f) calc(10px + var(--r));
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--f)),
+    calc(100% - var(--f)) 100%,
+    calc(100% - var(--f)) calc(100% - var(--f)),
+    0 calc(100% - var(--f)),
+    var(--r) calc(50% - var(--f) / 2)
+  );
+  background: #cb1212;
+  color: #ffffff;
+  box-shadow: 0 calc(-1 * var(--f)) 0 inset rgba(77, 116, 37, 0.333);
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ae1f19;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.card-front:hover {
+  background-color: #ae1f19;
+  color: #f2c21b;
+  > .ribbon-2 {
+    background-color: #f2c21b;
+    color: black;
+  }
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  color: #f2c21b;
+}
+.tables {
+  position: absolute;
+
+  top: 25%;
+  font-weight: normal;
+}
+
+.fixed {
+  font-size: 15px;
+  position: absolute;
+  top: 15%;
+}
+
+.card-back {
+  background-color: #ae1f19;
+  color: #f2c21b;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+.horizontal-border {
+  width: 203px;
+  height: 43px;
+  border-bottom: 1px solid #f2c21b;
+  border-top: 1px solid #f2c21b;
+}
+
+.box-border {
+  width: 203px;
+  height: 223px;
+  border: 1px solid #f2c21b;
+}
+.list-group,
+.list-group-item {
+  font-size: 10px;
+  font-weight: normal;
+ margin: 1px;
+  color: black;
+}
+
+
+.btn1,
+.btn2 {
+  width: 206px;
+  height: 25px;
+}
+
+.btn1 {
+  background-color: #ae1f19;
+  color: #ffffff;
+}
+
+.btn2 {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+}
+.card-img{
+  height: 30%;
+  width: auto;
+}
+.c-name{
+  font-size: small;
+ position: relative;
+ top: 2%; 
+}
+.btn4{
+  background-color: #AD2E16;
+  padding: 10px 20px;
+  border: none;
+}
+.btn7{
+  padding: 15px 25px;
+  border: none;
+
+}
+.carousel-caption{
+position: absolute;
+left: 1%;
+right: 50%;
+bottom: 25%;
+}
+
+
+
+
+
+
+
+
+

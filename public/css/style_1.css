@@ -1,0 +1,556 @@
+.card {
+  width: 170px;
+  border-radius: 15px;
+  height: 170px;
+  position: relative;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  font-weight: bold;
+  font-size: 14px;
+  color: crimson;
+}
+
+.card-body {
+  padding-left: 30px;
+  padding-top: 18px;
+  position: absolute;
+}
+.nav-border {
+  color: #fdc733;
+}
+
+#form {
+  box-shadow: 0px 0px 2px 2px rgba(185, 185, 185, 0.25);
+}
+
+#loan {
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid #fdc733;
+
+  font-family: "PT Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  /* identical to box height, or 120% */
+
+  text-align: center;
+}
+#loantype {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 21px;
+
+  /* Maha Red */
+
+  color: #ae1f19;
+}
+#previous:hover {
+  background-color: #ae1f19;
+}
+#form .back-button {
+  background-color: #ae1f19;
+  color: #ffff;
+  border: none;
+  border-radius: 0px 0px 3px 0px;
+  padding: 10px;
+  transform: translateX(-12px);
+}
+
+#personal-details {
+  color: #ae1f19;
+}
+
+#verify-captcha {
+  color: #ae1f19;
+}
+#upper-footer,
+#lower-footer {
+  background-color: #ae1f19;
+}
+
+#copyright {
+  font-size: 14px;
+  font-style: normal;
+  padding-top: 5px;
+  color: white;
+  padding-left: 600px;
+}
+
+#created {
+  font-size: 14px;
+  font-style: normal;
+  padding-top: 5px;
+  color: white;
+  padding-left: 720px;
+}
+#logo-section {
+  padding-top: 95px;
+}
+
+body {
+  font-family: "SF Pro Text", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+}
+#steps {
+  background-color: #fdc733;
+  border: 1px solid #0000;
+}
+.progress {
+  height: 10vh;
+}
+
+.progresses {
+  display: flex;
+  align-items: center;
+}
+
+.line {
+  width: 120px;
+  height: 6px;
+  background: #63d19e;
+}
+
+.steps {
+  display: flex;
+  background-color: #63d19e;
+  color: #fff;
+  font-size: 14px;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+#text {
+  font-size: 18px;
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 21px;
+  color: #ae1f19;
+}
+
+#copyright {
+  font-style: normal;
+  color: white;
+  font-weight: bold;
+  margin-left: 550px;
+}
+#recap {
+  height: 60px;
+  transform: translateY(90px);
+}
+
+#loantype {
+  font-size: 18px;
+  font-family: "SF Pro Text" "Inter" "verdana";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
+  color: #ae1f19;
+}
+
+#terms {
+  padding-top: 40px;
+}
+#inner-box {
+  box-shadow: 0px 0px 2px 2px rgba(185, 185, 185, 0.25);
+  height: 489px;
+  overflow-y: scroll;
+  border-radius: 10px;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Poppins:wght@500;700&display=swap");
+.back-button {
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  background-color: #ae1f19;
+  color: #ffff;
+  border: none;
+  border-radius: 0px 0px 3px 0px;
+  padding: 7px;
+  transform: translate(-12px);
+  letter-spacing: -0.01em;
+}
+
+#box-shadow {
+  box-shadow: 0px 2px 2px 2px rgba(185, 185, 185, 0.25);
+}
+
+.yolo {
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 14px;
+  color: #000000;
+}
+.yolo.required:after {
+  content: "*";
+  color: #ae1f19;
+}
+.star {
+  color: #ae1f19;
+}
+
+.form-control {
+  box-sizing: border-box;
+  top: 25.68%;
+  bottom: 27.03%;
+
+  background: #ffffff;
+  border: 1px solid #a6a6a6;
+  border-radius: 3px;
+
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.form-select {
+  box-sizing: border-box;
+  top: 25.68%;
+  bottom: 27.03%;
+  border: 1px solid #a6a6a6;
+  border-radius: 3px;
+  border-style: solid;
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+#btn {
+  text-align: center;
+  bottom: 8.16%;
+  box-sizing: border-box;
+}
+#btn1 {
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-weight: 500;
+  font-size: 14px;
+  border-color: #ae1f19;
+  text-align: center;
+
+  /* Primary Color */
+
+  color: #ae1f19;
+}
+
+#flexCheckDefault1 {
+  margin-left: 3px;
+  transform: translateX(-10px);
+}
+#img1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  margin-top: 1px;
+  transform: translateY(-30px);
+
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  left: 450px;
+}
+
+.terms {
+  color: #ae1f19;
+}
+
+#verifyX {
+  background-color: #ae1f19;
+  font-family: "SF Pro Text", "Inter", "verdana";
+  height: 39px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+
+  color: #ffffff;
+}
+
+/* Merchant QR code */
+#personal-details {
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height, or 150% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.15px;
+
+  /* Maha Red */
+
+  color: #ae1f19;
+}
+#emptyfield {
+  font-size: 10px;
+  font-family: "SF Pro Text", "Inter", "verdana";
+  color: #ae1f19;
+}
+
+#family-details {
+  font-family: "SF Pro Text", "Inter", "verdana";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height, or 150% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.15px;
+
+  /* Maha Red */
+
+  color: #ae1f19;
+}
+
+/* Home */
+
+/* ########## Body########## */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html body {
+  background-color: #fafbff;
+}
+
+.bgcolor {
+  background-color: #ae1f19;
+}
+#question {
+  padding-left: 100px;
+}
+
+/* ########## Navbar ########## */
+.navbar-nav li a {
+  font-family: "PT Sans";
+  font-size: 14px;
+  color: #ae1f19;
+}
+
+.navbar-nav .nav-item {
+  margin-right: 10px;
+}
+
+/* ########## Our Features cards ########## */
+.container-feature h3 {
+  color: #ae1f19;
+}
+.card.feature-card {
+  height: 210px;
+}
+.card {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}
+.card:hover {
+  background-color: #ae1f19 !important;
+  color: white !important;
+  transform: scale(1.1);
+  transition: 0.5s;
+}
+
+.card h6 {
+  text-decoration: none;
+  font-size: 14px;
+  font-family: "PT Sans";
+  font-weight: bold;
+  margin-top: 40px;
+}
+.hoverImg {
+  background-repeat: no-repeat;
+}
+.hoverImg:hover {
+  background-repeat: no-repeat;
+}
+
+/* card1 img */
+.img1 {
+  background-image: url("../images/Home_Page/CardImg/Open\ Account\ Online.png");
+  background-size: 50px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+.img1:hover {
+  background-image: url("../images/Home_Page/Hover/Open\ Account\ Online.png");
+}
+
+/* card2 img */
+.img2 {
+  background-image: url("../images/Home_Page/CardImg/Dispute\ Claim.png");
+  background-size: 28px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+.img2:hover {
+  background-image: url("../images/Home_Page/Hover/Dispute\ Claim\ copy.png");
+}
+
+/* card3 img */
+.img3 {
+  background-image: url("../images/Home_Page/CardImg/QR\ Merchant\ Aquisition.png");
+  background-size: 48px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+.img3:hover {
+  background-image: url("../images/Home_Page/Hover/QR\ Merchant\ Aquisition.png");
+}
+
+/* card4 img */
+.img4 {
+  background-image: url("../images/Home_Page/CardImg/Loan\ Eligibility.png");
+  background-size: 48px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+.img4:hover {
+  background-image: url("../images/Home_Page/Hover/Loan\ Eligibility.png");
+}
+
+/* card5 img */
+.img5 {
+  background-image: url("../images/Home_Page/CardImg/General\ Request.png");
+  background-size: 48px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+.img5:hover {
+  background-image: url("../images/Home_Page/Hover/General\ Request.png");
+}
+
+/* card6 img */
+.img6 {
+  background-image: url("../images/Home_Page/CardImg/Open\ KYC\ Account.png");
+  background-size: 48px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+.img6:hover {
+  background-image: url("../images/Home_Page/Hover/Open\ KYC\ Account.png");
+}
+
+/* ########## footer ########## */
+.footer {
+  background-color: #ae1f19;
+}
+.footer-link .nav-link {
+  padding: 3px 0px;
+}
+.footer-link li a {
+  font-size: 12px;
+  font-family: "PT Sans";
+}
+.col .footer-head {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: "PT Sans";
+}
+.contact {
+  font-size: 12px;
+  font-weight: bold;
+  font-family: "PT Sans";
+}
+.copyright h6 {
+  font-size: 12px;
+  font-family: "PT Sans";
+  font-weight: bold;
+}
+
+.social,
+.social-title h6 {
+  font-size: 12px;
+  font-family: "PT Sans";
+  font-weight: bold;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #009846;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #ae1f19;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #ae1f19;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
