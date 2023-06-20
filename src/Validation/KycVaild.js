@@ -86,7 +86,7 @@ const useStateValidationSchema = (formstates) => {
         kyc01last_name: Yup.string().required("Last Name is required"),
         kyc01email: Yup.string().email("Invalid Email").required("Email is required"),
         kyc01mobile_no: Yup.number().required("Mobile Number is required").min(1, "is required"),
-        kyc01phone_no: Yup.number().required("Phone Number is required").min(1, "is required"),
+
         kyc01dob_nep: Yup.string().required("Date of Birth (Nepali) is required"),
         kyc01dob_eng: Yup.string().required("Date of Birth (English) is required"),
 

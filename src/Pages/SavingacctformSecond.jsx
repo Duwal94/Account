@@ -6,6 +6,7 @@ import { API_URL } from "../Utilities/Constants";
 import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import NepaliDate from "nepali-date-converter";
+import Modal from "react-modal";
 
 function SavingacctformSecond() {
   const [selection, setSelection] = useState("no");
@@ -26,6 +27,7 @@ function SavingacctformSecond() {
   const [sameAsAbove, setSameAsAbove] = useState(false);
   const [show, setShow] = useState("false");
 
+  const [province1, setProvince1] = useState("0"); // Store the selected province value
   const [province, setProvince] = useState(""); // Store the selected province value
   const [district, setDistrict] = useState(""); // Store the selected district value
   const [municipality, setMunicipality] = useState(""); // Store the selected municipality value
@@ -38,6 +40,9 @@ function SavingacctformSecond() {
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [formValues, setFormValues] = useFormValues();
+  const [responseMessage, setResponseMessage] = useState("hello");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   const [bsDate, setBsDate] = useState("");
   const [adDate, setAdDate] = useState("");
@@ -89,13 +94,14 @@ function SavingacctformSecond() {
     const formattedMonth = bsMonth.toString().padStart(2, "0");
     const formattedDay = bsDay.toString().padStart(2, "0");
     const convertedDate = `${bsYear}-${formattedMonth}-${formattedDay}`;
-    console.log(convertedDate);
+
     if (index === 1) {
       setAdDate(adDate);
       setBsDate(convertedDate);
     } else if (index === 2) {
-      setAcc04IssuedDateEng(bsDate);
+      setAcc04IssuedDateEng(adDate);
       setAcc04IssuedDateNep(convertedDate);
+      console.log(convertedDate);
     } else if (index === 3) {
       setAcc05IssuedDateEng(adDate);
       setAcc05IssuedDateNep(convertedDate);
@@ -109,7 +115,8 @@ function SavingacctformSecond() {
   useEffect(() => {
     // Perform the desired action whenever `selection` changes
     console.log(formValues);
-  }, [formValues]);
+    console.log(acc04IssuedDateEng);
+  }, [formValues, acc04IssuedDateEng]);
 
   const handleSelectionChange2 = (event) => {
     setShow(event.target.value);
@@ -182,6 +189,7 @@ function SavingacctformSecond() {
 
     fetchData();
   }, []);
+
   //selection image facebook google etc
   const handleImageClick = (image) => {
     if (selectedImages.includes(image)) {
@@ -209,9 +217,9 @@ function SavingacctformSecond() {
       const newValues = e.target.value;
       setAdDate(newValues);
       newValue = value;
-    } else if (name === "kyc03set04uin") {
-      newValue = parseInt(value);
-    } else if (name === "kyc03set05uin") {
+    } else if (name === "provience1") {
+      setProvince1(value);
+    } else if (name === "acc06set05uin") {
       newValue = parseInt(value);
     } else {
       newValue = value; // Treat value as a string for other types
@@ -223,6 +231,52 @@ function SavingacctformSecond() {
     }));
   };
 
+  const handleChange2 = (event) => {
+    const { name, value } = event.target;
+    if (name === "acc06street2") {
+      setStreet(value);
+    } else if (name === "acc06ward_no2") {
+      setWard(parseInt(value));
+    } else if (name === "acc06resident_phone_no2") {
+      setResidentPhoneNumber(parseInt(value));
+    } else if (name === "acc06house_no2") {
+      setHouse(parseInt(value));
+    } else if (name === "acc06office_no2") {
+      setOfficePhoneNumber(parseInt(value));
+    } else if (name === "acc06mobile_no2") {
+      setMobileNumber(parseInt(value));
+    }
+  };
+  useEffect(() => {
+    const fetchOtpVerifyData = async () => {
+      try {
+        const response17 = await fetch(
+          `${API_URL}/GeneralComponents/GetDistrictsByProvinceId?id=${province1}`
+        );
+        const data17 = await response17.json();
+        setDistrictApi(data17);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOtpVerifyData();
+  }, [province1]);
+  useEffect(() => {
+    const fetchOtpVerifyData = async () => {
+      try {
+        const response41 = await fetch(
+          `${API_URL}/GeneralComponents/GetMuncipalityByDistrictId?id=${formValues.acc06set04uin}`
+        );
+        const data41 = await response41.json();
+        setMunicipalityApi(data41);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOtpVerifyData();
+  }, [formValues.acc06set04uin]);
   //for select-form
   const handleChangeSelect = (selectedOption) => {
     if (selectedOption) {
@@ -248,7 +302,7 @@ function SavingacctformSecond() {
       setMobileNumber("");
       setOfficePhoneNumber("");
     } else {
-      setProvince(formValues.kyc03set03uin);
+      setProvince(province1);
       setDistrict(formValues.acc06set04uin);
       setMunicipality(formValues.acc06set05uin);
       setWard(formValues.acc06ward_no);
@@ -283,6 +337,11 @@ function SavingacctformSecond() {
         acc05ExpiryDateNep || prevValues.acc05expiry_date_nep,
       acc05expiry_date_eng:
         acc05ExpiryDateEng || prevValues.acc05expiry_date_eng,
+
+      acc06resident_phone_no2:
+        residentPhoneNumber || prevValues.acc06resident_phone_no2,
+      acc06mobile_no2: mobileNumber || prevValues.acc06mobile_no2,
+      acc06office_no2: officePhoneNumber || prevValues.acc06office_no2,
     }));
   }, [
     district,
@@ -298,11 +357,86 @@ function SavingacctformSecond() {
     acc05IssuedDateEng,
     acc05ExpiryDateNep,
     acc05ExpiryDateEng,
+    residentPhoneNumber,
+    mobileNumber,
+    officePhoneNumber,
   ]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = `${API_URL}/AccountInfo/UpdateSavingFormData`; // Replace with your API endpoint URL
+
+    try {
+      // Validate the form using Yup
+      // await validationSchema.validate(formValues, { abortEarly: false });
+
+      // // Clear form errors if form is valid
+      // setFormErrors({});
+
+      // Send POST request to the API endpoint
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formValues),
+      });
+
+      if (!response.ok) {
+        throw new Error("Request failed with status " + response.status);
+      }
+
+      const responseData = await response.json();
+
+      if (responseData.status === true) {
+        // Form submitted successfully
+        setResponseMessage(
+          "Form submitted successfully " +
+            responseData.ref_id +
+            responseData.online_form2_pase_link
+        );
+        setModalIsOpen(true);
+      } else {
+        // Error in the API response
+        setResponseMessage(responseData.error_msg);
+        setModalIsOpen(true);
+      }
+    } catch (error) {
+      // Validation error or API request error
+      console.error("Error:", error);
+      // if (error.name === "ValidationError") {
+      //   //   // Yup validation error
+      //   const fieldErrors = {};
+      //   error.inner.forEach((validationError) => {
+      //     fieldErrors[validationError.path] = validationError.message;
+      //   });
+      //   setFormErrors(fieldErrors);
+      // } else {
+      // API request error
+      setResponseMessage("An error occurred while submitting the form.");
+      setModalIsOpen(true);
+      // }
+    }
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+  const modalStyle = {
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
 
   return (
     <div className="container-fluid mb-5">
-      <form>
+      <form onSubmit={handleSubmit}>
         {selection === "no" && (
           <div className="row row justify-content-evenly   " id="saving_form">
             <div className="col-md-12 col-lg-9 col-xl-8" id="form-section">
@@ -1148,9 +1282,9 @@ function SavingacctformSecond() {
                     Province
                   </label>
                   <select
-                    id="inputProvince"
                     className="form-select"
-                    name="kyc03set03uin"
+                    name="provience1"
+                    onChange={handleChange}
                   >
                     <option selected>Select Province</option>
                     {provienceApi.map((item) => (
@@ -1168,7 +1302,7 @@ function SavingacctformSecond() {
                     District
                   </label>
                   <select
-                    id="inputDistrict"
+                    id="num"
                     className="form-select"
                     name="acc06set04uin"
                     onChange={handleChange}
@@ -1192,7 +1326,7 @@ function SavingacctformSecond() {
                     Municipality
                   </label>
                   <select
-                    id="inputMunicipality"
+                    id="num"
                     className="form-select"
                     name="acc06set05uin"
                     onChange={handleChange}
@@ -1263,6 +1397,7 @@ function SavingacctformSecond() {
                   </label>
                   <span className="text-danger">*</span>
                   <input
+                    id="num"
                     type="text"
                     className="form-control"
                     placeholder
@@ -1277,6 +1412,7 @@ function SavingacctformSecond() {
                   </label>
                   <span className="text-danger">*</span>
                   <input
+                    id="num"
                     type="text"
                     className="form-control"
                     placeholder
@@ -1292,6 +1428,7 @@ function SavingacctformSecond() {
                   <input
                     type="text"
                     className="form-control"
+                    id="num"
                     placeholder
                     name="acc06mobile_no"
                     onChange={handleChange}
@@ -1409,7 +1546,7 @@ function SavingacctformSecond() {
                     name="acc06ward_no2"
                     value={ward}
                     maxLength={2}
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     disabled={sameAsAbove}
                   />
                   {/* {formErrors.kyc03ward_no_temp && !sameAsAbove && (
@@ -1427,7 +1564,7 @@ function SavingacctformSecond() {
                     name="acc06street2"
                     maxLength={10}
                     value={street}
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     disabled={sameAsAbove}
                   />
                   {/* {formErrors.kyc03street_temp && !sameAsAbove && (
@@ -1444,7 +1581,7 @@ function SavingacctformSecond() {
                     id="num"
                     name="acc06house_no2"
                     maxLength={100}
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     value={house}
                     disabled={sameAsAbove}
                   />
@@ -1461,9 +1598,9 @@ function SavingacctformSecond() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder
+                    id="num"
                     name="acc06office_no2"
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     value={officePhoneNumber}
                     disabled={sameAsAbove}
                   />
@@ -1479,7 +1616,8 @@ function SavingacctformSecond() {
                     className="form-control"
                     placeholder
                     name="acc06resident_phone_no2"
-                    onChange={handleChange}
+                    id="num"
+                    onChange={handleChange2}
                     value={residentPhoneNumber}
                     disabled={sameAsAbove}
                   />
@@ -1493,8 +1631,9 @@ function SavingacctformSecond() {
                     type="text"
                     className="form-control"
                     placeholder
+                    id="num"
                     name="acc06mobile_no2"
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     value={mobileNumber}
                     disabled={sameAsAbove}
                   />
@@ -1502,12 +1641,10 @@ function SavingacctformSecond() {
 
                 <div className="col-12 mt-5 mb-5 d-flex justify-content-between">
                   <button
-                    type="button"
-                    className="btn btn-outline-dark text-danger ps-4 pe-4 "
-                    id="addr_next"
-                    onClick={() => handleState("family")}
+                    type="submit"
+                    className="btn btn-outline-dark text-danger ps-4 pe-4"
                   >
-                    Next
+                    Submit
                   </button>
                 </div>
               </div>
@@ -2284,6 +2421,18 @@ function SavingacctformSecond() {
           </div>
         )}
       </form>
+      <div class="modal-dialog modal-dialog-centered">
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={modalStyle}
+        >
+          <h2>Response Message</h2>
+          <p>{responseMessage}</p>
+
+          <button onClick={closeModal}>Close</button>
+        </Modal>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { API_URL } from "../Utilities/Constants";
 import { useLocation } from "react-router-dom";
 
@@ -20,9 +18,9 @@ interface IFormValues {
   acc02bra01uin?: string;
   acc02contact_medium_no?: string;
   acc03Gender?: number;
-  acc03MaritalStatus?: string;
+  acc03MaritalStatus?: number;
   acc03Nationality?: string;
-  acc03Education?: string;
+  acc03Education?: number;
   acc03Link_to_financial_institute?: boolean;
   acc03Link_to_criminal_activity?: boolean;
   acc03has_bo?: boolean;
@@ -77,9 +75,9 @@ const savingSecond: IFormValues = {
   acc02bra01uin: "",
   acc02contact_medium_no: "",
   acc03Gender: 0,
-  acc03MaritalStatus: "",
+  acc03MaritalStatus: 0,
   acc03Nationality: "",
-  acc03Education: "",
+  acc03Education: 0,
   acc03Link_to_financial_institute: true,
   acc03Link_to_criminal_activity: true,
   acc03has_bo: true,
@@ -168,9 +166,9 @@ const useFormValues = (): [
         acc02bra01uin: getUserApi.acc02bra01uin || "string5",
         acc02contact_medium_no: getUserApi.acc02contact_medium_no || "string6",
         acc03Gender: 0,
-        acc03MaritalStatus: "",
+        acc03MaritalStatus: 0,
         acc03Nationality: "",
-        acc03Education: "",
+        acc03Education: 0,
         acc03Link_to_financial_institute: true,
         acc03Link_to_criminal_activity: true,
         acc03has_bo: true,
