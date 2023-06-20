@@ -8,7 +8,7 @@ const useFormValidationSchema = (eligibilityType) => {
     useEffect(() => {
         const individualValidationSchema = Yup.object().shape({
             eli01first_name: Yup.string().required("First Name is required"),
-            eli01middle_name: Yup.string().required("Middle Name is required"),
+
             eli01last_name: Yup.string().required("Last Name is required"),
             eli01mobile_no: Yup.string().required("Mobile Number is required"),
             eli01email: Yup.string().email("Invalid Email").required("Email is required"),
@@ -24,7 +24,7 @@ const useFormValidationSchema = (eligibilityType) => {
         });
         const businessValidationSchema = Yup.object().shape({
             eli01first_name: Yup.string().required("First Name is required"),
-            eli01middle_name: Yup.string().required("Middle Name is required"),
+
             eli01last_name: Yup.string().required("Last Name is required"),
             eli01mobile_no: Yup.string().required("Mobile Number is required"),
             eli01email: Yup.string().email("Invalid Email").required("Email is required"),

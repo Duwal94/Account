@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import ExitImg from "../Assets/images/Exit icon/exit.png";
+
 import Modal from "react-modal";
 import useFormValues from "../States/Dispute.tsx";
 import useFormValidationSchema from "../Validation/DisputeValid";
 function Disputeclaim() {
-  const [selectedOption, setSelectedOption] = useState("1");
+  const [selectedOption, setSelectedOption] = useState("");
   const [formErrors, setFormErrors] = useState({});
 
   const eligibilityType = selectedOption;
@@ -20,6 +20,11 @@ function Disputeclaim() {
   const [otpApi, setOtpApi] = useState(null);
   const [responseMessage, setResponseMessage] = useState("hello");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+
+  const otpverifyChange = (event) => {
+    setOtpInput(event.target.value);
+  };
 
   const handleDropdownChange = (event) => {
     setSelectedOption(event.target.value);
@@ -65,7 +70,7 @@ function Disputeclaim() {
   const fetchOtpVerifyData = async () => {
     try {
       const response = await fetch(
-        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+        `http://api.onlineform.ants.com.np/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${otpInput}`
       );
       const jsonData = await response.json();
       setOtpApi(jsonData);
@@ -97,10 +102,10 @@ function Disputeclaim() {
   };
 
   // // ////////checking
-  // useEffect(() => {
-  //   // Perform the desired action whenever `[]` changes
-  //   console.log(formValues);
-  // }, [formValues]);
+  useEffect(() => {
+    // Perform the desired action whenever `[]` changes
+    console.log(formValues);
+  }, [formValues]);
   //post fetch
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -193,7 +198,7 @@ function Disputeclaim() {
                   <a href="index.html">
                     <button className="back-button">
                       Back
-                      <img src={ExitImg} alt="" />
+                      <img src="/Assets/images/Exit icon/exit.png" alt="" />
                     </button>
                   </a>
                 </div>
@@ -210,6 +215,7 @@ function Disputeclaim() {
                     >
                       Dispute Types
                     </label>
+
                     <select
                       className="form-select"
                       name="car05sys06uin"
@@ -217,6 +223,7 @@ function Disputeclaim() {
                         handleDropdownChange(e);
                       }}
                     >
+                      <option value=""> -- Select Online Request -- </option>
                       {disputeTypesApi.map((item) => (
                         <option key={item.bindField} value={item.bindField}>
                           {item.displayField}
@@ -370,7 +377,7 @@ function Disputeclaim() {
                           <input
                             type="text"
                             className="form-control"
-                            value={acctApi.ref_id}
+                            onChange={otpverifyChange}
                           />
                           <div className="input-group-append">
                             <button
@@ -547,7 +554,6 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
-                        required
                       />
                       <label
                         className="form-check-label"
@@ -566,7 +572,6 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
-                        required
                       />
                       <label
                         className="form-check-label"
@@ -584,7 +589,6 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
-                        required
                       />
                       <label
                         className="form-check-label"
@@ -601,7 +605,6 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
-                        required
                       />
                       <label
                         className="form-check-label"
@@ -619,7 +622,6 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
-                        required
                       />
                       <label
                         className="form-check-label"
@@ -640,7 +642,6 @@ function Disputeclaim() {
                         type="checkbox"
                         defaultValue
                         id="flexCheckDefault"
-                        required
                       />
                       <label
                         className="form-check-label"
@@ -670,9 +671,7 @@ function Disputeclaim() {
                       </label>
                     </div>
                   </div>
-                  <div className="container">
-                    <ReCAPTCHA sitekey="6Ldbdg0TAAAAAI7KAf72Q6uagbWzWecTeBWmrCpJ" />
-                  </div>
+
                   <div className="col-12 mt-2 mb-5" id="btn">
                     <button
                       type="submit"

@@ -1,7 +1,7 @@
 import ReCAPTCHA from "react-google-recaptcha";
 import useFormValidationSchema from "../Validation/Loanvalid";
 import React, { useEffect, useState } from "react";
-import ExitImg from "../Assets/images/Exit icon/exit.png";
+
 import Select from "react-select";
 import useFormValues from "../States/loanelegibility.tsx";
 import Modal from "react-modal";
@@ -183,7 +183,8 @@ function Loaneligibility() {
                 <a href="index.html">
                   {" "}
                   <button className="back-button">
-                    Back <img src={ExitImg} alt="..." />
+                    Back{" "}
+                    <img src="/Assets/images/Exit icon/exit.png" alt="..." />
                   </button>
                 </a>
               </div>
@@ -481,71 +482,84 @@ function Loaneligibility() {
                 </h5>
               </div>
 
-              <div className="col-md-6">
-                {/*Period*/}
-                <label htmlFor="years">Years:</label>
-                <select
-                  className="form-select"
-                  id="years"
-                  name="eli01loan_period_year"
-                  value={formValues.eli01loan_period_year}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setYears(e.target.value);
-                  }}
+              <div className="col-md-3">
+                <label
+                  for="inputaccountsholdernumber"
+                  className="form-label yolo"
                 >
-                  <option value="">Select Years</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                  <option value="11">11</option>
-                  <option value="12">12</option>
-                </select>
-                {formErrors.eli01loan_period_year && (
-                  <div className="error">
-                    {formErrors.eli01loan_period_year}
+                  Period
+                  <span className="text-danger">*</span>
+                </label>
+                <div className="input-group col-md-3">
+                  <select
+                    className="form-select"
+                    aria-describedby="validationServer04Feedback"
+                    name="eli01loan_period_year"
+                    value={formValues.eli01loan_period_year}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setYears(e.target.value);
+                    }}
+                  >
+                    <option selected disabled>
+                      Select
+                    </option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">Year</span>
                   </div>
-                )}
+                </div>
               </div>
-              <div className="col-md-6">
-                {/*Period*/}
-                <label htmlFor="months">Months:</label>
-                <select
-                  className="form-select"
-                  id="months"
-                  name="eli01loan_period_month"
-                  value={formValues.eli01loan_period_month}
-                  onChange={(e) => {
-                    handleChange(e);
-                    setMonths(e.target.value);
-                  }}
-                >
-                  <option value="">Select Months</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                  <option value="11">11</option>
-                  <option value="12">12</option>
-                </select>
-                {formErrors.eli01loan_period_month && (
-                  <div className="error">
-                    {formErrors.eli01loan_period_month}
+              <div className="col-md-3">
+                <label for="inputaccountsholdernumber" class="form-label yolo">
+                  Period
+                  <span className="text-danger">*</span>
+                </label>
+                <div className="input-group col-md-3">
+                  <select
+                    className="form-select"
+                    aria-describedby="validationServer04Feedback"
+                    name="eli01loan_period_month"
+                    value={formValues.eli01loan_period_month}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setMonths(e.target.value);
+                    }}
+                  >
+                    <option selected disabled>
+                      Select
+                    </option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2"> 2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">Month</span>
                   </div>
-                )}
+                </div>
               </div>
               {selection === "individual" && (
                 <div className="col-md-5">

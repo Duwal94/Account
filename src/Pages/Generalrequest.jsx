@@ -1,5 +1,5 @@
 import React from "react";
-import ExitImg from "../Assets/images/Exit icon/exit.png";
+
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import useFormValues from "../States/GeneralRequest.tsx";
@@ -7,7 +7,7 @@ import Modal from "react-modal";
 import useFormValidationSchema from "../Validation/GeneralValidation";
 import { API_URL } from "../Utilities/Constants";
 function Generalrequest() {
-  const [selectedOption, setSelectedOption] = useState("1");
+  const [selectedOption, setSelectedOption] = useState("");
 
   const eligibilityType = selectedOption;
   const validationSchema = useFormValidationSchema(eligibilityType);
@@ -22,7 +22,11 @@ function Generalrequest() {
   const [otpApi, setOtpApi] = useState(null);
   const [responseMessage, setResponseMessage] = useState("hello");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
 
+  const otpverifyChange = (event) => {
+    setOtpInput(event.target.value);
+  };
   const handleDropdownChange = (event) => {
     setSelectedOption(event.target.value);
     setOtpVerify(false);
@@ -80,7 +84,7 @@ function Generalrequest() {
   const fetchAcctVerifyData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/GeneralComponents/VerifyAccount?AccNo=${formValues.car06acc_no}`
+        `${API_URL}/GeneralComponents/VerifyAccount?AccNo=${formValues.car02acc_no}`
       );
       const jsonData = await response.json();
       setAcctApi(jsonData);
@@ -93,7 +97,7 @@ function Generalrequest() {
   const fetchOtpVerifyData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+        `${API_URL}/GeneralComponents/VerifyOTP?AccNo=${formValues.car02acc_no}&OTP=${otpInput}`
       );
       const jsonData = await response.json();
       setOtpApi(jsonData);
@@ -103,10 +107,10 @@ function Generalrequest() {
   };
 
   // // ////////checking
-  // useEffect(() => {
-  //   // Perform the desired action whenever `[]` changes
-  //   console.log(formValues);
-  // }, [formValues]);
+  useEffect(() => {
+    // Perform the desired action whenever `[]` changes
+    console.log(formValues);
+  }, [formValues]);
   //post fetch
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -179,9 +183,9 @@ function Generalrequest() {
   useEffect(() => {
     setFormValues((prevValues) => ({
       ...prevValues,
-      car05acc_holder_name: otpApi?.name || prevValues.car05acc_holder_name,
-      car05contact_no: otpApi?.contact || prevValues.car05contact_no,
-      car05email_id: otpApi?.email || prevValues.car05email_id,
+      car02acc_holder_name: otpApi?.name || prevValues.car02acc_holder_name,
+      car02mobile_no: otpApi?.contact || prevValues.car02mobile_no,
+      car02email: otpApi?.email || prevValues.car02email,
     }));
   }, [otpApi?.name, otpApi?.contact, otpApi?.email]);
   return (
@@ -203,7 +207,7 @@ function Generalrequest() {
                     <a href="index.html">
                       <button id="bckbtn" className="back-button">
                         Back
-                        <img src={ExitImg} alt="" />
+                        <img src="/Assets/images/Exit icon/exit.png" alt="" />
                       </button>
                     </a>
                   </div>
@@ -231,6 +235,11 @@ function Generalrequest() {
                               name="car02car01uin"
                               onChange={handleDropdownChange}
                             >
+                              <option value>
+                                {" "}
+                                -- Select Online Request --{" "}
+                              </option>
+
                               {typesApi.map((item) => (
                                 <option
                                   key={item.car01uin}
@@ -290,7 +299,7 @@ function Generalrequest() {
                                 <input
                                   type="text"
                                   className="form-control"
-                                  value={acctApi.ref_id}
+                                  onChange={otpverifyChange}
                                 />
                                 <div className="input-group-append">
                                   <button

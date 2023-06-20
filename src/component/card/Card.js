@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './Card.css';
-import ExitImg from '../../Assets/images/Exit icon/exit.png';
-import Image from "../../Assets/images/saving_acc.jpg";
+
+
+import "./Card.css";
 
 const CardS = ({ title, bulletPoints }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -33,8 +33,9 @@ const CardS = ({ title, bulletPoints }) => {
 
 
   return (
-    <div className={`card ${isFlipped ? 'flipped' : ''}`} onClick={handleFlip}>
-      <div className="card-inner">
+    <div className={`card ${isFlipped ? 'flipped' : ''}`} style={{ paddingRight: '0px', paddingLeft: '0px' }} onClick={handleFlip}>
+
+      <div className="card_inner">
         <div className="card-front">
           <div className="ribbon-2">20% ANNUAL</div>
 
@@ -43,7 +44,7 @@ const CardS = ({ title, bulletPoints }) => {
           >
             {title}
           </div>
-          <img src={Image} alt="..." className="card-img" />
+          <img src="/Assets/images/saving_acc.jpg" alt="..." className="card-img" />
 
 
           <ul class="list-group">
@@ -65,7 +66,7 @@ const CardS = ({ title, bulletPoints }) => {
         </div>
         <div className="card-back">
           <button className="back94">
-            <img src={ExitImg} alt="Back" />Back
+            <img src="/Assets/images/Exit icon/exit.png" alt="Back" />Back
           </button>
 
           <p className='fixed'>Account Details</p>

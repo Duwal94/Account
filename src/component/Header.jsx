@@ -29,27 +29,27 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="Onlineaccount">
+              <a className="nav-link" href="/Onlineaccount">
                 Online Account
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="Loaneligibility">
+              <a className="nav-link" href="/Loaneligibility">
                 Loan Eligibility
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="Generalrequest">
+              <a className="nav-link" href="/Generalrequest">
                 General Request
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="disputeclaim">
+              <a className="nav-link" href="/disputeclaim">
                 Dispute Claim
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="Merchantqrcode">
+              <a className="nav-link" href="/Merchantqrcode">
                 Merchant QR Code
               </a>
             </li>

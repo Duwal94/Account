@@ -33,6 +33,7 @@ const individual: IFormValues = {
   car06address: "",
   car06reffered_by: "",
   car06refferer_contact_no: "",
+  car06contact_person_contact_no: "",
   car06mobile_payment_type: 0,
   car06bra01uin: 0,
   car06has_account: true,

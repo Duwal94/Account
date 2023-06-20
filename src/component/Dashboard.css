@@ -1,0 +1,184 @@
+/* carosel */
+.nav-link {
+  color: #c0514b;
+  margin-left: 10px;
+}
+.nav-link:hover {
+  color: #f2c21b;
+}
+.logo {
+  width: 80%;
+  margin-left: 35px;
+}
+body {
+  background: linear-gradient(to right, #f1bb00);
+}
+.h {
+  width: 50px;
+  height: 1px;
+  background-color: #f1bb00;
+}
+.slick {
+  font-family: "PT Sans";
+  background: #ae1f19;
+  color: #f1be32;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  /* height: 60px; */
+}
+.nav-link:hover {
+  color: #fff;
+}
+.slick-slide {
+  padding-top: 7px;
+  display: flex;
+}
+.slick-slide a {
+  padding: 0px 10px;
+  border-right: 1px solid #eee;
+  line-height: 19px;
+}
+.slick-link {
+  height: 34px;
+}
+
+.carousel-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0.7;
+}
+
+.carousel-caption {
+  bottom: 100px;
+  text-align: left;
+}
+/* cardsss css */
+.container-feature h3 {
+  color: #ae1f19;
+  font-family: "SF Pro Text";
+  font-weight: 700;
+}
+.card.feature-card {
+  height: 185px;
+  width: 185px;
+}
+.card {
+  box-shadow: 1px 1px 5px 0.65px rgba(233, 119, 119, 0.15);
+  border: none;
+}
+.card:hover {
+  background-color: #ae1f19;
+  transform: scale(1.1);
+  transition: 0.5s;
+}
+
+.card:hover h6 {
+  color: white;
+}
+
+.card h6 {
+  text-decoration: none;
+  font-size: 14px;
+  font-family: "SF Pro Text";
+  font-weight: 700;
+  margin-top: 60px;
+  color: #ae1f19;
+}
+
+.CardImg {
+  background-size: 48px;
+  background-position-x: center;
+  background-position-y: 50px;
+}
+
+/* card-1 img  */
+/* Card Images */
+.card-img {
+  transition: background-image 0.3s ease;
+}
+
+/* Card 1 */
+.img1 {
+  background-image: url("../../public/Assets/CardIMG/OpenKYCAccount.png");
+}
+
+.img1:hover {
+  background-image: url("../../public/Assets/HoverIMG/OpenKYCAccount.png");
+}
+
+/* Card 2 */
+.img2 {
+  background-image: url("../../public/Assets/CardIMG/OpenAccountOnline.png");
+}
+
+.img2:hover {
+  background-image: url("../../public/Assets/HoverIMG/OpenAccountOnline.png");
+}
+
+/* Card 3 */
+.img3 {
+  background-image: url("../../public/Assets/CardIMG/LoanEligibility.png");
+}
+
+.img3:hover {
+  background-image: url("../../public/Assets/HoverIMG/LoanEligibility.png");
+}
+
+/* Card 4 */
+.img4 {
+  background-image: url("../../public/Assets/CardIMG/GeneralRequest.png");
+}
+
+.img4:hover {
+  background-image: url("../../public/Assets/HoverIMG/GeneralRequest.png");
+}
+
+/* Card 5 */
+.img5 {
+  background-image: url("../../public/Assets/CardIMG/DisputeClaim.png");
+}
+
+.img5:hover {
+  background-image: url("../../public/Assets/HoverIMG/DisputeClaim.png");
+}
+
+/* Card 6 */
+.img6 {
+  background-image: url("../../public/Assets/CardIMG/QRMerchantAquisition.png");
+}
+
+.img6:hover {
+  background-image: url("../../public/Assets/HoverIMG/QRMerchantAquisition.png");
+}
+.hoverImg {
+  background-repeat: no-repeat;
+}
+.d-flex {
+  display: flex;
+}
+.flex-column {
+  flex-direction: column;
+}
+.justify-content-center {
+  justify-content: center;
+}
+
+/* Card Container */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10%;
+}
+
+/* Button */
+.btn3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

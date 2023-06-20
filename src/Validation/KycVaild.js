@@ -82,7 +82,7 @@ const useStateValidationSchema = (formstates) => {
 
         kyc01salutation: Yup.string().required("Salutation is required"),
         kyc01first_name: Yup.string().required("First Name is required"),
-        kyc01middle_name: Yup.string().required("Middle Name is required"),
+
         kyc01last_name: Yup.string().required("Last Name is required"),
         kyc01email: Yup.string().email("Invalid Email").required("Email is required"),
         kyc01mobile_no: Yup.number().required("Mobile Number is required").min(1, "is required"),
@@ -90,7 +90,7 @@ const useStateValidationSchema = (formstates) => {
         kyc01dob_nep: Yup.string().required("Date of Birth (Nepali) is required"),
         kyc01dob_eng: Yup.string().required("Date of Birth (English) is required"),
 
-        kyc01contact_medium_id: Yup.string().required("Contact Medium ID is required"),
+
 
         kyc01bra01uin: Yup.number().required("Branch is required").min(1, "is required"),
         kyc02grandfather_name: Yup.string().required("Grandfather's Name is required"),
@@ -99,8 +99,7 @@ const useStateValidationSchema = (formstates) => {
         kyc02grandfather_nationality: Yup.string().required("Grandfather's Nationality is required"),
         kyc02father_nationality: Yup.string().required("Father's Nationality is required"),
         kyc02mother_nationality: Yup.string().required("Mother's Nationality is required"),
-        kyc02spouse_nationality: Yup.string().required("Spouse's Nationality is required"),
-        kyc02spouse: Yup.string().required("Spouse is required"),
+
     });
     const AddressValidationSchema = Yup.object().shape({
 

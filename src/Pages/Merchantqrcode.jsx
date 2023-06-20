@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ExitImg from "../Assets/images/Exit icon/exit.png";
+
 import Select from "react-select";
 import useFormValues from "../States/MerchantQr.tsx";
 import Modal from "react-modal";
@@ -16,14 +16,17 @@ function Merchantqrcode() {
   const [otpApi, setOtpApi] = useState(null);
   const [formErrors, setFormErrors] = useState({});
 
-  const [otpNo, setOtpNo] = useState("");
-
   const [otpVerify, setOtpVerify] = useState(false);
   const [responseMessage, setResponseMessage] = useState("hello");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const eligibilityType = selection;
   const validationSchema = useFormValidationSchema(eligibilityType);
   const [formValues, setFormValues] = useFormValues(eligibilityType);
+  const [otpInput, setOtpInput] = useState("");
+
+  const otpverifyChange = (event) => {
+    setOtpInput(event.target.value);
+  };
 
   // fetch api data
   useEffect(() => {
@@ -67,7 +70,7 @@ function Merchantqrcode() {
   const fetchOtpVerifyData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${acctApi.ref_id}`
+        `${API_URL}/GeneralComponents/VerifyOTP?AccNo=${formValues.car06acc_no}&OTP=${otpInput}`
       );
       const jsonData = await response.json();
       setOtpApi(jsonData);
@@ -80,6 +83,7 @@ function Merchantqrcode() {
     const newValue = event.target.value === "true";
     setSelection(newValue);
     setOtpVerify(false);
+    setOtpApi(null);
   };
 
   //set name,value to form
@@ -105,10 +109,10 @@ function Merchantqrcode() {
     }
   };
   // ////////checking
-  // useEffect(() => {
-  //   // Perform the desired action whenever `selection` changes
-  //   console.log(formValues);
-  // }, [formValues]);
+  useEffect(() => {
+    // Perform the desired action whenever `selection` changes
+    console.log(formValues);
+  }, [formValues]);
 
   //post fetch
   const handleSubmit = async (e) => {
@@ -177,6 +181,14 @@ function Merchantqrcode() {
       transform: "translate(-50%, -50%)",
     },
   };
+  useEffect(() => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      car06name: otpApi?.name || prevValues.car06name,
+      car06contact_person_contact_no:
+        otpApi?.contact || prevValues.car06contact_person_contact_no,
+    }));
+  }, [otpApi?.name, otpApi?.contact]);
   return (
     <div className="container-fluid">
       <div className="col-12 pcolor mb-5" id="loan">
@@ -190,7 +202,7 @@ function Merchantqrcode() {
               <div className="button">
                 <a href="index.html">
                   <button className="back-button">
-                    Back <img src={ExitImg} alt="" />
+                    Back <img src="/Assets/images/Exit icon/exit.png" alt="" />
                   </button>
                 </a>
               </div>
@@ -360,7 +372,7 @@ function Merchantqrcode() {
                       <input
                         type="text"
                         className="form-control"
-                        value={acctApi.ref_id}
+                        onChange={otpverifyChange}
                       />
                       <div className="input-group-append">
                         <button
@@ -399,12 +411,11 @@ function Merchantqrcode() {
                     Name
                   </label>
                   <input
-                    type="text"
                     className="form-control"
                     id="inputname"
-                    name="car06name"
+                    name="accountholder"
                     disabled
-                    value={otpApi?.name || ""}
+                    value={otpApi?.name || " "}
                   />
                 </div>
                 {/* contact */}
@@ -413,13 +424,11 @@ function Merchantqrcode() {
                     Contact Number
                   </label>
                   <input
-                    type="text"
                     className="form-control numberOnly"
                     id="inputnumber"
-                    placeholder="Contact Number(Refferer's)"
-                    name="car06contact_person_contact_no"
+                    name="mobilenumber"
                     disabled
-                    value={otpApi?.contact || ""}
+                    value={otpApi?.contact || " "}
                   />
                 </div>
 
@@ -490,7 +499,6 @@ function Merchantqrcode() {
                           name="car06mobile_payment_type"
                           id="flexRadioDefault1"
                           value="1"
-                          defaultChecked
                           onChange={handleChange}
                         />
                         <label

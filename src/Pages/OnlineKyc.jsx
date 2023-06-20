@@ -1,8 +1,4 @@
 import { useState, useEffect } from "react";
-import ExitImg from "../Assets/images/Exit icon/exit.png";
-import FaceB from "../Assets/images/After_Verification/Social Network/Facebook.png";
-import TIW from "../Assets/images/After_Verification/Social Network/Twitter.png";
-import LinkedIn from "../Assets/images/After_Verification/Social Network/LinkedIn.png";
 import useFormValues from "../States/KYC.tsx";
 import Select from "react-select";
 import Modal from "react-modal";
@@ -11,6 +7,9 @@ import {
   useStateValidationSchema,
 } from "../Validation/KycVaild";
 import { API_URL } from "../Utilities/Constants";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
+import NepaliDate from "nepali-date-converter";
 
 function OnlineKyc() {
   const [selection, setSelection] = useState("terms");
@@ -29,6 +28,29 @@ function OnlineKyc() {
   const [ward, setWard] = useState(""); // Store the selected municipality value
   const [street, setStreet] = useState(""); // Store the selected municipality value
   const [house, setHouse] = useState(""); // Store the selected municipality value
+  const [bsDate, setBsDate] = useState("");
+  const [adDate, setAdDate] = useState("");
+  const [kyc04IssuedDateNep, setKyc04IssuedDateNep] = useState("");
+  const [kyc04IssuedDateEng, setKyc04IssuedDateEng] = useState("");
+
+  const [kyc04PassportIssuedDateNep, setKyc04PassportIssuedDateNep] =
+    useState("");
+  const [kyc04PassportIssuedDateEng, setKyc04PassportIssuedDateEng] =
+    useState("");
+
+  const [kyc04ExpiryDateNep, setKyc04ExpiryDateNep] = useState("");
+  const [kyc04ExpiryDateEng, setKyc04ExpiryDateEng] = useState("");
+
+  const [kyc04VisaIssueDateNep, setKyc04VisaIssueDateNep] = useState("");
+  const [kyc04VisaIssueDateEng, setKyc04VisaIssueDateEng] = useState("");
+
+  const [kyc04VisaExpiryDateNep, setKyc04VisaExpiryDateNep] = useState("");
+  const [kyc04VisaExpiryDateEng, setKyc04VisaExpiryDateEng] = useState("");
+
+  const [kyc04VoterIdIssuedDateNep, setKyc04VoterIdIssuedDateNep] =
+    useState("");
+  const [kyc04VoterIdIssuedDateEng, setKyc04VoterIdIssuedDateEng] =
+    useState("");
 
   const [formErrors, setFormErrors] = useState({});
   const [responseMessage, setResponseMessage] = useState("hello");
@@ -40,6 +62,81 @@ function OnlineKyc() {
   const validationSchema = useFormValidationSchema(eligibilityType);
 
   const [formValues, setFormValues] = useFormValues(eligibilityType);
+
+  ///date
+  const handleBsDate = (bsDate, index) => {
+    if (bsDate) {
+      const [year, month, day] = bsDate.split("-").map(Number);
+      if (
+        year >= 2000 &&
+        year <= 2090 &&
+        month >= 1 &&
+        month <= 12 &&
+        day >= 1 &&
+        day <= 30
+      ) {
+        const nepaliDate = new NepaliDate(year, month - 1, day + 1);
+        const convertedDate = nepaliDate.toJsDate().toISOString().slice(0, 10);
+        if (index === 1) {
+          setBsDate(bsDate);
+          setAdDate(convertedDate);
+        } else if (index === 2) {
+          setKyc04IssuedDateNep(bsDate);
+          setKyc04IssuedDateEng(convertedDate);
+        } else if (index === 3) {
+          setKyc04PassportIssuedDateNep(adDate);
+          setKyc04PassportIssuedDateEng(convertedDate);
+        } else if (index === 4) {
+          setKyc04ExpiryDateNep(adDate);
+          setKyc04ExpiryDateEng(convertedDate);
+        } else if (index === 5) {
+          setKyc04VisaIssueDateNep(adDate);
+          setKyc04VisaIssueDateEng(convertedDate);
+        } else if (index === 6) {
+          setKyc04VisaExpiryDateNep(adDate);
+          setKyc04VisaExpiryDateEng(convertedDate);
+        } else if (index === 7) {
+          setKyc04VoterIdIssuedDateNep(adDate);
+          setKyc04VoterIdIssuedDateEng(convertedDate);
+        }
+      }
+    }
+  };
+
+  const handleAdDate = (event, index) => {
+    const adDate = event.target.value;
+    const jsDate = new Date(adDate);
+    const nepaliDate = new NepaliDate(jsDate);
+    const bsYear = nepaliDate.getYear();
+    const bsMonth = nepaliDate.getMonth() + 1;
+    const bsDay = nepaliDate.getDate();
+    const formattedMonth = bsMonth.toString().padStart(2, "0");
+    const formattedDay = bsDay.toString().padStart(2, "0");
+    const convertedDate = `${bsYear}-${formattedMonth}-${formattedDay}`;
+    console.log(convertedDate);
+    if (index === 1) {
+      setAdDate(adDate);
+      setBsDate(convertedDate);
+    } else if (index === 2) {
+      setKyc04IssuedDateEng(adDate);
+      setKyc04IssuedDateNep(convertedDate);
+    } else if (index === 3) {
+      setKyc04PassportIssuedDateEng(adDate);
+      setKyc04PassportIssuedDateNep(convertedDate);
+    } else if (index === 4) {
+      setKyc04ExpiryDateEng(adDate);
+      setKyc04ExpiryDateNep(convertedDate);
+    } else if (index === 5) {
+      setKyc04VisaIssueDateEng(adDate);
+      setKyc04VisaIssueDateNep(convertedDate);
+    } else if (index === 6) {
+      setKyc04VisaExpiryDateEng(adDate);
+      setKyc04VisaExpiryDateNep(convertedDate);
+    } else if (index === 7) {
+      setKyc04VoterIdIssuedDateEng(adDate);
+      setKyc04VoterIdIssuedDateNep(convertedDate);
+    }
+  };
 
   // ////////checking
   useEffect(() => {
@@ -103,6 +200,17 @@ function OnlineKyc() {
       ...prevValues,
       [name]: newValue,
     }));
+  };
+  //set ward
+  const handleChange2 = (event) => {
+    const { name, value } = event.target;
+    if (name === "kyc03ward_no_temp") {
+      setWard(value);
+    } else if (name === "kyc03street_temp") {
+      setStreet(value);
+    } else {
+      setHouse(value);
+    } // Update the ward state with the new value
   };
   //for select-form
   const handleChangeSelect = (selectedOption) => {
@@ -258,16 +366,75 @@ function OnlineKyc() {
   };
   //disable field value intake
   useEffect(() => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      kyc03set03uin_temp: province || prevValues.kyc03set03uin_temp,
-      kyc03set04uin_temp: district || prevValues.kyc03set04uin_temp,
-      kyc03set05uin_temp: municipality || prevValues.kyc03set05uin_temp,
-      kyc03ward_no_temp: ward || prevValues.kyc03ward_no_temp,
-      kyc03street_temp: street || prevValues.kyc03street_temp,
-      kyc03house_no_temp: house || prevValues.kyc03house_no_temp,
-    }));
-  }, [province, district, municipality, ward, street, house]);
+    setFormValues((prevValues) => {
+      let updatedValues = { ...prevValues };
+
+      updatedValues.kyc03set03uin_temp =
+        province || prevValues.kyc03set03uin_temp;
+      updatedValues.kyc03set04uin_temp =
+        district || prevValues.kyc03set04uin_temp;
+      updatedValues.kyc03set05uin_temp =
+        municipality || prevValues.kyc03set05uin_temp;
+      updatedValues.kyc03ward_no_temp = ward || prevValues.kyc03ward_no_temp;
+      updatedValues.kyc03street_temp = street || prevValues.kyc03street_temp;
+      updatedValues.kyc03house_no_temp = house || prevValues.kyc03house_no_temp;
+      updatedValues.kyc01dob_eng = adDate || prevValues.kyc01dob_eng;
+      updatedValues.kyc01dob_nep = bsDate || prevValues.kyc01dob_nep;
+
+      if (internalRadio === "citizen") {
+        updatedValues.kyc04issued_date_nep =
+          kyc04IssuedDateNep || prevValues.kyc04issued_date_nep;
+        updatedValues.kyc04issued_date_eng =
+          kyc04IssuedDateEng || prevValues.kyc04issued_date_eng;
+      } else if (internalRadio === "passport") {
+        updatedValues.kyc04passport_issued_date_nep =
+          kyc04PassportIssuedDateNep ||
+          prevValues.kyc04passport_issued_date_nep;
+        updatedValues.kyc04passport_issued_date_eng =
+          kyc04PassportIssuedDateEng ||
+          prevValues.kyc04passport_issued_date_eng;
+
+        updatedValues.kyc04visa_issue_date_nep =
+          kyc04VisaIssueDateNep || prevValues.kyc04visa_issue_date_nep;
+        updatedValues.kyc04visa_issue_date_eng =
+          kyc04VisaIssueDateEng || prevValues.kyc04visa_issue_date_eng;
+        updatedValues.kyc04visa_expiry_date_nep =
+          kyc04VisaExpiryDateNep || prevValues.kyc04visa_expiry_date_nep;
+        updatedValues.kyc04visa_expiry_date_eng =
+          kyc04VisaExpiryDateEng || prevValues.kyc04visa_expiry_date_eng;
+      } else if (internalRadio === "voter") {
+        updatedValues.kyc04voterid_issued_date_nep =
+          kyc04VoterIdIssuedDateNep || prevValues.kyc04voterid_issued_date_nep;
+        updatedValues.kyc04voterid_issued_date_eng =
+          kyc04VoterIdIssuedDateEng || prevValues.kyc04voterid_issued_date_eng;
+      }
+
+      // Continue adding if-else conditions for other fields as needed
+
+      return updatedValues;
+    });
+  }, [
+    province,
+    district,
+    municipality,
+    ward,
+    street,
+    house,
+    adDate,
+    bsDate,
+    kyc04IssuedDateNep,
+    kyc04IssuedDateEng,
+    kyc04PassportIssuedDateNep,
+    kyc04PassportIssuedDateEng,
+    kyc04VisaIssueDateNep,
+    kyc04VisaIssueDateEng,
+    kyc04VisaExpiryDateNep,
+    kyc04VisaExpiryDateEng,
+    kyc04VoterIdIssuedDateNep,
+    kyc04VoterIdIssuedDateEng,
+    eligibilityType, // Add eligibilityType as a dependency
+  ]);
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -482,7 +649,7 @@ function OnlineKyc() {
                 <div className="button">
                   <a className="btn back-button ps-3" href="KYCform.html">
                     Back
-                    <img src={ExitImg} alt="..." />
+                    <img src="/Assets/images/Exit icon/exit.png" alt="..." />
                   </a>
                 </div>
               </div>
@@ -537,7 +704,7 @@ function OnlineKyc() {
                   <div className="button">
                     <button className="back-button ps-3">
                       Back
-                      <img src={ExitImg} alt="..." />
+                      <img src="/Assets/images/Exit icon/exit.png" alt="..." />
                     </button>
                   </div>
                 </div>
@@ -698,7 +865,6 @@ function OnlineKyc() {
                       type="text"
                       className="form-control"
                       placeholder="Middle Name"
-                      required
                       name="kyc01middle_name"
                       onChange={handleChange}
                     />
@@ -718,7 +884,6 @@ function OnlineKyc() {
                       className="form-control"
                       id="inputLastName"
                       placeholder="Last Name"
-                      required
                       name="kyc01last_name"
                       onChange={handleChange}
                     />
@@ -741,7 +906,6 @@ function OnlineKyc() {
                       className="form-control"
                       id="num"
                       placeholder="+977 9898989898"
-                      required
                       name="kyc01mobile_no"
                       onChange={handleChange}
                     />
@@ -760,7 +924,6 @@ function OnlineKyc() {
                       className="form-control"
                       id="inputEmail"
                       placeholder="username@gmail.com"
-                      required
                       name="kyc01email"
                       onChange={handleChange}
                     />
@@ -782,7 +945,6 @@ function OnlineKyc() {
                       className="form-control"
                       id="num"
                       placeholder="01-0024984"
-                      required
                       name="kyc01phone_no"
                       onChange={handleChange}
                     />
@@ -804,41 +966,44 @@ function OnlineKyc() {
                       className="form-control"
                       id="num"
                       placeholder="01-0024984"
-                      required
                       onChange={handleChange}
                     />
                   </div>
                   <div className="col-md-4">
-                    {" "}
                     {/*Date of Birth B.S. Date Picker*/}
                     <label htmlFor="dob" className="form-label yolo">
                       Date of Birth (B.S.)
                     </label>
-                    <input
-                      type="date"
-                      className="form-control text"
-                      placeholder
-                      required
-                      name="kyc01dob_nep"
-                      onChange={handleChange}
+                    <NepaliDatePicker
+                      inputClassName="form-control"
+                      value={bsDate}
+                      onChange={(value) => {
+                        handleBsDate(value, 1);
+                        setFormValues((prevValues) => ({
+                          ...prevValues,
+                          kyc01dob_nep: value,
+                        }));
+                      }}
+                      options={{ calenderLocale: "ne", valueLocale: "en" }}
                     />
                     {formErrors.kyc01dob_nep && (
                       <div className="error">{formErrors.kyc01dob_nep}</div>
                     )}
                   </div>
                   <div className="col-md-3">
-                    {" "}
                     {/*Date of Birth A.D. Date Picker*/}
                     <label htmlFor="DOB" className="form-label yolo">
                       Date of Birth (A.D)
                     </label>
                     <input
                       type="date"
-                      className="form-control text"
-                      placeholder
-                      required
+                      className="form-control englishDate text dateISO"
                       name="kyc01dob_eng"
-                      onChange={handleChange}
+                      value={adDate}
+                      onChange={(e) => {
+                        handleAdDate(e, 1);
+                        handleChange(e);
+                      }}
                     />
                     {formErrors.kyc01dob_eng && (
                       <div className="error">{formErrors.kyc01dob_eng}</div>
@@ -860,9 +1025,21 @@ function OnlineKyc() {
                       }}
                     >
                       <div className="img p-2">
-                        <img src={FaceB} style={{ padding: 10 }} alt="..." />
-                        <img src={TIW} style={{ padding: 10 }} alt="..." />
-                        <img src={LinkedIn} style={{ padding: 10 }} alt="..." />
+                        <img
+                          src="/Assets/images/After_Verification/Social Network/Facebook.png"
+                          style={{ padding: 10 }}
+                          alt="..."
+                        />
+                        <img
+                          src="/Assets/images/After_Verification/Social Network/Twitter.png"
+                          style={{ padding: 10 }}
+                          alt="..."
+                        />
+                        <img
+                          src="/Assets/images/After_Verification/Social Network/LinkedIn.png"
+                          style={{ padding: 10 }}
+                          alt="..."
+                        />
                       </div>
                     </div>
                     <input
@@ -870,7 +1047,6 @@ function OnlineKyc() {
                       className="form-control"
                       id="num"
                       placeholder="Username or URL Link"
-                      required
                       name="kyc01contact_medium_id"
                       onChange={handleChange}
                     />
@@ -899,7 +1075,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputGrandPaName"
                           placeholder="GrandFather's Name"
-                          required
                           name="kyc02grandfather_name"
                           onChange={handleChange}
                         />
@@ -923,7 +1098,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputGrandPaNationality"
                           placeholder="GrandFather's Name"
-                          required
                           name="kyc02grandfather_nationality"
                           onChange={handleChange}
                         />
@@ -947,7 +1121,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputFatherName"
                           placeholder="Father's Name"
-                          required
                           name="kyc02father_name"
                           onChange={handleChange}
                         />
@@ -971,7 +1144,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputFatherNationality"
                           placeholder="Father's Nationality"
-                          required
                           name="kyc02father_nationality"
                           onChange={handleChange}
                         />
@@ -995,7 +1167,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputMotherName"
                           placeholder="Mother's Name"
-                          required
                           name="kyc02mother_name"
                           onChange={handleChange}
                         />
@@ -1019,7 +1190,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputMotherNationality"
                           placeholder="Mother's Nationality"
-                          required
                           name="kyc02mother_nationality"
                           onChange={handleChange}
                         />
@@ -1043,7 +1213,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputSpouseName"
                           placeholder="Spouse's Name"
-                          required
                           name="kyc02spouse"
                           onChange={handleChange}
                         />
@@ -1065,7 +1234,6 @@ function OnlineKyc() {
                           className="form-control"
                           id="inputSpouseNationality"
                           placeholder="Spouse's Nationality"
-                          required
                           name="kyc02spouse_nationality"
                           onChange={handleChange}
                         />
@@ -1110,7 +1278,10 @@ function OnlineKyc() {
                     <a href="KYCform.html">
                       <button className="back-button ps-3">
                         Back
-                        <img src={ExitImg} alt="..." />
+                        <img
+                          src="/Assets/images/Exit icon/exit.png"
+                          alt="..."
+                        />
                       </button>
                     </a>
                   </div>
@@ -1196,7 +1367,6 @@ function OnlineKyc() {
                     id="num"
                     name="kyc03ward_no"
                     maxLength={2}
-                    required
                     onChange={handleChange}
                   />
                   {formErrors.kyc03ward_no && (
@@ -1213,7 +1383,6 @@ function OnlineKyc() {
                     id="Street"
                     name="kyc03street"
                     maxLength={10}
-                    required
                     onChange={handleChange}
                   />
                   {formErrors.kyc03street && (
@@ -1342,14 +1511,12 @@ function OnlineKyc() {
                     Ward Number
                   </label>
                   <input
-                    type="num"
                     className="form-control syncSame numberOnly"
                     id="num"
                     name="kyc03ward_no_temp"
                     value={ward}
                     maxLength={2}
-                    required
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     disabled={sameAsAbove}
                   />
                   {formErrors.kyc03ward_no_temp && !sameAsAbove && (
@@ -1366,9 +1533,8 @@ function OnlineKyc() {
                     id="Street"
                     name="kyc03street_temp"
                     maxLength={10}
-                    required
                     value={street}
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     disabled={sameAsAbove}
                   />
                   {formErrors.kyc03street_temp && !sameAsAbove && (
@@ -1385,7 +1551,7 @@ function OnlineKyc() {
                     id="num"
                     name="kyc03house_no_temp"
                     maxLength={100}
-                    onChange={handleChange}
+                    onChange={handleChange2}
                     value={house}
                     disabled={sameAsAbove}
                   />
@@ -1544,15 +1710,18 @@ function OnlineKyc() {
                           )}
                         </div>
                         <div className="col-md-3">
-                          <label className="form-label yolo">
+                          <label
+                            htmlFor="inputPIssueAuthority"
+                            className="form-label yolo required"
+                          >
                             Issuing Authority
                           </label>
                           <input
-                            type="date"
+                            type="text"
+                            className="form-control"
+                            id="inputIssue"
                             name="kyc04issued_office"
                             onChange={handleChange}
-                            className="form-control text"
-                            placeholder
                           />
                           {formErrors.kyc04issued_office && (
                             <div className="error">
@@ -1564,11 +1733,20 @@ function OnlineKyc() {
                           <label className="form-label yolo">
                             Date of Issue (B.S.)
                           </label>
-                          <input
-                            type="date"
-                            name="kyc04issued_date_nep"
-                            className="form-control text"
-                            onChange={handleChange}
+                          <NepaliDatePicker
+                            inputClassName="form-control"
+                            value={kyc04IssuedDateNep}
+                            onChange={(value) => {
+                              handleBsDate(value, 2);
+                              setFormValues((prevValues) => ({
+                                ...prevValues,
+                                kyc04issued_date_nep: value,
+                              }));
+                            }}
+                            options={{
+                              calenderLocale: "ne",
+                              valueLocale: "en",
+                            }}
                           />
                           {formErrors.kyc04issued_date_nep && (
                             <div className="error">
@@ -1582,9 +1760,13 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            name="kyc04issued_date_eng"
-                            className="form-control text"
-                            onChange={handleChange}
+                            className="form-control englishDate text dateISO"
+                            name="kyc01dob_eng"
+                            value={kyc04IssuedDateEng}
+                            onChange={(e) => {
+                              handleAdDate(e, 2);
+                              handleChange(e);
+                            }}
                           />
                           {formErrors.kyc04issued_date_eng && (
                             <div className="error">
@@ -1663,7 +1845,6 @@ function OnlineKyc() {
                             type="text"
                             className="form-control"
                             id="inputIssue"
-                            placeholder="01-0024984"
                             name="kyc04issued_office"
                             onChange={handleChange}
                           />
@@ -1682,9 +1863,13 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
-                            className="form-control text"
+                            className="form-control englishDate text dateISO"
                             name="kyc04passport_issued_date_eng"
-                            onChange={handleChange}
+                            value={kyc04PassportIssuedDateEng}
+                            onChange={(e) => {
+                              handleAdDate(e, 3);
+                              handleChange(e);
+                            }}
                           />
                           {formErrors.kyc04passport_issued_date_eng && (
                             <div className="error">
@@ -1699,11 +1884,20 @@ function OnlineKyc() {
                           >
                             Date of Issue (B.S.)
                           </label>
-                          <input
-                            type="date"
-                            name="kyc04passport_issued_date_nep"
-                            className="form-control text"
-                            onChange={handleChange}
+                          <NepaliDatePicker
+                            inputClassName="form-control"
+                            value={kyc04PassportIssuedDateNep}
+                            onChange={(value) => {
+                              handleBsDate(value, 3);
+                              setFormValues((prevValues) => ({
+                                ...prevValues,
+                                kyc04passport_issued_date_nep: value,
+                              }));
+                            }}
+                            options={{
+                              calenderLocale: "ne",
+                              valueLocale: "en",
+                            }}
                           />
                           {formErrors.kyc04passport_issued_date_nep && (
                             <div className="error">
@@ -1720,9 +1914,13 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
+                            className="form-control englishDate text dateISO"
                             name="kyc04expiry_date_eng"
-                            className="form-control text"
-                            onChange={handleChange}
+                            value={kyc04ExpiryDateEng}
+                            onChange={(e) => {
+                              handleAdDate(e, 4);
+                              handleChange(e);
+                            }}
                           />
                           {formErrors.kyc04expiry_date_eng && (
                             <div className="error">
@@ -1737,12 +1935,22 @@ function OnlineKyc() {
                           >
                             ID Expiry Date (B.S.)
                           </label>
-                          <input
-                            type="date"
-                            name="kyc04expiry_date_nep"
-                            className="form-control text"
-                            onChange={handleChange}
+                          <NepaliDatePicker
+                            inputClassName="form-control"
+                            value={kyc04ExpiryDateNep}
+                            onChange={(value) => {
+                              handleBsDate(value, 4);
+                              setFormValues((prevValues) => ({
+                                ...prevValues,
+                                kyc04expiry_date_nep: value,
+                              }));
+                            }}
+                            options={{
+                              calenderLocale: "ne",
+                              valueLocale: "en",
+                            }}
                           />
+
                           {formErrors.kyc04expiry_date_nep && (
                             <div className="error">
                               {formErrors.kyc04expiry_date_nep}
@@ -1758,9 +1966,13 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
+                            className="form-control englishDate text dateISO"
                             name="kyc04visa_issue_date_eng"
-                            className="form-control text"
-                            onChange={handleChange}
+                            value={kyc04VisaIssueDateEng}
+                            onChange={(e) => {
+                              handleAdDate(e, 5);
+                              handleChange(e);
+                            }}
                           />
                           {formErrors.kyc04visa_issue_date_eng && (
                             <div className="error">
@@ -1773,13 +1985,22 @@ function OnlineKyc() {
                             htmlFor="inputPassportIssue"
                             className="form-label yolo required"
                           >
-                            Passport Issue Date(B.S.)
+                            Passport Issue for Foreigner Date(B.S.)
                           </label>
-                          <input
-                            type="date"
-                            name="kyc04visa_issue_date_nep"
-                            className="form-control text"
-                            onChange={handleChange}
+                          <NepaliDatePicker
+                            inputClassName="form-control"
+                            value={kyc04VisaIssueDateNep}
+                            onChange={(value) => {
+                              handleBsDate(value, 5);
+                              setFormValues((prevValues) => ({
+                                ...prevValues,
+                                kyc04visa_issue_date_nep: value,
+                              }));
+                            }}
+                            options={{
+                              calenderLocale: "ne",
+                              valueLocale: "en",
+                            }}
                           />
                           {formErrors.kyc04visa_issue_date_nep && (
                             <div className="error">
@@ -1792,13 +2013,17 @@ function OnlineKyc() {
                             htmlFor="inputPassportExpiry"
                             className="form-label yolo required"
                           >
-                            Passport Expiry (for foreigners)
+                            Passport Expiry for foreigners (A.D)
                           </label>
                           <input
                             type="date"
+                            className="form-control englishDate text dateISO"
                             name="kyc04visa_expiry_date_eng"
-                            className="form-control text"
-                            onChange={handleChange}
+                            value={kyc04VisaExpiryDateEng}
+                            onChange={(e) => {
+                              handleAdDate(e, 6);
+                              handleChange(e);
+                            }}
                           />
                           {formErrors.kyc04visa_expiry_date_eng && (
                             <div className="error">
@@ -1811,14 +2036,24 @@ function OnlineKyc() {
                             htmlFor="inputPassportExDate"
                             className="form-label yolo required"
                           >
-                            Passport Expiry Date (B.S.)
+                            Passport Expiry for foreigners (B.S.)
                           </label>
-                          <input
-                            type="date"
-                            name="kyc04visa_expiry_date_nep"
-                            className="form-control text"
-                            onChange={handleChange}
+                          <NepaliDatePicker
+                            inputClassName="form-control"
+                            value={kyc04VisaExpiryDateNep}
+                            onChange={(value) => {
+                              handleBsDate(value, 6);
+                              setFormValues((prevValues) => ({
+                                ...prevValues,
+                                kyc04visa_expiry_date_nep: value,
+                              }));
+                            }}
+                            options={{
+                              calenderLocale: "ne",
+                              valueLocale: "en",
+                            }}
                           />
+
                           {formErrors.kyc04visa_expiry_date_nep && (
                             <div className="error">
                               {formErrors.kyc04visa_expiry_date_nep}
@@ -1856,13 +2091,22 @@ function OnlineKyc() {
                           <label className="form-label yolo">
                             Date of Issue (B.S.)
                           </label>
-                          <input
-                            type="date"
-                            name="kyc04voterid_issued_date_nep"
-                            className="form-control text"
-                            placeholder
-                            onChange={handleChange}
+                          <NepaliDatePicker
+                            inputClassName="form-control"
+                            value={kyc04VoterIdIssuedDateNep}
+                            onChange={(value) => {
+                              handleBsDate(value, 7);
+                              setFormValues((prevValues) => ({
+                                ...prevValues,
+                                kyc04voterid_issued_date_nep: value,
+                              }));
+                            }}
+                            options={{
+                              calenderLocale: "ne",
+                              valueLocale: "en",
+                            }}
                           />
+
                           {formErrors.kyc04voterid_issued_date_nep && (
                             <div className="error">
                               {formErrors.kyc04voterid_issued_date_nep}
@@ -1875,9 +2119,13 @@ function OnlineKyc() {
                           </label>
                           <input
                             type="date"
+                            className="form-control englishDate text dateISO"
                             name="kyc04voterid_issued_date_eng"
-                            className="form-control text"
-                            onChange={handleChange}
+                            value={kyc04VoterIdIssuedDateEng}
+                            onChange={(e) => {
+                              handleAdDate(e, 7);
+                              handleChange(e);
+                            }}
                           />
                           {formErrors.kyc04voterid_issued_date_eng && (
                             <div className="error">

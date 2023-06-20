@@ -62,8 +62,6 @@
   align-items: center;
   color: #ae1f19;
   transition: background-color 0.3s, color 0.3s;
-  border-style: solid;
-  border-radius: 2%;
 }
 
 .card-front:hover {

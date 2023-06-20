@@ -14,8 +14,8 @@ const useFormValidationSchema = (eligibilityType) => {
             car06address: Yup.string().required("Address is required"),
             car06reffered_by: Yup.string().required("Referrer is required"),
             car06refferer_contact_no: Yup.string().required("Referrer Contact Number is required"),
-            car06mobile_payment_type: Yup.number().required("Mobile Payment Type is required"),
-            car06bra01uin: Yup.number().required("Branch is required").min(1, "Branch must be greater than 0"),
+            car06mobile_payment_type: Yup.number().required("Mobile Payment Type is required").min(1, "Mobile Payment Type is required"),
+            car06bra01uin: Yup.number().required("Branch is required").min(1, "Branch is required"),
         });
 
 

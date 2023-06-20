@@ -1,0 +1,25 @@
+.auto-scroll-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+.auto-scroll-text {
+  margin-right: 30px;
+}
+
+.slide {
+  margin-right: 30px;
+}
+
+.nav-link {
+  color: #000; /* Set the desired text color */
+  text-decoration: none; /* Remove underline */
+}
+
+.nav-link:hover {
+  text-decoration: underline; /* Add underline on hover if desired */
+}

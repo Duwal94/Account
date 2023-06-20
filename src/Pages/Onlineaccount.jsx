@@ -71,35 +71,51 @@ function Onlineaccount() {
           </button>
         </div>
         {selection === "Saving" && (
-          <div className="row ">
-            {schema.map((field) => (
-              <CardS
-                title={field.acc01title}
-                bulletPoints={[
-                  `Minimum Balance: ${field.acc01RatePerAnnum}`,
-                  "Free Mobile Banking for First Year.",
-                  `${field.acc01RatePerAnnum} discount on Safe Deposit Lockers`,
-                  "Connect IPS Facility",
-                ]}
-                annual={field.acc01RatePerAnnum}
-              />
-            ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div className="row">
+              {schema.map((field) => (
+                <CardS
+                  title={field.acc01title}
+                  bulletPoints={[
+                    `Minimum Balance: ${field.acc01RatePerAnnum}`,
+                    "Free Mobile Banking for First Year.",
+                    `${field.acc01RatePerAnnum} discount on Safe Deposit Lockers`,
+                    "Connect IPS Facility",
+                  ]}
+                  annual={field.acc01RatePerAnnum}
+                />
+              ))}
+            </div>
           </div>
         )}
         {selection === "Fixed" && (
-          <div className="row">
-            {schema2.map((fields) => (
-              <CardS
-                title={fields.acc01title}
-                bulletPoints={[
-                  `Minimum Balance: ${fields.acc01RatePerAnnum}`,
-                  "Free Mobile Banking for First Year.",
-                  `${fields.acc01RatePerAnnum} discount on Safe Deposit Lockers`,
-                  "Connect IPS Facility",
-                ]}
-                annual={fields.acc01RatePerAnnum}
-              />
-            ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div className="row">
+              {schema2.map((fields) => (
+                <CardS
+                  title={fields.acc01title}
+                  bulletPoints={[
+                    `Minimum Balance: ${fields.acc01RatePerAnnum}`,
+                    "Free Mobile Banking for First Year.",
+                    `${fields.acc01RatePerAnnum} discount on Safe Deposit Lockers`,
+                    "Connect IPS Facility",
+                  ]}
+                  annual={fields.acc01RatePerAnnum}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
