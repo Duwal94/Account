@@ -33,8 +33,8 @@ const useFormValidationSchema = (eligibilityType) => {
             eli01loan_period_year: Yup.number().min(1, "Loan Period (Year) must be greater than 0").required("Loan Period (Year) is required"),
             eli01requested_loan_amount: Yup.number().min(1, "Requested Loan Amount must be greater than 0").required("Requested Loan Amount is required"),
             eli01value_of_property: Yup.number().min(1, "Value of Property must be greater than 0").required("Value of Property is required"),
-            eli01experience: Yup.string().required("Experience is required"),
-            eli01nature_of_business: Yup.string().required("Nature of Business is required"),
+            eli01experience: Yup.number().min(1, "Value of Property must be greater than 0").required("Value of Property is required"),
+            eli01nature_of_business: Yup.number().min(1, "Value of Property must be greater than 0").required("Value of Property is required"),
             eli01company_name: Yup.string().required("Company Name is required"),
             eli01address: Yup.string().required("Address is required"),
         });
@@ -42,7 +42,7 @@ const useFormValidationSchema = (eligibilityType) => {
 
         let schema;
 
-        if (eligibilityType === "individual") {
+        if (eligibilityType === "2") {
             schema = individualValidationSchema;
         } else {
             schema = businessValidationSchema;

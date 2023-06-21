@@ -15,7 +15,7 @@ function Loaneligibility() {
   const [emi, setEmi] = useState("");
   const [formErrors, setFormErrors] = useState({});
   // Api states
-  const [selection, setSelection] = useState("individual");
+  const [selection, setSelection] = useState("2");
   const [businessNatureApi, setBusinessNatureApi] = useState([]);
   const [branchApi, setBranchApi] = useState([]);
   const [incomeTypesApi, setIncomeTypesApi] = useState([]);
@@ -32,11 +32,17 @@ function Loaneligibility() {
   };
   //set name,value to form
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, id } = e.target;
+    let newValue;
+    if (id === "num") {
+      newValue = parseInt(value); // Convert value to an integer
+    } else {
+      newValue = value;
+    }
 
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: newValue,
     }));
   };
   //for select-form
@@ -51,10 +57,11 @@ function Loaneligibility() {
     }
   };
   // ////////checking
-  // useEffect(() => {
-  //   // Perform the desired action whenever `selection` changes
-  //   console.log(formValues);
-  // }, [formValues]);
+  useEffect(() => {
+    // Perform the desired action whenever `selection` changes
+    console.log(formValues);
+    console.log(selection);
+  }, [formValues]);
 
   //emi cal
   useEffect(() => {
@@ -204,9 +211,9 @@ function Loaneligibility() {
                     className="form-check-input"
                     type="radio"
                     name="eli01eligibility_type"
-                    id="ind_switch"
-                    value="individual"
-                    checked={selection === "individual"}
+                    id="num"
+                    value={2}
+                    checked={selection === "2"}
                     onChange={(e) => {
                       handleSelectionChange(e);
                       handleChange(e);
@@ -221,9 +228,9 @@ function Loaneligibility() {
                     className="form-check-input"
                     type="radio"
                     name="eli01eligibility_type"
-                    id="bus_switch"
-                    value="business"
-                    checked={selection === "business"}
+                    id="num"
+                    value={1}
+                    checked={selection === "1"}
                     onChange={(e) => {
                       handleSelectionChange(e);
                       handleChange(e);
@@ -347,7 +354,7 @@ function Loaneligibility() {
                   <div className="error">{formErrors.eli01email}</div>
                 )}
               </div>
-              {selection === "business" && (
+              {selection === "1" && (
                 <div className="col-md-6 business ">
                   {/*Business Name*/}
                   <label htmlFor="inputebusiness" className="form-label yolo ">
@@ -366,7 +373,7 @@ function Loaneligibility() {
                   )}
                 </div>
               )}
-              {selection === "business" && (
+              {selection === "1" && (
                 <div className="col-md-5 business ">
                   {/*Business Type*/}
                   <label
@@ -377,7 +384,7 @@ function Loaneligibility() {
                   </label>
                   <select
                     className="form-select"
-                    id="business_type"
+                    id="num"
                     name="eli01nature_of_business"
                     onChange={handleChange}
                   >
@@ -397,7 +404,7 @@ function Loaneligibility() {
                   )}
                 </div>
               )}
-              {selection === "business" && (
+              {selection === "1" && (
                 <div className="col-md-6 business ">
                   {/*Years Of Experience*/}
                   <label htmlFor="inputyears" className="form-label yolo  ">
@@ -424,7 +431,7 @@ function Loaneligibility() {
                   )}
                 </div>
               )}
-              {selection === "individual" && (
+              {selection === "2" && (
                 <div className="col-md-6 individual ">
                   {/*Monthly Income*/}
                   <label htmlFor="inputloantype" className="form-label yolo ">
@@ -446,7 +453,7 @@ function Loaneligibility() {
                   )}
                 </div>
               )}
-              {selection === "individual" && (
+              {selection === "2" && (
                 <div className="col-md-5 individual">
                   {/*Income Type*/}
                   <label
@@ -495,6 +502,7 @@ function Loaneligibility() {
                     className="form-select"
                     aria-describedby="validationServer04Feedback"
                     name="eli01loan_period_year"
+                    id="num"
                     value={formValues.eli01loan_period_year}
                     onChange={(e) => {
                       handleChange(e);
@@ -518,9 +526,15 @@ function Loaneligibility() {
                     <option value="11">11</option>
                     <option value="12">12</option>
                   </select>
+
                   <div className="input-group-prepend">
                     <span className="input-group-text">Year</span>
                   </div>
+                  {formErrors.eli01loan_period_year && (
+                    <div className="error">
+                      {formErrors.eli01loan_period_year}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-3">
@@ -533,6 +547,7 @@ function Loaneligibility() {
                     className="form-select"
                     aria-describedby="validationServer04Feedback"
                     name="eli01loan_period_month"
+                    id="num"
                     value={formValues.eli01loan_period_month}
                     onChange={(e) => {
                       handleChange(e);
@@ -556,12 +571,18 @@ function Loaneligibility() {
                     <option value="11">11</option>
                     <option value="12">12</option>
                   </select>
+
                   <div className="input-group-prepend">
                     <span className="input-group-text">Month</span>
                   </div>
+                  {formErrors.eli01loan_period_month && (
+                    <div className="error">
+                      {formErrors.eli01loan_period_month}
+                    </div>
+                  )}
                 </div>
               </div>
-              {selection === "individual" && (
+              {selection === "2" && (
                 <div className="col-md-5">
                   <label
                     htmlFor="validationServer04"
@@ -602,7 +623,7 @@ function Loaneligibility() {
                   name="eli01requested_loan_amount"
                   value={formValues.eli01requested_loan_amount}
                   onChange={handleChange}
-                  id="loanamount"
+                  id="num"
                   placeholder="NPR"
                 />
                 {formErrors.eli01requested_loan_amount && (
@@ -611,7 +632,7 @@ function Loaneligibility() {
                   </div>
                 )}
               </div>
-              {selection === "individual" && (
+              {selection === "2" && (
                 <div className="col-md-5">
                   <label htmlFor="loanamount" className="form-label yolo">
                     E.M.I
@@ -636,7 +657,7 @@ function Loaneligibility() {
                 <input
                   type="property"
                   className="form-control"
-                  id="property"
+                  id="num"
                   placeholder="NPR"
                   name="eli01value_of_property"
                   value={formValues.eli01value_of_property}

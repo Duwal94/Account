@@ -115,7 +115,6 @@ function SavingacctformSecond() {
   useEffect(() => {
     // Perform the desired action whenever `selection` changes
     console.log(formValues);
-    console.log(acc04IssuedDateEng);
   }, [formValues, acc04IssuedDateEng]);
 
   const handleSelectionChange2 = (event) => {
@@ -210,7 +209,8 @@ function SavingacctformSecond() {
     } else if (type === "checkbox") {
       newValue = checked;
     } else if (id === "num") {
-      newValue = parseInt(value); // Convert value to an integer
+      newValue = parseInt(value);
+      console.log("dddddddddddddddddddd"); // Convert value to an integer
     } else if (id === "bool") {
       newValue = JSON.parse(value); // Convert value to an integer
     } else if (name === "aac02dob_eng") {
@@ -236,15 +236,15 @@ function SavingacctformSecond() {
     if (name === "acc06street2") {
       setStreet(value);
     } else if (name === "acc06ward_no2") {
-      setWard(parseInt(value));
+      setWard(value !== "" ? parseInt(value) : value);
     } else if (name === "acc06resident_phone_no2") {
-      setResidentPhoneNumber(parseInt(value));
+      setResidentPhoneNumber(value !== "" ? parseInt(value) : value);
     } else if (name === "acc06house_no2") {
-      setHouse(parseInt(value));
+      setHouse(value !== "" ? parseInt(value) : value);
     } else if (name === "acc06office_no2") {
-      setOfficePhoneNumber(parseInt(value));
+      setOfficePhoneNumber(value !== "" ? parseInt(value) : value);
     } else if (name === "acc06mobile_no2") {
-      setMobileNumber(parseInt(value));
+      setMobileNumber(value !== "" ? parseInt(value) : value);
     }
   };
   useEffect(() => {
@@ -318,8 +318,8 @@ function SavingacctformSecond() {
     setFormValues((prevValues) => ({
       ...prevValues,
 
-      acc06set04uin2: district || prevValues.acc06set04uin2,
-      acc06set05uin2: municipality || prevValues.acc06set05uin2,
+      acc06set04uin2: parseInt(district) || prevValues.acc06set04uin2,
+      acc06set05uin2: parseInt(municipality) || prevValues.acc06set05uin2,
       acc06ward_no2: ward || prevValues.acc06ward_no2,
       acc06street2: street || prevValues.acc06street2,
       acc06house_no2: house || prevValues.acc06house_no2,
@@ -474,9 +474,9 @@ function SavingacctformSecond() {
                             className="form-check-input"
                             type="radio"
                             name="acc02is_local_citizen"
-                            defaultValue="true"
-                            id="bool"
-                            checked={formValues.acc02is_local_citizen === true}
+                            defaultValue={1}
+                            id="num"
+                            checked={formValues.acc02is_local_citizen === 1}
                             onChange={handleChange}
                           />
                           <label
@@ -491,9 +491,9 @@ function SavingacctformSecond() {
                             className="form-check-input"
                             type="radio"
                             name="acc02is_local_citizen"
-                            defaultValue="false"
-                            id="bool"
-                            checked={formValues.acc02is_local_citizen === false}
+                            defaultValue={2}
+                            id="num"
+                            checked={formValues.acc02is_local_citizen === 2}
                             onChange={handleChange}
                           />
                           <label
@@ -1540,7 +1540,7 @@ function SavingacctformSecond() {
                     Ward Number
                   </label>
                   <input
-                    type="num"
+                    type="text"
                     className="form-control syncSame numberOnly"
                     id="num"
                     name="acc06ward_no2"

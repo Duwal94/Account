@@ -2,8 +2,8 @@ import { useState } from "react";
 
 interface IFormValues {
   acc02acc01uin: number;
-  acc02salutation: string;
-  acc02is_local_citizen: string;
+  acc02salutation: number;
+  acc02is_local_citizen: number;
   acc02FirstName: string;
   acc02MiddleName: string;
   acc02LastName: string;
@@ -13,14 +13,14 @@ interface IFormValues {
   acc02dob_nep: string;
   aac02dob_eng: string;
   acc02contact_medium: number;
-  acc02bra01uin: string;
+  acc02bra01uin: number;
   acc02contact_medium_no: string;
 }
 
 const savings: IFormValues = {
   acc02acc01uin: 0,
-  acc02salutation: "",
-  acc02is_local_citizen: "",
+  acc02salutation: 0,
+  acc02is_local_citizen: 0,
   acc02FirstName: "",
   acc02MiddleName: "",
   acc02LastName: "",
@@ -30,7 +30,7 @@ const savings: IFormValues = {
   acc02dob_nep: "",
   aac02dob_eng: "",
   acc02contact_medium: 0,
-  acc02bra01uin: "",
+  acc02bra01uin: 0,
   acc02contact_medium_no: "",
 };
 

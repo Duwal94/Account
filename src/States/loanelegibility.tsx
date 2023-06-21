@@ -10,9 +10,9 @@ interface IFormValues {
   eli01email?: string;
   eli01bra01uin?: number;
   eli01iscompleted?: boolean;
-  eli01eligibility_type?: string;
+  eli01eligibility_type?: number;
   eli01company_name?: string;
-  eli01nature_of_business?: string;
+  eli01nature_of_business?: number;
   eli01ploan_type?: string;
   eli01eli00uin?: number;
   eli01eli02uin?: string;
@@ -27,7 +27,7 @@ interface IFormValues {
   eli01is_eligible?: boolean;
   eli01deleted?: boolean;
   eli01address?: string;
-  eli01experience?: string;
+  eli01experience?: number;
   eli01monthly_interest?: number;
   eli01interest_rate_per_year?: number;
   eli01loan_subcat?: number;
@@ -44,7 +44,7 @@ const individual: IFormValues = {
   eli01email: "",
   eli01bra01uin: 0,
   eli01iscompleted: true,
-  eli01eligibility_type: "",
+  eli01eligibility_type: 2,
   eli01ploan_type: "",
   eli01eli00uin: 1,
   eli01eli02uin: "",
@@ -59,6 +59,7 @@ const individual: IFormValues = {
   eli01is_eligible: true,
   eli01deleted: true,
   eli01address: "",
+
   // ...other form fields
 };
 
@@ -71,9 +72,9 @@ const business: IFormValues = {
   eli01email: "",
   eli01bra01uin: 0,
   eli01iscompleted: true,
-  eli01eligibility_type: "",
+  eli01eligibility_type: 1,
   eli01company_name: "",
-  eli01nature_of_business: "",
+  eli01nature_of_business: 0,
   eli01eli00uin: 1,
   eli01eli02uin: "",
   eli01requested_loan_amount: 0,
@@ -85,20 +86,25 @@ const business: IFormValues = {
   eli01is_eligible: true,
   eli01deleted: true,
   eli01address: "",
-  eli01experience: "",
+  eli01experience: 0,
 
   // ...other form fields
 };
 
 const useFormValues = (
-  eligibilityType: boolean
+  eligibilityType: string
 ): [IFormValues, React.Dispatch<React.SetStateAction<IFormValues>>] => {
-  const [formValues, setFormValues] = useState<IFormValues>(
-    eligibilityType ? individual : business
-  );
+  const [formValues, setFormValues] = useState<IFormValues>(individual);
 
   useEffect(() => {
-    setFormValues(eligibilityType ? individual : business);
+    let values: IFormValues;
+    if (eligibilityType === "1") {
+      values = business;
+    } else {
+      values = individual;
+    }
+
+    setFormValues(values);
   }, [eligibilityType]);
 
   return [formValues, setFormValues];

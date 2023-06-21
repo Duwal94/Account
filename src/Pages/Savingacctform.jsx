@@ -157,15 +157,10 @@ function Savingacctform() {
   // for select-form
   const handleChangeSelect = (selectedOption) => {
     if (selectedOption) {
-      const { name, value, id } = selectedOption;
+      const { name, value } = selectedOption;
       let newValue;
 
-      if (id === "string") {
-        newValue = String(value);
-        console.log(newValue);
-      } else {
-        newValue = value;
-      }
+      newValue = parseInt(value);
       setFormValues((prevValues) => ({
         ...prevValues,
         [name]: newValue,
@@ -295,8 +290,8 @@ function Savingacctform() {
                           className="form-check-input"
                           type="radio"
                           name="acc02is_local_citizen"
-                          defaultValue={true}
-                          id="bool"
+                          defaultValue={1}
+                          id="num"
                           onChange={handleChange}
                         />
                         <label
@@ -311,8 +306,8 @@ function Savingacctform() {
                           className="form-check-input"
                           type="radio"
                           name="acc02is_local_citizen"
-                          defaultValue={false}
-                          id="bool"
+                          defaultValue={2}
+                          id="num"
                           onChange={handleChange}
                         />
                         <label
@@ -434,8 +429,8 @@ function Savingacctform() {
                       Preferred Branch
                     </label>
                     <Select
+                      id="num"
                       name="acc02bra01uin"
-                      id="string"
                       onChange={handleChangeSelect}
                       options={branchApi.map((item) => ({
                         value: String(item.bra01uin),
