@@ -40,8 +40,13 @@ const useFormValidationSchema = (eligibilityType) => {
             car02reason_for_block: Yup.string().required("Reason for Block is required"),
             car02card_no: Yup.number().required("Card Number is required"),
         });
+        const valid = Yup.object().shape({
 
-        console.log(eligibilityType);
+            car02car01uin: Yup.number().required("Selection required").min(1, "Selection required"),
+
+        });
+
+
 
         let schema;
 
@@ -55,6 +60,8 @@ const useFormValidationSchema = (eligibilityType) => {
         }
         else if (eligibilityType === "5") {
             schema = cardblockValidationSchema;
+        } else {
+            schema = valid;
         }
 
 

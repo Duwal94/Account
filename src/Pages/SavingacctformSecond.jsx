@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useStateValidationSchema } from "../Validation/SavingSecond";
 import useFormValues from "../States/SavingSecond.tsx";
 import Select from "react-select";
 import { API_URL } from "../Utilities/Constants";
@@ -12,8 +12,10 @@ function SavingacctformSecond() {
   const [selection, setSelection] = useState("no");
   const [branchApi, setBranchApi] = useState([]);
   const [districtApi, setDistrictApi] = useState([]);
+  const [districtApi2, setDistrictApi2] = useState([]);
   const [provienceApi, setProvienceApi] = useState([]);
   const [municipalityApi, setMunicipalityApi] = useState([]);
+  const [municipalityApi2, setMunicipalityApi2] = useState([]);
   const [genderApi, setGenderApi] = useState([]);
   const [martialApi, setMartialApi] = useState([]);
   const [occupationApi, setOccupationApi] = useState([]);
@@ -28,6 +30,7 @@ function SavingacctformSecond() {
   const [show, setShow] = useState("false");
 
   const [province1, setProvince1] = useState("0"); // Store the selected province value
+  const [province2, setProvince2] = useState("0");
   const [province, setProvince] = useState(""); // Store the selected province value
   const [district, setDistrict] = useState(""); // Store the selected district value
   const [municipality, setMunicipality] = useState(""); // Store the selected municipality value
@@ -39,6 +42,10 @@ function SavingacctformSecond() {
   const [officePhoneNumber, setOfficePhoneNumber] = useState("");
 
   const [selectedImages, setSelectedImages] = useState([]);
+
+  const formstates = selection;
+  const validationStates = useStateValidationSchema(formstates);
+
   const [formValues, setFormValues] = useFormValues();
   const [responseMessage, setResponseMessage] = useState("hello");
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -115,14 +122,29 @@ function SavingacctformSecond() {
   useEffect(() => {
     // Perform the desired action whenever `selection` changes
     console.log(formValues);
-  }, [formValues, acc04IssuedDateEng]);
+  }, [formValues]);
 
   const handleSelectionChange2 = (event) => {
     setShow(event.target.value);
   };
-  const handleState = (newValue) => {
-    setSelection(newValue);
-    console.log(selection);
+  const handleState = async (newValue) => {
+    try {
+      // Validate the form using Yup
+      await validationStates.validate(formValues, { abortEarly: false });
+
+      // Clear form errors if the form is valid
+      setFormErrors({});
+      setSelection(newValue);
+    } catch (error) {
+      if (error.name === "ValidationError") {
+        // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      }
+    }
   };
   const handlePrevious = (newValue) => {
     setSelection(newValue);
@@ -277,6 +299,36 @@ function SavingacctformSecond() {
 
     fetchOtpVerifyData();
   }, [formValues.acc06set04uin]);
+  useEffect(() => {
+    const fetchOtpVerifyData2 = async () => {
+      try {
+        const response1 = await fetch(
+          `${API_URL}/KYC/GetDistrictsByProvinceId?id=${province2}`
+        );
+        const data1 = await response1.json();
+        setDistrictApi2(data1);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOtpVerifyData2();
+  }, [province2]);
+  useEffect(() => {
+    const fetchOtpVerifyData2 = async () => {
+      try {
+        const response4 = await fetch(
+          `${API_URL}/KYC/GetMuncipalityByDistrictId?id=${formValues.acc06set04uin2}`
+        );
+        const data4 = await response4.json();
+        setMunicipalityApi2(data4);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOtpVerifyData2();
+  }, [formValues.acc06set04uin2]);
   //for select-form
   const handleChangeSelect = (selectedOption) => {
     if (selectedOption) {
@@ -367,10 +419,10 @@ function SavingacctformSecond() {
 
     try {
       // Validate the form using Yup
-      // await validationSchema.validate(formValues, { abortEarly: false });
+      await validationStates.validate(formValues, { abortEarly: false });
 
       // // Clear form errors if form is valid
-      // setFormErrors({});
+      setFormErrors({});
 
       // Send POST request to the API endpoint
       const response = await fetch(url, {
@@ -403,18 +455,18 @@ function SavingacctformSecond() {
     } catch (error) {
       // Validation error or API request error
       console.error("Error:", error);
-      // if (error.name === "ValidationError") {
-      //   //   // Yup validation error
-      //   const fieldErrors = {};
-      //   error.inner.forEach((validationError) => {
-      //     fieldErrors[validationError.path] = validationError.message;
-      //   });
-      //   setFormErrors(fieldErrors);
-      // } else {
-      // API request error
-      setResponseMessage("An error occurred while submitting the form.");
-      setModalIsOpen(true);
-      // }
+      if (error.name === "ValidationError") {
+        //   // Yup validation error
+        const fieldErrors = {};
+        error.inner.forEach((validationError) => {
+          fieldErrors[validationError.path] = validationError.message;
+        });
+        setFormErrors(fieldErrors);
+      } else {
+        // API request error
+        setResponseMessage("An error occurred while submitting the form.");
+        setModalIsOpen(true);
+      }
     }
   };
   const closeModal = () => {
@@ -440,11 +492,15 @@ function SavingacctformSecond() {
         {selection === "no" && (
           <div className="row row justify-content-evenly   " id="saving_form">
             <div className="col-md-12 col-lg-9 col-xl-8" id="form-section">
-              <div className="row" id="box-shadow">
+              <div
+                className="row"
+                id="box-shadow"
+                style={{ backgroundColor: "#FAFBFF" }}
+              >
                 <div className="row">
                   <div className="button">
                     <a href="/">
-                      <button className="back-button ps-3">
+                      <button className="back-button ps-3" type="button">
                         Back
                         <img src="/Assets/images/Exit icon/exit.png" alt />
                       </button>
@@ -468,46 +524,65 @@ function SavingacctformSecond() {
                           *
                         </span>
                       </div>
-                      <div className="col-md-32 d-flex">
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="acc02is_local_citizen"
-                            defaultValue={1}
-                            id="num"
-                            checked={formValues.acc02is_local_citizen === 1}
-                            onChange={handleChange}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="flexRadioDefault1"
+                      <div className="col-md-4 d-flex flex-column">
+                        <div className="col-md-4 d-flex">
+                          <div
+                            className="form-check form-check-inline "
+                            style={{ paddingLeft: "0px" }}
                           >
-                            Nepal
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="acc02is_local_citizen"
-                            defaultValue={2}
-                            id="num"
-                            checked={formValues.acc02is_local_citizen === 2}
-                            onChange={handleChange}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="flexRadioDefault2"
+                            <input
+                              className="form-check-input "
+                              style={{ marginLeft: "10px" }}
+                              type="radio"
+                              name="acc02is_local_citizen"
+                              defaultValue={1}
+                              id="num"
+                              checked={formValues.acc02is_local_citizen === 1}
+                              onChange={handleChange}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="flexRadioDefault1"
+                            >
+                              Nepal
+                            </label>
+                          </div>
+                          <div
+                            className="form-check form-check-inline"
+                            style={{ paddingLeft: "0px" }}
                           >
-                            Other
-                          </label>
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="acc02is_local_citizen"
+                              style={{ marginLeft: "10px" }}
+                              defaultValue={2}
+                              id="num"
+                              checked={formValues.acc02is_local_citizen === 2}
+                              onChange={handleChange}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="flexRadioDefault2"
+                            >
+                              Other
+                            </label>
+                          </div>
                         </div>
                       </div>
+                      {formErrors.acc02is_local_citizen && (
+                        <div className="error">
+                          {formErrors.acc02is_local_citizen}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-md-5">
-                      <label htmlFor="inputSalutation" className="form-label">
+                      <label
+                        htmlFor="inputSalutation"
+                        className="form-label"
+                        style={{ marginLeft: "20px" }}
+                      >
                         Salutation
                       </label>
                       <span
@@ -521,11 +596,12 @@ function SavingacctformSecond() {
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
+                            style={{ marginLeft: "0px" }}
                             type="radio"
                             name="acc02salutation"
                             id="num"
-                            defaultValue={1}
-                            checked={formValues.acc02salutation === 1}
+                            defaultValue={0}
+                            checked={formValues.acc02salutation === 0}
                             onChange={handleChange}
                           />
                           <label
@@ -538,11 +614,12 @@ function SavingacctformSecond() {
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
+                            style={{ marginLeft: "0px" }}
                             type="radio"
                             name="acc02salutation"
-                            defaultValue={2}
+                            defaultValue={1}
                             id="num"
-                            checked={formValues.acc02salutation === 2}
+                            checked={formValues.acc02salutation === 1}
                             onChange={handleChange}
                           />
                           <label
@@ -555,11 +632,12 @@ function SavingacctformSecond() {
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
+                            style={{ marginLeft: "0px" }}
                             type="radio"
                             name="acc02salutation"
-                            defaultValue={3}
+                            defaultValue={4}
                             id="num"
-                            checked={formValues.acc02salutation === 3}
+                            checked={formValues.acc02salutation === 4}
                             onChange={handleChange}
                           />
                           <label
@@ -572,11 +650,12 @@ function SavingacctformSecond() {
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
+                            style={{ marginLeft: "0px" }}
                             type="radio"
                             name="acc02salutation"
-                            defaultValue={4}
+                            defaultValue={2}
                             id="num"
-                            checked={formValues.acc02salutation === 4}
+                            checked={formValues.acc02salutation === 2}
                             onChange={handleChange}
                           />
                           <label
@@ -589,11 +668,12 @@ function SavingacctformSecond() {
                         <div className="form-check form-check-inline">
                           <input
                             className="form-check-input"
+                            style={{ marginLeft: "0px" }}
                             type="radio"
                             name="acc02salutation"
-                            defaultValue={5}
+                            defaultValue={3}
                             id="num"
-                            checked={formValues.acc02salutation === 5}
+                            checked={formValues.acc02salutation === 3}
                             onChange={handleChange}
                           />
                           <label
@@ -604,6 +684,11 @@ function SavingacctformSecond() {
                           </label>
                         </div>
                       </div>
+                      {formErrors.acc02salutation && (
+                        <div className="error">
+                          {formErrors.acc02salutation}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-md-3">
@@ -629,6 +714,9 @@ function SavingacctformSecond() {
                         }} // Set the value prop to the selectedBranch state
                         onChange={handleChangeSelect}
                       />
+                      {formErrors.acc02bra01uin && (
+                        <div className="error">{formErrors.acc02bra01uin}</div>
+                      )}
                     </div>
 
                     <div className="col-12">
@@ -649,6 +737,9 @@ function SavingacctformSecond() {
                         onChange={handleChange}
                         name="acc02FirstName"
                       />
+                      {formErrors.acc02FirstName && (
+                        <div className="error">{formErrors.acc02FirstName}</div>
+                      )}
                     </div>
                     {/* Middle Name */}
                     <div className="col-md-4">
@@ -664,6 +755,11 @@ function SavingacctformSecond() {
                         onChange={handleChange}
                         name="acc02MiddleName"
                       />
+                      {formErrors.acc02MiddleName && (
+                        <div className="error">
+                          {formErrors.acc02MiddleName}
+                        </div>
+                      )}
                     </div>
                     {/* Last Name */}
                     <div className="col-md-3">
@@ -679,6 +775,9 @@ function SavingacctformSecond() {
                         onChange={handleChange}
                         name="acc02LastName"
                       />
+                      {formErrors.acc02LastName && (
+                        <div className="error">{formErrors.acc02LastName}</div>
+                      )}
                     </div>
                     {/* Mobile Number */}
                     <div className="col-md-4">
@@ -694,6 +793,9 @@ function SavingacctformSecond() {
                         onChange={handleChange}
                         name="acc02Mobile_no"
                       />
+                      {formErrors.acc02Mobile_no && (
+                        <div className="error">{formErrors.acc02Mobile_no}</div>
+                      )}
                     </div>
                     {/* Email */}
                     <div className="col-md-4">
@@ -709,6 +811,9 @@ function SavingacctformSecond() {
                         onChange={handleChange}
                         name="acc02Email"
                       />
+                      {formErrors.acc02Email && (
+                        <div className="error">{formErrors.acc02Email}</div>
+                      )}
                     </div>
                     {/* Telephone Number */}
                     <div className="col-md-3">
@@ -727,6 +832,9 @@ function SavingacctformSecond() {
                         onChange={handleChange}
                         name="acc02phone_no"
                       />
+                      {formErrors.acc02phone_no && (
+                        <div className="error">{formErrors.acc02phone_no}</div>
+                      )}
                     </div>
                     {/* Mobile Number 2 (Optional) */}
                     <div className="col-md-4">
@@ -742,6 +850,9 @@ function SavingacctformSecond() {
                         id="inputMobileNumber2"
                         placeholder="01-0024984"
                       />
+                      {formErrors.acc02bra01uin && (
+                        <div className="error">{formErrors.acc02bra01uin}</div>
+                      )}
                     </div>
                     {/* Date of Birth (B.S.) */}
                     <div className="col-md-4">
@@ -761,9 +872,9 @@ function SavingacctformSecond() {
                         }}
                         options={{ calenderLocale: "ne", valueLocale: "en" }}
                       />
-                      {/* {formErrors.acc02dob_nep && (
+                      {formErrors.acc02dob_nep && (
                         <div className="error">{formErrors.acc02dob_nep}</div>
-                      )} */}
+                      )}
                     </div>
                     {/* Date of Birth (A.D.) */}
                     <div className="col-md-3">
@@ -781,9 +892,9 @@ function SavingacctformSecond() {
                           handleChange(e);
                         }}
                       />
-                      {/* {formErrors.aac02dob_eng && (
+                      {formErrors.aac02dob_eng && (
                         <div className="error">{formErrors.aac02dob_eng}</div>
-                      )} */}
+                      )}
                     </div>
                     {/* Social Network */}
                     <div className="col-md-6 col-lg-4">
@@ -887,7 +998,11 @@ function SavingacctformSecond() {
               id="generald"
             >
               <div className="col-md-11 col-lg-9 col-xxl-8">
-                <div className="row" id="box-shadow">
+                <div
+                  className="row"
+                  id="box-shadow"
+                  style={{ backgroundColor: "#FAFBFF" }}
+                >
                   <div className="row">
                     <div className="button">
                       <button
@@ -933,6 +1048,9 @@ function SavingacctformSecond() {
                             </option>
                           ))}
                         </select>
+                        {formErrors.acc03Gender && (
+                          <div className="error">{formErrors.acc03Gender}</div>
+                        )}
                       </div>
                       <div className="col-md-3">
                         <label
@@ -956,6 +1074,11 @@ function SavingacctformSecond() {
                             </option>
                           ))}
                         </select>
+                        {formErrors.acc03MaritalStatus && (
+                          <div className="error">
+                            {formErrors.acc03MaritalStatus}
+                          </div>
+                        )}
                       </div>
                       <div className="col-md-3 ">
                         <label
@@ -973,9 +1096,11 @@ function SavingacctformSecond() {
                           placeholder="Nationality"
                           onChange={handleChange}
                         />
-                        <div className="invalid-feedback">
-                          You cannot have this field empty!!
-                        </div>
+                        {formErrors.acc03Nationality && (
+                          <div className="error">
+                            {formErrors.acc03Nationality}
+                          </div>
+                        )}
                       </div>
                       <div className="col-md-3">
                         <label htmlFor="inputEdu" className="form-label yolo">
@@ -996,6 +1121,11 @@ function SavingacctformSecond() {
                             </option>
                           ))}
                         </select>
+                        {formErrors.acc03Education && (
+                          <div className="error">
+                            {formErrors.acc03Education}
+                          </div>
+                        )}
                       </div>
                       <div className="row m-3" id="box-shadow">
                         {/*Citizenship Form*/}
@@ -1019,6 +1149,11 @@ function SavingacctformSecond() {
                                 name="acc04citizenship_no"
                                 onChange={handleChange}
                               />
+                              {formErrors.acc04citizenship_no && (
+                                <div className="error">
+                                  {formErrors.acc04citizenship_no}
+                                </div>
+                              )}
                             </div>
                             <div className="col-md-4">
                               <label className="form-label yolo">
@@ -1039,6 +1174,11 @@ function SavingacctformSecond() {
                                   valueLocale: "en",
                                 }}
                               />
+                              {formErrors.acc04issued_date_nep && (
+                                <div className="error">
+                                  {formErrors.acc04issued_date_nep}
+                                </div>
+                              )}
                             </div>
                             <div className="col-md-4 ">
                               <label className="form-label yolo">
@@ -1054,6 +1194,11 @@ function SavingacctformSecond() {
                                   handleChange(e);
                                 }}
                               />
+                              {formErrors.acc04issued_date_eng && (
+                                <div className="error">
+                                  {formErrors.acc04issued_date_eng}
+                                </div>
+                              )}
                             </div>
                             <div className="col-md-4  ">
                               {/*Business Type*/}
@@ -1081,11 +1226,11 @@ function SavingacctformSecond() {
                                   </option>
                                 ))}
                               </select>
-                              {/* {formErrors.acc04set04uin && (
+                              {formErrors.acc04set04uin && (
                                 <div className="error">
                                   {formErrors.acc04set04uin}
                                 </div>
-                              )} */}
+                              )}
                             </div>
                             <div className="col-md-4">
                               <label className="form-label yolo">
@@ -1098,6 +1243,11 @@ function SavingacctformSecond() {
                                 name="acc04issued_office"
                                 onChange={handleChange}
                               />
+                              {formErrors.acc04issued_office && (
+                                <div className="error">
+                                  {formErrors.acc04issued_office}
+                                </div>
+                              )}
                             </div>
                             <div className="col-md-4">
                               <label className="form-label yolo">PAN *</label>
@@ -1108,6 +1258,11 @@ function SavingacctformSecond() {
                                 name="acc04Pan"
                                 onChange={handleChange}
                               />
+                              {formErrors.acc04Pan && (
+                                <div className="error">
+                                  {formErrors.acc04Pan}
+                                </div>
+                              )}
                             </div>
                           </div>
                           {/* passport form */}
@@ -1130,6 +1285,11 @@ function SavingacctformSecond() {
                                   name="acc05passport_no"
                                   onChange={handleChange}
                                 />
+                                {formErrors.acc05passport_no && (
+                                  <div className="error">
+                                    {formErrors.acc05passport_no}
+                                  </div>
+                                )}
                               </div>
 
                               <div className="col-md-4">
@@ -1146,6 +1306,11 @@ function SavingacctformSecond() {
                                   name="acc05issued_office"
                                   onChange={handleChange}
                                 />
+                                {formErrors.acc05issued_office && (
+                                  <div className="error">
+                                    {formErrors.acc05issued_office}
+                                  </div>
+                                )}
                               </div>
                               <div className="col-md-4 ">
                                 <label
@@ -1169,6 +1334,11 @@ function SavingacctformSecond() {
                                     valueLocale: "en",
                                   }}
                                 />
+                                {formErrors.acc05issued_date_nep && (
+                                  <div className="error">
+                                    {formErrors.acc05issued_date_nep}
+                                  </div>
+                                )}
                               </div>
                               <div className="col-md-4 ">
                                 <label
@@ -1187,6 +1357,11 @@ function SavingacctformSecond() {
                                     handleChange(e);
                                   }}
                                 />
+                                {formErrors.acc05issued_date_eng && (
+                                  <div className="error">
+                                    {formErrors.acc05issued_date_eng}
+                                  </div>
+                                )}
                               </div>
                               <div className="col-md-4 ">
                                 <label
@@ -1210,6 +1385,11 @@ function SavingacctformSecond() {
                                     valueLocale: "en",
                                   }}
                                 />
+                                {formErrors.acc05expiry_date_nep && (
+                                  <div className="error">
+                                    {formErrors.acc05expiry_date_nep}
+                                  </div>
+                                )}
                               </div>
                               <div className="col-md-4 ">
                                 <label
@@ -1228,6 +1408,11 @@ function SavingacctformSecond() {
                                     handleChange(e);
                                   }}
                                 />
+                                {formErrors.acc05expiry_date_eng && (
+                                  <div className="error">
+                                    {formErrors.acc05expiry_date_eng}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -1253,6 +1438,7 @@ function SavingacctformSecond() {
           <div
             className="row justify-content-evenly  mt-5 mb-5"
             id="addr_details"
+            style={{ backgroundColor: "#FAFBFF" }}
           >
             <div
               className="col-md-11 col-lg-9 col-xxl-8 justify-content-evenly"
@@ -1293,9 +1479,6 @@ function SavingacctformSecond() {
                       </option>
                     ))}
                   </select>
-                  {/* {formErrors.kyc03set03uin && (
-                   <div className="error">{formErrors.kyc03set03uin}</div>
-                 )} */}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputDistrict" className="form-label yolo">
@@ -1314,9 +1497,9 @@ function SavingacctformSecond() {
                       </option>
                     ))}
                   </select>
-                  {/* {formErrors.kyc03set04uin && (
-                   <div className="error">{formErrors.kyc03set04uin}</div>
-                 )} */}
+                  {formErrors.acc06set04uin && (
+                    <div className="error">{formErrors.acc06set04uin}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label
@@ -1338,9 +1521,9 @@ function SavingacctformSecond() {
                       </option>
                     ))}
                   </select>
-                  {/* {formErrors.kyc03set05uin && (
-                   <div className="error">{formErrors.kyc03set05uin}</div>
-                 )} */}
+                  {formErrors.acc06set05uin && (
+                    <div className="error">{formErrors.acc06set05uin}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputWardNumber" className="form-label yolo">
@@ -1353,10 +1536,18 @@ function SavingacctformSecond() {
                     name="acc06ward_no"
                     maxLength={2}
                     onChange={handleChange}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
-                  {/* {formErrors.kyc03ward_no && (
-                   <div className="error">{formErrors.kyc03ward_no}</div>
-                 )} */}
+                  {formErrors.acc06ward_no && (
+                    <div className="error">{formErrors.acc06ward_no}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputStreet" className="form-label yolo">
@@ -1370,9 +1561,9 @@ function SavingacctformSecond() {
                     maxLength={10}
                     onChange={handleChange}
                   />
-                  {/* {formErrors.kyc03street && (
-                   <div className="error">{formErrors.kyc03street}</div>
-                 )} */}
+                  {formErrors.acc06street && (
+                    <div className="error">{formErrors.acc06street}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1380,15 +1571,23 @@ function SavingacctformSecond() {
                   </label>
                   <input
                     type="text"
-                    className="form-control syncSame numberOnly"
+                    className="form-control  numberOnly"
                     id="num"
                     name="acc06house_no"
                     maxLength={100}
                     onChange={handleChange}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
-                  {/* {formErrors.kyc03house_no && (
-                   <div className="error">{formErrors.kyc03house_no}</div>
-                 )} */}
+                  {formErrors.acc06house_no && (
+                    <div className="error">{formErrors.acc06house_no}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <span className="text-danger">*</span>
@@ -1403,7 +1602,21 @@ function SavingacctformSecond() {
                     placeholder
                     name="acc06office_no"
                     onChange={handleChange}
+                    maxLength={10}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
+                  {formErrors.acc06resident_phone_no && (
+                    <div className="error">
+                      {formErrors.acc06resident_phone_no}
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1418,7 +1631,21 @@ function SavingacctformSecond() {
                     placeholder
                     name="acc06resident_phone_no"
                     onChange={handleChange}
+                    maxLength={10}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
+                  {formErrors.acc06resident_phone_no && (
+                    <div className="error">
+                      {formErrors.acc06resident_phone_no}
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1427,12 +1654,24 @@ function SavingacctformSecond() {
                   <span className="text-danger">*</span>
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control numberOnly"
                     id="num"
                     placeholder
                     name="acc06mobile_no"
                     onChange={handleChange}
+                    maxLength={10}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
+                  {formErrors.acc06mobile_no && (
+                    <div className="error">{formErrors.acc06mobile_no}</div>
+                  )}
                 </div>
 
                 {/* same asa above */}
@@ -1466,6 +1705,7 @@ function SavingacctformSecond() {
                     value={province}
                     onChange={(e) => {
                       setProvince(e.target.value);
+                      setProvince2(e.target.value);
                     }}
                     disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
                   >
@@ -1476,9 +1716,6 @@ function SavingacctformSecond() {
                       </option>
                     ))}
                   </select>
-                  {/* {formErrors.kyc03set03uin_temp && !sameAsAbove && (
-                   <div className="error">{formErrors.kyc03set03uin_temp}</div>
-                 )} */}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputDistrict" className="form-label yolo">
@@ -1496,15 +1733,15 @@ function SavingacctformSecond() {
                     disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
                   >
                     <option value="">Name of the District</option>
-                    {districtApi.map((item) => (
+                    {districtApi2.map((item) => (
                       <option key={item.bindField} value={item.bindField}>
                         {item.displayField}
                       </option>
                     ))}
                   </select>
-                  {/* {formErrors.kyc03set04uin_temp && !sameAsAbove && (
-                   <div className="error">{formErrors.kyc03set04uin_temp}</div>
-                 )} */}
+                  {formErrors.acc06set04uin2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06set04uin2}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label
@@ -1525,15 +1762,15 @@ function SavingacctformSecond() {
                     disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
                   >
                     <option value="">Name of the Municipality/VDC</option>
-                    {municipalityApi.map((item) => (
+                    {municipalityApi2.map((item) => (
                       <option key={item.bindField} value={item.bindField}>
                         {item.displayField}
                       </option>
                     ))}
                   </select>
-                  {/* {formErrors.kyc03set05uin_temp && !sameAsAbove && (
-                   <div className="error">{formErrors.kyc03set05uin_temp}</div>
-                 )} */}
+                  {formErrors.acc06set05uin2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06set05uin2}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputWardNumber" className="form-label yolo">
@@ -1548,10 +1785,18 @@ function SavingacctformSecond() {
                     maxLength={2}
                     onChange={handleChange2}
                     disabled={sameAsAbove}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
-                  {/* {formErrors.kyc03ward_no_temp && !sameAsAbove && (
-                   <div className="error">{formErrors.kyc03ward_no_temp}</div>
-                 )} */}
+                  {formErrors.acc06ward_no2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06ward_no2}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputStreet" className="form-label yolo">
@@ -1567,9 +1812,9 @@ function SavingacctformSecond() {
                     onChange={handleChange2}
                     disabled={sameAsAbove}
                   />
-                  {/* {formErrors.kyc03street_temp && !sameAsAbove && (
-                   <div className="error">{formErrors.kyc03street_temp}</div>
-                 )} */}
+                  {formErrors.acc06street2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06street2}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1584,10 +1829,18 @@ function SavingacctformSecond() {
                     onChange={handleChange2}
                     value={house}
                     disabled={sameAsAbove}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
-                  {/* {formErrors.kyc03house_no_temp && !sameAsAbove && (
-                   <div className="error">{formErrors.kyc03house_no_temp}</div>
-                 )} */}
+                  {formErrors.acc06house_no2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06house_no2}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <span className="text-danger">*</span>
@@ -1603,7 +1856,19 @@ function SavingacctformSecond() {
                     onChange={handleChange2}
                     value={officePhoneNumber}
                     disabled={sameAsAbove}
+                    maxLength={10}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
+                  {formErrors.acc06office_no2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06office_no2}</div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1620,7 +1885,21 @@ function SavingacctformSecond() {
                     onChange={handleChange2}
                     value={residentPhoneNumber}
                     disabled={sameAsAbove}
+                    maxLength={10}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
+                  {formErrors.acc06resident_phone_no2 && !sameAsAbove && (
+                    <div className="error">
+                      {formErrors.acc06resident_phone_no2}
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-5">
                   <label htmlFor="inputHouseNumber" className="form-label yolo">
@@ -1636,7 +1915,19 @@ function SavingacctformSecond() {
                     onChange={handleChange2}
                     value={mobileNumber}
                     disabled={sameAsAbove}
+                    maxLength={10}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
+                  {formErrors.acc06mobile_no2 && !sameAsAbove && (
+                    <div className="error">{formErrors.acc06mobile_no2}</div>
+                  )}
                 </div>
 
                 <div className="col-12 mt-5 mb-5 d-flex justify-content-between">
@@ -1655,7 +1946,11 @@ function SavingacctformSecond() {
           <div>
             <div class="row justify-content-evenly  mt-5 mb-5" id="family">
               <div className="col-md-11 col-lg-9 col-xxl-8">
-                <div className="row" id="box-shadow">
+                <div
+                  className="row"
+                  id="box-shadow"
+                  style={{ backgroundColor: "#FAFBFF" }}
+                >
                   <div className="row">
                     <div className="button">
                       <button
@@ -1878,7 +2173,11 @@ function SavingacctformSecond() {
               id="occupation"
             >
               <div className="col-md-11 col-lg-9 col-xxl-8">
-                <div className="row" id="box-shadow">
+                <div
+                  className="row"
+                  id="box-shadow"
+                  style={{ backgroundColor: "#FAFBFF" }}
+                >
                   <div className="row">
                     <div className="button">
                       <button

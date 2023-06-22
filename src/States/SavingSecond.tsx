@@ -4,20 +4,20 @@ import { API_URL } from "../Utilities/Constants";
 import { useLocation } from "react-router-dom";
 
 interface IFormValues {
-  id: string;
+  id?: string;
   acc02acc01uin?: number;
-  acc02salutation?: string;
-  acc02is_local_citizen?: string;
+  acc02salutation?: number;
+  acc02is_local_citizen?: number;
   acc02FirstName?: string;
   acc02MiddleName?: string;
   acc02LastName?: string;
   acc02Mobile_no?: number;
   acc02phone_no?: number;
   acc02Email?: string;
-  acc02dob_nep?: string;
-  aac02dob_eng?: string;
+  acc02dob_nep?: string; // Date and time in Nepali calendar
+  aac02dob_eng?: string; // Date and time in English calendar
   acc02contact_medium?: number;
-  acc02bra01uin?: string;
+  acc02bra01uin?: number;
   acc02contact_medium_no?: string;
   acc03Gender?: number;
   acc03MaritalStatus?: number;
@@ -31,14 +31,14 @@ interface IFormValues {
   acc04set04uin?: number;
   acc04issued_office?: string;
   acc04Pan?: string;
-  acc04issued_date_nep?: string;
-  acc04issued_date_eng?: string;
+  acc04issued_date_nep?: string; // Date and time in Nepali calendar
+  acc04issued_date_eng?: string; // Date and time in English calendar
   acc05passport_no?: string;
   acc05issued_office?: string;
-  acc05issued_date_nep?: string;
-  acc05issued_date_eng?: string;
-  acc05expiry_date_nep?: string;
-  acc05expiry_date_eng?: string;
+  acc05issued_date_nep?: string; // Date and time in Nepali calendar
+  acc05issued_date_eng?: string; // Date and time in English calendar
+  acc05expiry_date_nep?: string; // Date and time in Nepali calendar
+  acc05expiry_date_eng?: string; // Date and time in English calendar
   acc06set05uin?: number;
   acc06set04uin?: number;
   acc06house_no?: number;
@@ -60,11 +60,12 @@ interface IFormValues {
   accacc06same_as_permanent2?: boolean;
   acc06is_parmanent2?: boolean;
 }
+
 const savingSecond: IFormValues = {
   id: "",
   acc02acc01uin: 0,
-  acc02salutation: "",
-  acc02is_local_citizen: "",
+  acc02salutation: -1,
+  acc02is_local_citizen: 0,
   acc02FirstName: "",
   acc02MiddleName: "",
   acc02LastName: "",
@@ -74,7 +75,7 @@ const savingSecond: IFormValues = {
   acc02dob_nep: "",
   aac02dob_eng: "",
   acc02contact_medium: 0,
-  acc02bra01uin: "",
+  acc02bra01uin: 0,
   acc02contact_medium_no: "",
   acc03Gender: 0,
   acc03MaritalStatus: 0,
@@ -149,24 +150,24 @@ const useFormValues = (): [
     if (getUserApi) {
       const savingSecond: IFormValues = {
         id: id,
-        acc02acc01uin: parseInt(getUserApi.acc02acc01uin) || 0,
+        acc02acc01uin: parseInt(getUserApi.acc02acc01uin),
         acc02salutation: getUserApi.acc02salutation,
         acc02is_local_citizen: getUserApi.acc02is_local_citizen,
-        acc02FirstName: getUserApi.acc02FirstName || "string1",
-        acc02MiddleName: getUserApi.acc02MiddleName || "string2",
-        acc02LastName: getUserApi.acc02LastName || "string3",
-        acc02Mobile_no: getUserApi.acc02Mobile_no || 0,
-        acc02phone_no: getUserApi.acc02phone_no || 0,
-        acc02Email: getUserApi.acc02Email || "string4",
+        acc02FirstName: getUserApi.acc02FirstName,
+        acc02MiddleName: getUserApi.acc02MiddleName,
+        acc02LastName: getUserApi.acc02LastName,
+        acc02Mobile_no: getUserApi.acc02Mobile_no,
+        acc02phone_no: getUserApi.acc02phone_no,
+        acc02Email: getUserApi.acc02Email,
         acc02dob_nep: getUserApi.acc02dob_nep
           ? getUserApi.acc02dob_nep.substring(0, 10)
           : undefined,
         aac02dob_eng: getUserApi.aac02dob_eng
           ? getUserApi.aac02dob_eng.substring(0, 10)
           : undefined,
-        acc02contact_medium: getUserApi.acc02contact_medium || 0,
-        acc02bra01uin: getUserApi.acc02bra01uin || "string5",
-        acc02contact_medium_no: getUserApi.acc02contact_medium_no || "string6",
+        acc02contact_medium: 1,
+        acc02bra01uin: getUserApi.acc02bra01uin,
+        acc02contact_medium_no: getUserApi.acc02contact_medium_no,
         acc03Gender: 0,
         acc03MaritalStatus: 0,
         acc03Nationality: "",

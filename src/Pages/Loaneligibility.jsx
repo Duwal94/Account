@@ -12,6 +12,8 @@ function Loaneligibility() {
 
   const [years, setYears] = useState("");
   const [months, setMonths] = useState("");
+  const [amount, setAmount] = useState("");
+  const [rate, setRate] = useState("");
   const [emi, setEmi] = useState("");
   const [formErrors, setFormErrors] = useState({});
   // Api states
@@ -66,12 +68,30 @@ function Loaneligibility() {
   //emi cal
   useEffect(() => {
     const calculateEMI = () => {
-      const emiValue = years * months * 100; // Sample calculation, replace it with your own logic
+      const amountValue = parseFloat(amount);
+      const rateMapping = {
+        1: 11,
+        2: 12,
+        3: 10,
+        4: 12,
+        5: 13,
+      };
+
+      const rates = rateMapping[rate];
+
+      const rateValue = parseFloat(rates) / 12 / 100;
+      const yearValue = parseInt(years);
+      const monthValue = parseInt(months);
+      const totalMonths = yearValue * 12 + monthValue;
+      const a1 = Math.pow(1 + rateValue, totalMonths);
+      const a2 = Math.pow(1 + rateValue, totalMonths) - 1;
+      const interest = (amountValue * rateValue * a1) / a2;
+      const emiValue = interest.toFixed(2);
       setEmi(emiValue);
     };
 
     calculateEMI();
-  }, [years, months]);
+  }, [rate, amount, months, years]);
   // Api fetch getreqest
   useEffect(() => {
     const fetchData = async () => {
@@ -176,6 +196,13 @@ function Loaneligibility() {
     },
   };
 
+  useEffect(() => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      eli01emi: parseFloat(emi) || prevValues.eli01emi,
+    }));
+  }, [emi]);
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -184,10 +211,14 @@ function Loaneligibility() {
         </div>
 
         <div className="row justify-content-evenly p-0">
-          <div className="col-md-11 col-lg-9 col-xxl-8" id="box-shadow">
+          <div
+            className="col-md-11 col-lg-9 col-xxl-8"
+            id="box-shadow"
+            style={{ backgroundColor: "#FAFBFF" }}
+          >
             <div className="row">
               <div className="button">
-                <a href="index.html">
+                <a href="/">
                   {" "}
                   <button className="back-button">
                     Back{" "}
@@ -330,6 +361,15 @@ function Loaneligibility() {
                   onChange={handleChange}
                   name="eli01mobile_no"
                   placeholder=" +977-XXXXXXXXXX"
+                  maxLength={10}
+                  onKeyPress={(event) => {
+                    const keyCode = event.which || event.keyCode;
+                    const keyValue = String.fromCharCode(keyCode);
+                    const regex = /^[0-9]*$/;
+                    if (!regex.test(keyValue)) {
+                      event.preventDefault();
+                    }
+                  }}
                 />
                 {formErrors.eli01mobile_no && (
                   <div className="error">{formErrors.eli01mobile_no}</div>
@@ -596,13 +636,14 @@ function Loaneligibility() {
                     aria-describedby="validationServer04Feedback"
                     name="eli01ploan_type"
                     value={formValues.eli01ploan_type}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setRate(e.target.value);
+                    }}
                   >
-                    <option selected disabled>
-                      Select the Loan Type
-                    </option>
+                    <option selected>Select the Loan Type</option>
                     {loanTypesApi.map((item) => (
-                      <option key={item.eli00uin} value={item.eli00uin}>
+                      <option key={item.eli00rateperyear} value={item.eli00uin}>
                         {item.eli00title}
                       </option>
                     ))}
@@ -618,11 +659,14 @@ function Loaneligibility() {
                   Requested Loan Amount
                 </label>
                 <input
-                  type="request"
+                  type="number"
                   className="form-control numberOnly"
                   name="eli01requested_loan_amount"
                   value={formValues.eli01requested_loan_amount}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setAmount(e.target.value);
+                  }}
                   id="num"
                   placeholder="NPR"
                 />
@@ -638,12 +682,13 @@ function Loaneligibility() {
                     E.M.I
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control numberOnly"
-                    name="loan_amount"
-                    id="loanamount"
+                    name="eli01emi"
+                    id="num"
                     placeholder="NPR"
                     value={emi}
+                    onChange={handleChange}
                     readOnly
                   />
                 </div>
@@ -655,7 +700,7 @@ function Loaneligibility() {
                   Value of Property
                 </label>
                 <input
-                  type="property"
+                  type="number"
                   className="form-control"
                   id="num"
                   placeholder="NPR"
@@ -691,9 +736,6 @@ function Loaneligibility() {
                 )}
               </div>
               <div className="col-12 mt-4">
-                <div className="container">
-                  <ReCAPTCHA sitekey="6Ldbdg0TAAAAAI7KAf72Q6uagbWzWecTeBWmrCpJ" />
-                </div>
                 <div className="col-12 mt-5 mb-5" id="btn">
                   <button
                     type="submit"

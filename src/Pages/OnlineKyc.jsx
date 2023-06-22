@@ -15,11 +15,13 @@ function OnlineKyc() {
   const [selection, setSelection] = useState("terms");
   const [internalRadio, setInternalradio] = useState("citizen");
   const [districtApi, setDistrictApi] = useState([]);
+  const [districtApi2, setDistrictApi2] = useState([]);
   const [genaraldistrictApi, setGeneralDistrictApi] = useState([]);
 
   const [branchApi, setBranchApi] = useState([]);
   const [provienceApi, setProvienceApi] = useState([]);
   const [municipalityApi, setMunicipalityApi] = useState([]);
+  const [municipalityApi2, setMunicipalityApi2] = useState([]);
   const [sameAsAbove, setSameAsAbove] = useState(false);
 
   const [province, setProvince] = useState(""); // Store the selected province value
@@ -277,6 +279,36 @@ function OnlineKyc() {
 
     fetchOtpVerifyData();
   }, [formValues.kyc03set04uin]);
+  useEffect(() => {
+    const fetchOtpVerifyData2 = async () => {
+      try {
+        const response1 = await fetch(
+          `${API_URL}/KYC/GetDistrictsByProvinceId?id=${formValues.kyc03set03uin_temp}`
+        );
+        const data1 = await response1.json();
+        setDistrictApi2(data1);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOtpVerifyData2();
+  }, [formValues.kyc03set03uin_temp]);
+  useEffect(() => {
+    const fetchOtpVerifyData2 = async () => {
+      try {
+        const response4 = await fetch(
+          `${API_URL}/KYC/GetMuncipalityByDistrictId?id=${formValues.kyc03set04uin_temp}`
+        );
+        const data4 = await response4.json();
+        setMunicipalityApi2(data4);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOtpVerifyData2();
+  }, [formValues.kyc03set04uin_temp]);
   const handleCheckboxChange = () => {
     setSameAsAbove(!sameAsAbove); // Toggle the checkbox state
     if (sameAsAbove) {
@@ -398,6 +430,12 @@ function OnlineKyc() {
           kyc04VisaIssueDateNep || prevValues.kyc04visa_issue_date_nep;
         updatedValues.kyc04visa_issue_date_eng =
           kyc04VisaIssueDateEng || prevValues.kyc04visa_issue_date_eng;
+
+        updatedValues.kyc04expiry_date_eng =
+          kyc04ExpiryDateEng || prevValues.kyc04expiry_date_eng;
+        updatedValues.kyc04expiry_date_nep =
+          kyc04ExpiryDateNep || prevValues.kyc04expiry_date_nep;
+
         updatedValues.kyc04visa_expiry_date_nep =
           kyc04VisaExpiryDateNep || prevValues.kyc04visa_expiry_date_nep;
         updatedValues.kyc04visa_expiry_date_eng =
@@ -432,6 +470,8 @@ function OnlineKyc() {
     kyc04VisaExpiryDateEng,
     kyc04VoterIdIssuedDateNep,
     kyc04VoterIdIssuedDateEng,
+    kyc04ExpiryDateEng,
+    kyc04ExpiryDateNep,
     eligibilityType, // Add eligibilityType as a dependency
   ]);
 
@@ -450,7 +490,11 @@ function OnlineKyc() {
             id="terms"
           >
             <div className="col-8 ">
-              <div className="row justify-content-evenly rounded-3" id="form">
+              <div
+                className="row justify-content-evenly rounded-3"
+                id="form"
+                style={{ backgroundColor: "#FAFBFF" }}
+              >
                 <div className="col-12">
                   <div className="row">
                     <div className="col-12 mt-5 mb-2" id="loantype">
@@ -623,7 +667,10 @@ function OnlineKyc() {
                     </div>
                   </div>
                 </div>
-                <div className="col-12 d-flex justify-content-center mb-4">
+                <div
+                  className="col-12 d-flex justify-content-center mb-4 "
+                  style={{ backgroundColor: "#FAFBFF" }}
+                >
                   <button type="button" className="btn text-dark" id="decline">
                     Decline
                   </button>
@@ -644,13 +691,20 @@ function OnlineKyc() {
         {/*Verification Section inorder to Proceed*/}
         {selection === "Account" && (
           <div className="row justify-content-evenly  mt-5 mb-5" id="verify">
-            <div className="col-md-11 col-lg-9 col-xl-8" id="form-section">
+            <div
+              className="col-md-11 col-lg-9 col-xl-8"
+              id="form-section"
+              style={{ backgroundColor: "#FAFBFF" }}
+            >
               <div className="row">
                 <div className="button">
-                  <a className="btn back-button ps-3" href="KYCform.html">
+                  <button
+                    className="back-button ps-3"
+                    onClick={() => handlePrevious("terms")}
+                  >
                     Back
                     <img src="/Assets/images/Exit icon/exit.png" alt="..." />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="row mt-5 mb-5">
@@ -699,10 +753,17 @@ function OnlineKyc() {
         {selection === "no" && (
           <div className="row justify-content-evenly  mt-5 mb-5" id="generald">
             <div className="col-md-11 col-lg-9 col-xxl-8">
-              <div className="row" id="box-shadow">
+              <div
+                className="row"
+                id="box-shadow"
+                style={{ backgroundColor: "#FAFBFF" }}
+              >
                 <div className="row">
                   <div className="button">
-                    <button className="back-button ps-3">
+                    <button
+                      className="back-button ps-3"
+                      onClick={() => handlePrevious("Account")}
+                    >
                       Back
                       <img src="/Assets/images/Exit icon/exit.png" alt="..." />
                     </button>
@@ -746,7 +807,7 @@ function OnlineKyc() {
                         type="radio"
                         name="kyc01salutation"
                         id="inlineRadio1"
-                        defaultValue="option1"
+                        defaultValue="0"
                         onChange={handleChange}
                       />
                       <label
@@ -761,7 +822,7 @@ function OnlineKyc() {
                           type="radio"
                           name="kyc01salutation"
                           id="inlineRadio2"
-                          defaultValue="option2"
+                          defaultValue="1"
                           onChange={handleChange}
                         />
                         <label
@@ -777,7 +838,7 @@ function OnlineKyc() {
                           type="radio"
                           name="kyc01salutation"
                           id="inlineRadio3"
-                          defaultValue="option3"
+                          defaultValue="4"
                           onChange={handleChange}
                         />
                         <label
@@ -793,7 +854,7 @@ function OnlineKyc() {
                           type="radio"
                           name="kyc01salutation"
                           id="inlineRadio3"
-                          defaultValue="option3"
+                          defaultValue="2"
                           onChange={handleChange}
                         />
                         <label
@@ -809,7 +870,7 @@ function OnlineKyc() {
                           type="radio"
                           name="kyc01salutation"
                           id="inlineRadio3"
-                          defaultValue="option3"
+                          defaultValue="3"
                           onChange={handleChange}
                         />
                         <label
@@ -836,6 +897,7 @@ function OnlineKyc() {
                       htmlFor="validationname"
                       className="form-label yolo"
                       id="Online"
+                      placeholder="First Name"
                     >
                       First Name
                     </label>
@@ -843,6 +905,7 @@ function OnlineKyc() {
                       type="firstname"
                       className="form-control"
                       name="kyc01first_name"
+                      placeholder="First Name"
                       onChange={handleChange}
                     />
                     {formErrors.kyc01first_name && (
@@ -908,6 +971,15 @@ function OnlineKyc() {
                       placeholder="+977 9898989898"
                       name="kyc01mobile_no"
                       onChange={handleChange}
+                      maxLength={10}
+                      onKeyPress={(event) => {
+                        const keyCode = event.which || event.keyCode;
+                        const keyValue = String.fromCharCode(keyCode);
+                        const regex = /^[0-9]*$/;
+                        if (!regex.test(keyValue)) {
+                          event.preventDefault();
+                        }
+                      }}
                     />
                     {formErrors.kyc01mobile_no && (
                       <div className="error">{formErrors.kyc01mobile_no}</div>
@@ -947,6 +1019,15 @@ function OnlineKyc() {
                       placeholder="01-0024984"
                       name="kyc01phone_no"
                       onChange={handleChange}
+                      maxLength={10}
+                      onKeyPress={(event) => {
+                        const keyCode = event.which || event.keyCode;
+                        const keyValue = String.fromCharCode(keyCode);
+                        const regex = /^[0-9]*$/;
+                        if (!regex.test(keyValue)) {
+                          event.preventDefault();
+                        }
+                      }}
                     />
                     {formErrors.kyc01phone_no && (
                       <div className="error">{formErrors.kyc01phone_no}</div>
@@ -967,6 +1048,15 @@ function OnlineKyc() {
                       id="num"
                       placeholder="01-0024984"
                       onChange={handleChange}
+                      maxLength={10}
+                      onKeyPress={(event) => {
+                        const keyCode = event.which || event.keyCode;
+                        const keyValue = String.fromCharCode(keyCode);
+                        const regex = /^[0-9]*$/;
+                        if (!regex.test(keyValue)) {
+                          event.preventDefault();
+                        }
+                      }}
                     />
                   </div>
                   <div className="col-md-4">
@@ -1270,7 +1360,11 @@ function OnlineKyc() {
               className="col-md-11 col-lg-9 col-xxl-8 justify-content-evenly"
               id="form-section"
             >
-              <div className="row justify-content-evenly" id="form">
+              <div
+                className="row justify-content-evenly"
+                id="form"
+                style={{ backgroundColor: "#FAFBFF" }}
+              >
                 <div className="col-12">
                   {" "}
                   {/*Back*/}
@@ -1368,6 +1462,14 @@ function OnlineKyc() {
                     name="kyc03ward_no"
                     maxLength={2}
                     onChange={handleChange}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
                   {formErrors.kyc03ward_no && (
                     <div className="error">{formErrors.kyc03ward_no}</div>
@@ -1400,6 +1502,14 @@ function OnlineKyc() {
                     name="kyc03house_no"
                     maxLength={100}
                     onChange={handleChange}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
                   {formErrors.kyc03house_no && (
                     <div className="error">{formErrors.kyc03house_no}</div>
@@ -1467,7 +1577,7 @@ function OnlineKyc() {
                     disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
                   >
                     <option value="">Name of the District</option>
-                    {districtApi.map((item) => (
+                    {districtApi2.map((item) => (
                       <option key={item.bindField} value={item.bindField}>
                         {item.displayField}
                       </option>
@@ -1496,7 +1606,7 @@ function OnlineKyc() {
                     disabled={sameAsAbove} // Disable the dropdown if sameAsAbove is checked
                   >
                     <option value="">Name of the Municipality/VDC</option>
-                    {municipalityApi.map((item) => (
+                    {municipalityApi2.map((item) => (
                       <option key={item.bindField} value={item.bindField}>
                         {item.displayField}
                       </option>
@@ -1518,6 +1628,14 @@ function OnlineKyc() {
                     maxLength={2}
                     onChange={handleChange2}
                     disabled={sameAsAbove}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
                   {formErrors.kyc03ward_no_temp && !sameAsAbove && (
                     <div className="error">{formErrors.kyc03ward_no_temp}</div>
@@ -1554,6 +1672,14 @@ function OnlineKyc() {
                     onChange={handleChange2}
                     value={house}
                     disabled={sameAsAbove}
+                    onKeyPress={(event) => {
+                      const keyCode = event.which || event.keyCode;
+                      const keyValue = String.fromCharCode(keyCode);
+                      const regex = /^[0-9]*$/;
+                      if (!regex.test(keyValue)) {
+                        event.preventDefault();
+                      }
+                    }}
                   />
                   {formErrors.kyc03house_no_temp && !sameAsAbove && (
                     <div className="error">{formErrors.kyc03house_no_temp}</div>
@@ -1586,7 +1712,11 @@ function OnlineKyc() {
         {selection === "Doc" && (
           <div className="row justify-content-evenly  mt-5 mb-5" id="proof">
             <div className="col-md-11 col-lg-9 col-xxl-8" id="form-section">
-              <div className="row " id="form">
+              <div
+                className="row "
+                id="form "
+                style={{ backgroundColor: "#FAFBFF" }}
+              >
                 <div className="col-12">
                   <div className="row text-center" id="text">
                     <span className="text text-center mt-5">Document Type</span>

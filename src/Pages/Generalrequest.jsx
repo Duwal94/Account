@@ -201,10 +201,14 @@ function Generalrequest() {
           {/* general request fom  */}
           <div className="row justify-content-evenly p-0">
             <div className="col-md-11 col-lg-9 col-xxl-8">
-              <div className="row" id="box-shadow">
+              <div
+                className="row"
+                id="box-shadow"
+                style={{ backgroundColor: "#FAFBFF" }}
+              >
                 <div className="row">
                   <div className="button">
-                    <a href="index.html">
+                    <a href="/">
                       <button id="bckbtn" className="back-button">
                         Back
                         <img src="/Assets/images/Exit icon/exit.png" alt="" />
@@ -249,6 +253,11 @@ function Generalrequest() {
                                 </option>
                               ))}
                             </select>
+                            {formErrors.car02car01uin && (
+                              <div className="error">
+                                {formErrors.car02car01uin}
+                              </div>
+                            )}
                           </div>
 
                           {/* ACCT no verify */}

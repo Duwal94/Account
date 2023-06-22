@@ -39,6 +39,8 @@ function Onlineaccount() {
       console.error("Error fetching schema2:", error);
     }
   };
+  const referev1 = "/Savings";
+  const referev2 = "/Fixed";
   return (
     <div className=" card-container col-lg-12">
       <div className="row">
@@ -89,6 +91,7 @@ function Onlineaccount() {
                     "Connect IPS Facility",
                   ]}
                   annual={field.acc01RatePerAnnum}
+                  refvalue={referev1}
                 />
               ))}
             </div>
@@ -113,6 +116,7 @@ function Onlineaccount() {
                     "Connect IPS Facility",
                   ]}
                   annual={fields.acc01RatePerAnnum}
+                  refvalue={referev2}
                 />
               ))}
             </div>

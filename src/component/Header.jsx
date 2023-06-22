@@ -1,6 +1,6 @@
 function Header() {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom border-2 border-warning">
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
           <img

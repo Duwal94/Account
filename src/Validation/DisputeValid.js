@@ -5,6 +5,13 @@ const useFormValidationSchema = (eligibilityType) => {
     const [validationSchema, setValidationSchema] = useState(null);
 
     useEffect(() => {
+
+        const valid = Yup.object().shape({
+
+            car05sys06uin: Yup.number().required("Selection required").min(1, "Selection required"),
+
+        });
+
         const ATMValidationSchema = Yup.object().shape({
 
             car05card_no: Yup.string().required("Card Number is required"),
@@ -66,6 +73,8 @@ const useFormValidationSchema = (eligibilityType) => {
         }
         else if (eligibilityType === "3") {
             schema = ItouchValidationSchema;
+        } else {
+            schema = valid;
         }
 
 

@@ -14,6 +14,7 @@ function Disputeclaim() {
 
   const [cardTypeApi, setCardTypeApi] = useState([]);
   const [disputeTypesApi, setDisputeTypesApi] = useState([]);
+  const [show, setShow] = useState(false);
 
   const [otpVerify, setOtpVerify] = useState(false);
   const [acctApi, setAcctApi] = useState(null);
@@ -30,6 +31,9 @@ function Disputeclaim() {
     setSelectedOption(event.target.value);
     setOtpVerify(false);
     setOtpApi(null);
+  };
+  const handleSelectionChangeRadio = () => {
+    setShow((prevState) => !prevState);
   };
 
   //api fetch
@@ -192,10 +196,14 @@ function Disputeclaim() {
 
         <div className="row justify-content-evenly p-0">
           <div className="col--md-11 col-lg-9 col-xxl-8">
-            <div className="row" id="box-shadow">
+            <div
+              className="row"
+              id="box-shadow"
+              style={{ backgroundColor: "#FAFBFF" }}
+            >
               <div className="row">
                 <div className="button">
-                  <a href="index.html">
+                  <a href="/">
                     <button className="back-button">
                       Back
                       <img src="/Assets/images/Exit icon/exit.png" alt="" />
@@ -230,6 +238,9 @@ function Disputeclaim() {
                         </option>
                       ))}
                     </select>
+                    {formErrors.car05sys06uin && (
+                      <div className="error">{formErrors.car05sys06uin}</div>
+                    )}
                   </div>
                   {selectedOption === "1" && (
                     <div className="col-md-5 ">
@@ -549,33 +560,37 @@ function Disputeclaim() {
                       Please tick on below dispute options as appropriate:
                     </p>
                     <div className="form-check ps-5">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="flexCheckDefault"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="flexCheckDefault"
-                      >
-                        <p className="form-label yolo">
-                          I used my Debit/Credit/OD card to perform transaction.
-                          However, the transaction was unsuccessful/declined &
-                          amp; my account was debited
-                        </p>
-                      </label>
+                      <div className="d-flex align-items-start">
+                        <input
+                          className="form-check-input me-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          defaultValue="true"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="flexCheckDefault"
+                          style={{ paddingTop: "10px" }}
+                        >
+                          <p className="form-label yolo">
+                            I used my Debit/Credit/OD card to perform
+                            transaction. However, the transaction was
+                            unsuccessful/declined & amp; my account was debited
+                          </p>
+                        </label>
+                      </div>
                     </div>
                     <div className="form-check ps-5">
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        defaultValue
                         id="flexCheckDefault"
+                        defaultValue="true"
                       />
                       <label
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
+                        style={{ paddingTop: "15px" }}
                       >
                         <p className="form-label yolo">
                           Mentioned transaction was charged to my account more
@@ -587,12 +602,13 @@ function Disputeclaim() {
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        defaultValue
                         id="flexCheckDefault"
+                        defaultValue="true"
                       />
                       <label
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
+                        style={{ paddingTop: "15px" }}
                       >
                         <p className="form-label yolo">
                           I had paid by other means or purchase was cancelled
@@ -603,12 +619,13 @@ function Disputeclaim() {
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        defaultValue
                         id="flexCheckDefault"
+                        defaultValue="true"
                       />
                       <label
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
+                        style={{ paddingTop: "15px" }}
                       >
                         <p className="form-label yolo">
                           The amount billed by Merchant was different from Sales
@@ -617,52 +634,80 @@ function Disputeclaim() {
                       </label>
                     </div>
                     <div className="form-check ps-5">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="flexCheckDefault"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="flexCheckDefault"
-                      >
-                        <p className="form-label yolo">
-                          Unauthorized transaction - I did not authorize or
-                          participate in the transaction(s) mentioned above or
-                          authorized anyone to engage in the transaction(s). At
-                          the time of this transaction the card was in my
-                          possession
-                        </p>
-                      </label>
+                      <div className="d-flex align-items-start">
+                        <input
+                          className="form-check-input me-3"
+                          type="checkbox"
+                          id="flexCheckDefault"
+                          defaultValue="true"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="flexCheckDefault"
+                          style={{ paddingTop: "10px" }}
+                        >
+                          <p className="form-label yolo">
+                            Unauthorized transaction - I did not authorize or
+                            participate in the transaction(s) mentioned above or
+                            authorized anyone to engage in the transaction(s).
+                            At the time of this transaction the card was in my
+                            possession
+                          </p>
+                        </label>
+                      </div>
                     </div>
                     <div className="form-check ps-5">
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        defaultValue
                         id="flexCheckDefault"
+                        defaultValue={show}
+                        onChange={handleSelectionChangeRadio}
                       />
                       <label
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
+                        style={{ paddingTop: "15px" }}
                       >
                         <p className="form-label yolo">
                           Any other information (please specify)
                         </p>
                       </label>
                     </div>
+                    {show === true && (
+                      <div id="otherremarks">
+                        <label htmlFor="car05txn_other_remarks">
+                          {" "}
+                          Remarks <span>*</span>
+                        </label>
+                        <textarea
+                          className="form-control"
+                          cols={5}
+                          id="car05txn_other_remarks"
+                          name="car05txn_other_remarks"
+                          rows={5}
+                          defaultValue={""}
+                          onChange={handleChange}
+                        />
+                        <span
+                          className="field-validation-valid text-danger"
+                          data-valmsg-for="car05txn_other_remarks"
+                          data-valmsg-replace="true"
+                        />
+                      </div>
+                    )}
                     <div className="form-check ps-5 mt-4">
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        defaultValue
                         id="flexCheckDefault"
                         required
+                        defaultValue="true"
                       />
                       <label
                         className="form-check-label"
                         htmlFor="flexCheckDefault"
+                        style={{ paddingTop: "15px" }}
                       >
                         <p className="form-label yolo">
                           I have read, understood and agree to the

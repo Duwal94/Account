@@ -14,6 +14,7 @@ import Onlineaccount from "./Pages/Onlineaccount";
 import OnlineKyc from "./Pages/OnlineKyc";
 import Savingacctform from "./Pages/Savingacctform";
 import SavingacctformSecond from "./Pages/SavingacctformSecond";
+import Fixedacctform from "./Pages/Fixedacctform";
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function App() {
           <Route path="/Disputeclaim" element={<Disputeclaim />} />
           <Route path="/Merchantqrcode" element={<Merchantqrcode />} />
           <Route path="/Savings" element={<Savingacctform />} />
-          <Route path="SavingSecond" element={<SavingacctformSecond />} />
+          <Route path="/Fixed" element={<Fixedacctform />} />
+          <Route path="/SavingSecond" element={<SavingacctformSecond />} />
         </Routes>
       </BrowserRouter>
 

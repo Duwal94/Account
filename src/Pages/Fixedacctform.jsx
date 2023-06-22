@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import useFormValidationSchema from "../Validation/Savings";
+import useFormValidationSchema from "../Validation/fixed";
+
 import Select from "react-select";
 import { API_URL } from "../Utilities/Constants";
 import Modal from "react-modal";
-import useFormValues from "../States/Savings.tsx";
+import useFormValues from "../States/Fixed.tsx";
 import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import NepaliDate from "nepali-date-converter";
 
-function Savingacctform() {
+function Fixedacctform() {
   const [branchApi, setBranchApi] = useState([]);
   const [acctTypeApi, setBAcctTypeApi] = useState([]);
+  const [FDTypeApi, setFDTypeApi] = useState([]);
+
   const [selectedImages, setSelectedImages] = useState([]);
   const [formValues, setFormValues] = useFormValues();
   const [responseMessage, setResponseMessage] = useState("hello");
@@ -19,6 +22,10 @@ function Savingacctform() {
   const validationSchema = useFormValidationSchema();
   const [bsDate, setBsDate] = useState("");
   const [adDate, setAdDate] = useState("");
+
+  ///reneewal
+
+  const [isAutoRenewal, setIsAutoRenewal] = useState(false);
 
   ///date
   const handleBsDate = (bsDate, index) => {
@@ -37,24 +44,6 @@ function Savingacctform() {
         if (index === 1) {
           setBsDate(bsDate);
           setAdDate(convertedDate);
-        } else if (index === 2) {
-          // setKyc04IssuedDateNep(bsDate);
-          // setKyc04IssuedDateEng(convertedDate);
-        } else if (index === 3) {
-          // setKyc04PassportIssuedDateNep(adDate);
-          // setKyc04PassportIssuedDateEng(convertedDate);
-        } else if (index === 4) {
-          // setKyc04ExpiryDateNep(adDate);
-          // setKyc04ExpiryDateEng(convertedDate);
-        } else if (index === 5) {
-          // setKyc04VisaIssueDateNep(adDate);
-          // setKyc04VisaIssueDateEng(convertedDate);
-        } else if (index === 6) {
-          // setKyc04VisaExpiryDateNep(adDate);
-          // setKyc04VisaExpiryDateEng(convertedDate);
-        } else if (index === 7) {
-          // setKyc04VoterIdIssuedDateNep(adDate);
-          // setKyc04VoterIdIssuedDateEng(convertedDate);
         }
       }
     }
@@ -74,24 +63,6 @@ function Savingacctform() {
     if (index === 1) {
       setAdDate(adDate);
       setBsDate(convertedDate);
-    } else if (index === 2) {
-      // setKyc04IssuedDateEng(adDate);
-      // setKyc04IssuedDateNep(convertedDate);
-    } else if (index === 3) {
-      // setKyc04PassportIssuedDateEng(adDate);
-      // setKyc04PassportIssuedDateNep(convertedDate);
-    } else if (index === 4) {
-      // setKyc04ExpiryDateEng(adDate);
-      // setKyc04ExpiryDateNep(convertedDate);
-    } else if (index === 5) {
-      // setKyc04VisaIssueDateEng(adDate);
-      // setKyc04VisaIssueDateNep(convertedDate);
-    } else if (index === 6) {
-      // setKyc04VisaExpiryDateEng(adDate);
-      // setKyc04VisaExpiryDateNep(convertedDate);
-    } else if (index === 7) {
-      // setKyc04VoterIdIssuedDateEng(adDate);
-      // setKyc04VoterIdIssuedDateNep(convertedDate);
     }
   };
 
@@ -107,11 +78,12 @@ function Savingacctform() {
         const response2 = await fetch(`${API_URL}/GeneralComponents/Branch`);
         const data2 = await response2.json();
         setBranchApi(data2);
-        const response3 = await fetch(
-          `${API_URL}/AccountInfo/SavingAccountTypes`
-        );
+        const response3 = await fetch(`${API_URL}/AccountInfo/FDAccountTypes`);
         const data3 = await response3.json();
-        setBAcctTypeApi(data3);
+        setFDTypeApi(data3);
+        const response4 = await fetch(`${API_URL}/AccountInfo/AccountPeriods`);
+        const data4 = await response4.json();
+        setBAcctTypeApi(data4);
       } catch (error) {
         console.error(error);
       }
@@ -138,6 +110,14 @@ function Savingacctform() {
 
     if (type === "file") {
       newValue = files[0];
+    } else if (id === "auto_renew") {
+      setIsAutoRenewal((prevState) => !prevState);
+      console.log(isAutoRenewal);
+      if (isAutoRenewal === true) {
+        newValue = 1;
+      } else {
+        newValue = 0;
+      }
     } else if (type === "checkbox") {
       newValue = checked;
     } else if (id === "num") {
@@ -169,7 +149,7 @@ function Savingacctform() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = `${API_URL}/AccountInfo/SavingAccountInfo`; // Replace with your API endpoint URL
+    const url = `${API_URL}/AccountInfo/FixedAccountInfo`; // Replace with your API endpoint URL
 
     try {
       // Validate the form using Yup
@@ -254,7 +234,7 @@ function Savingacctform() {
   return (
     <div className="container-fluid mb-5">
       <form onSubmit={handleSubmit}>
-        <div className="row justify-content-evenly p-0  " id="saving_form">
+        <div className="row row justify-content-evenly   " id="saving_form">
           <div className="col-md-12 col-lg-9 col-xl-8" id="form-section">
             <div
               className="row"
@@ -263,7 +243,7 @@ function Savingacctform() {
             >
               <div className="row">
                 <div className="button">
-                  <a href="/">
+                  <a href="/Onlineaccount">
                     <button className="back-button ps-3" type="button">
                       Back
                       <img src="/Assets/images/Exit icon/exit.png" alt="..." />
@@ -272,7 +252,7 @@ function Savingacctform() {
                 </div>
               </div>
               <div className="text-center heading5">
-                <h5> Savings Account</h5>
+                <h5> Fixed Account</h5>
               </div>
 
               <div className="row ps-5">
@@ -585,9 +565,9 @@ function Savingacctform() {
                       }}
                       options={{ calenderLocale: "ne", valueLocale: "en" }}
                     />
-                    {/* {formErrors.acc02dob_nep && (
-                        <div className="error">{formErrors.acc02dob_nep}</div>
-                      )} */}
+                    {formErrors.acc02dob_nep && (
+                      <div className="error">{formErrors.acc02dob_nep}</div>
+                    )}
                   </div>
                   {/* Date of Birth (A.D.) */}
                   <div className="col-md-4">
@@ -605,9 +585,9 @@ function Savingacctform() {
                         handleChange(e);
                       }}
                     />
-                    {/* {formErrors.aac02dob_eng && (
-                        <div className="error">{formErrors.aac02dob_eng}</div>
-                      )} */}
+                    {formErrors.aac02dob_eng && (
+                      <div className="error">{formErrors.aac02dob_eng}</div>
+                    )}
                   </div>
                   {/* acct types */}
                   <div className="col-md-3 business ">
@@ -626,7 +606,7 @@ function Savingacctform() {
                       <option value={0} selected disabled>
                         Type of Business
                       </option>
-                      {acctTypeApi.map((item) => (
+                      {FDTypeApi.map((item) => (
                         <option key={item.bindField} value={item.bindField}>
                           {item.displayField}
                         </option>
@@ -700,8 +680,145 @@ function Savingacctform() {
                       </div>
                     )}
                   </div>
-                  {/* CAPTCHA */}
                   <div className="col-12 mt-5">
+                    <h5 id="verify-captcha" className="mb-4">
+                      Fixed Deposit Details
+                    </h5>
+                    <div className="row">
+                      <div className="col-md-4">
+                        <label htmlFor="FDType" className="form-label">
+                          FD Type
+                          <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          id="num"
+                          name="acc14acc15uin"
+                          className="form-select"
+                          onChange={handleChange}
+                        >
+                          <option value> -- Select FD Type -- </option>
+                          {acctTypeApi.map((item) => (
+                            <option key={item.bindField} value={item.bindField}>
+                              {item.displayField}
+                            </option>
+                          ))}
+                        </select>
+                        {formErrors.acc14acc15uin && (
+                          <div className="error">
+                            {formErrors.acc14acc15uin}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-md-4">
+                        <label htmlFor="Period" className="form-label">
+                          Period
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="FDPeriod"
+                          placeholder
+                          value={formValues.acc14acc15uin === 1 ? "12" : "24"}
+                          readOnly
+                          disabled
+                        />
+                      </div>
+                      <div className="col-md-4">
+                        <label
+                          htmlFor="inputDebitAccount"
+                          className="form-label"
+                        >
+                          Debit Account No
+                          <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputDebitAccount"
+                          name="acc14saving_account_no"
+                          placeholder="Account No"
+                          maxLength={20}
+                          onChange={handleChange}
+                        />
+                        {formErrors.acc14saving_account_no && (
+                          <div className="error">
+                            {formErrors.acc14saving_account_no}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-lg-6 col-xl-4 mt-4">
+                        <label htmlFor="inputFDAmount" className="form-label">
+                          FD amount
+                          <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputFDAmount"
+                          name="acc14fd_amount"
+                          placeholder="Amount"
+                          maxLength={20}
+                          onChange={handleChange}
+                        />
+                        {formErrors.acc14fd_amount && (
+                          <div className="error">
+                            {formErrors.acc14fd_amount}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-lg-6 col-xl-4 mt-4">
+                        <label htmlFor="inputNomineeP" className="form-label">
+                          Nominee A/C No for Principle
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputNomineeP"
+                          name="acc14nominee_account_no"
+                          placeholder="XXXXXX-XXXX"
+                          maxLength={20}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="col-md-6 col-lg-6 col-xl-4 colmt-4 mt-4">
+                        <label htmlFor="inputNomineeI" className="form-label">
+                          Nominee A/C No for Interest/TDS
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="inputNomineeI"
+                          name="acc14instr_principal_account_no"
+                          placeholder="Account Number"
+                          maxLength={20}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="col-md-6 col-lg-5 mt-5">
+                        <div className="row">
+                          <div className="col-md-4 col-lg-8 col-xl-6 col-xxl-6 ps-5">
+                            <label className="text-danger">Auto Renewal?</label>
+                          </div>
+                          <div className="col-1">
+                            <label className="switch">
+                              <input
+                                type="checkbox"
+                                name="acc14auto_renew"
+                                id="auto_renew"
+                                defaultChecked={isAutoRenewal}
+                                onChange={handleChange}
+                              />
+                              <span className="slider round" />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-2 mt-5" />
+                    </div>
+                  </div>
+
+                  {/* CAPTCHA */}
+                  {/* <div className="col-12 mt-5">
                     <h5 id="verify-captcha">Verify Captcha</h5>
                     <div className="row">
                       <div className="col-4">
@@ -712,15 +829,15 @@ function Savingacctform() {
                           placeholder="ENTER CAPTCHA"
                         />
                       </div>
-                      {/* <div className="col-4 d-flex">
+                      <div className="col-4 d-flex">
                         <img
                           src="/Assets/images/recaptcha.png"
                           alt="..."
                           id="recap"
                         />
-                      </div> */}
+                      </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-12">
                     <div className="form-check">
                       <input
@@ -772,4 +889,4 @@ function Savingacctform() {
   );
 }
 
-export default Savingacctform;
+export default Fixedacctform;

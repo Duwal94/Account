@@ -196,11 +196,15 @@ function Merchantqrcode() {
       </div>
 
       <div className="row justify-content-evenly p-0">
-        <div className="col-md-11 col-lg-9 col-xxl-8" id="box-shadow">
+        <div
+          className="col-md-11 col-lg-9 col-xxl-8"
+          id="box-shadow"
+          style={{ backgroundColor: "#FAFBFF" }}
+        >
           <div className="row">
             <div className="col-12">
               <div className="button">
-                <a href="index.html">
+                <a href="/">
                   <button className="back-button">
                     Back <img src="/Assets/images/Exit icon/exit.png" alt="" />
                   </button>
@@ -344,6 +348,7 @@ function Merchantqrcode() {
                       aria-label="Account Number"
                       aria-describedby="verify"
                       onChange={handleChange}
+                      maxLength={20}
                     />
 
                     <div className="input-group-append">
@@ -649,6 +654,15 @@ function Merchantqrcode() {
                       placeholder="Contact Number of Contact Person "
                       name="car06contact_person_contact_no"
                       onChange={handleChange}
+                      maxLength={10}
+                      onKeyPress={(event) => {
+                        const keyCode = event.which || event.keyCode;
+                        const keyValue = String.fromCharCode(keyCode);
+                        const regex = /^[0-9]*$/;
+                        if (!regex.test(keyValue)) {
+                          event.preventDefault();
+                        }
+                      }}
                     />
                     {formErrors.car06contact_person_contact_no && (
                       <div className="error">

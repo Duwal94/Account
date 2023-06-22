@@ -19,7 +19,7 @@ interface IFormValues {
 
 const savings: IFormValues = {
   acc02acc01uin: 0,
-  acc02salutation: 0,
+  acc02salutation: -1,
   acc02is_local_citizen: 0,
   acc02FirstName: "",
   acc02MiddleName: "",

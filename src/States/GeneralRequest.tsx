@@ -35,6 +35,17 @@ const modileandInternet: IFormValues = {
   CitizenShipFile: null,
   SignatureFile: null,
 };
+const Internet: IFormValues = {
+  car02car01uin: 4,
+  car02acc_holder_name: "",
+  car02acc_no: "",
+  car02mobile_no: 0,
+  car02enum_ser_type: 0,
+  car02enum_cus_type: 0,
+  car02email: "",
+  CitizenShipFile: null,
+  SignatureFile: null,
+};
 
 const locker: IFormValues = {
   car02car01uin: 3,
@@ -62,10 +73,12 @@ const useFormValues = (
     let values: IFormValues;
     if (eligibilityType === "1") {
       values = debit;
-    } else if (eligibilityType === "2" || eligibilityType === "4") {
+    } else if (eligibilityType === "2") {
       values = modileandInternet;
     } else if (eligibilityType === "3") {
       values = locker;
+    } else if (eligibilityType === "4") {
+      values = Internet;
     } else if (eligibilityType === "5") {
       values = cardblock;
     } else {

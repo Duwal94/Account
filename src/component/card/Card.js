@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import "./Card.css";
 
-const CardS = ({ title, bulletPoints }) => {
+const CardS = ({ title, bulletPoints, refvalue }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [expandedRows, setExpandedRows] = useState([]);
 
@@ -30,7 +30,7 @@ const CardS = ({ title, bulletPoints }) => {
     { id: 3, feature: 'Fearture3', data: 'Placeholder content for this accordion, which is intended to demonstrate the .accordion-flush class. This is the third items accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.' },
   ];
 
-
+  const ooo = `${refvalue}`
 
   return (
     <div className={`card ${isFlipped ? 'flipped' : ''}`} style={{ paddingRight: '0px', paddingLeft: '0px' }} onClick={handleFlip}>
@@ -57,7 +57,7 @@ const CardS = ({ title, bulletPoints }) => {
 
 
           <a
-            href="/Savings"
+            href={ooo}
             className="btn1"
           >
             Open Account
